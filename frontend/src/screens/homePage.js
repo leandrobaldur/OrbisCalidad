@@ -3,7 +3,7 @@ import VideoPanel from "../components/videoPanel";
 import BarraHorizontal from "../components/barraHorizontal";
 import ContenedorLateral from "../components/contenedorLateral"; // Asegúrate de usar la ruta correcta
 import ContenedorImagenes from "../components/contenedorImagenes";
-
+import MapaBolivia from "../components/mapaBolivia";
 const HomePage = () => {
   return (
     <div className="w-full min-h-screen flex flex-col gap-8">
@@ -47,6 +47,7 @@ const HomePage = () => {
         ]}
       />
 
+      <MapaBolivia/>
     </div>
   );
 };
