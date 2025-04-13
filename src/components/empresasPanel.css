@@ -1,0 +1,135 @@
+/* Contenedor general */
+.empresas-panel-container {
+    display: flex;
+    gap: 2rem;
+    padding: 20px;
+  }
+  
+  /* Imagen lateral */
+  .imagen-lateral {
+    width: 25%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .imagen-lateral img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  
+  /* Panel de empresas */
+  .empresas-panel {
+    flex: 1;
+  }
+  
+  .empresas-titulo {
+    margin-bottom: 1rem;
+  }
+  
+  .empresas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+  
+  .empresa-card {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .empresa-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .empresa-imagen {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 10px;
+  }
+  
+  .empresa-nombre {
+    font-size: 1.1rem;
+    font-weight: bold;
+  }
+  
+  .empresa-descripcion {
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  /* ----------- MODAL ----------- */
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    width: 400px;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .modal-img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 15px;
+  }
+  
+  .modal-content h2 {
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .modal-content p {
+    font-size: 0.95rem;
+    color: #444;
+    margin-bottom: 10px;
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* Animación */
+  @keyframes fadeIn {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
