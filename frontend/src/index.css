@@ -1,14 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  overflow-x: hidden; /* Evita el desplazamiento horizontal */
 }
 
 #root {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  display: block; /* Cambiamos esto para evitar que se centre el contenido */
+  height: 100%; /* Asegura que el contenido ocupe todo el alto */
   background-color: #f4f4f4;
 }
 
@@ -16,21 +20,24 @@ nav {
   background-color: #333;
   color: #fff;
   padding: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 50;
 }
 
 nav ul {
   list-style: none;
   padding: 0;
-}
-
-nav ul li {
-  display: inline;
-  margin-right: 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 60px;
 }
 
 nav ul li a {
   color: white;
   text-decoration: none;
 }
-
-
