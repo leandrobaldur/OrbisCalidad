@@ -26,19 +26,25 @@ const HomePage = () => {
             imagenDefault="/media/homePage/defaultImage.png"
             items={[
               {
-                icono: "/media/homePage/defaultImage.png",
+                icono: "/media/homePage/lightIcon.png",
                 subtitulo: "Primera Selección",
                 imagen: "/media/contenido/contenido1.png",
                 texto: "Este es el contenido relacionado al primer ícono.",
               },
               {
-                icono: "/media/homePage/defaultImage.png",
+                icono: "/media/homePage/recicleIcon.png",
                 subtitulo: "Segunda Selección",
                 imagen: "/media/contenido/contenido2.png",
                 texto: "Información para el segundo ícono seleccionada.",
               },
               {
-                icono: "/media/homePage/defaultImage.png",
+                icono: "/media/homePage/secureIcon.png",
+                subtitulo: "Tercera Selección",
+                imagen: "/media/contenido/contenido3.png",
+                texto: "Texto descriptivo para el tercer ícono.",
+              },
+              {
+                icono: "/media/homePage/awardIcon.png",
                 subtitulo: "Tercera Selección",
                 imagen: "/media/contenido/contenido3.png",
                 texto: "Texto descriptivo para el tercer ícono.",
