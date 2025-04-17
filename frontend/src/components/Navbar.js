@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   return (
-    <nav>
-      <ul>
+    <nav className="fixed top-0 left-0 right-0 w-full z-50 bg-white shadow-md">
+      <ul className="flex justify-around items-center h-16 px-4">
         <li><Link to="/">Home</Link></li>
         <li><Link to="/empresas">Empresas</Link></li>
         <li><Link to="/contacto">Contacto</Link></li>
