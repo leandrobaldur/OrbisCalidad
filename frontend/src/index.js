@@ -10,6 +10,8 @@ import HistoriaPage from './screens/historiaPage';
 import EditorEmpresasPage from './screens/editorEmpresasPage';
 import EditorUsuariosPage from './screens/editorUsuariosPage';
 import Navbar from './components/Navbar';
+import RegistroEmpresaCompleta from './screens/registroEmpresaPage';
+
 
 ReactDOM.render(
   <Router>
@@ -21,6 +23,8 @@ ReactDOM.render(
       <Route path="/historia" element={<HistoriaPage />} />
       <Route path="/editor-empresas" element={<EditorEmpresasPage />} />
       <Route path="/editor-usuarios" element={<EditorUsuariosPage />} />
+      <Route path="/editor-empresa/nueva" element={<RegistroEmpresaCompleta />} />
+
     </Routes>
   </Router>,
   document.getElementById('root')
