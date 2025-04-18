@@ -5,6 +5,7 @@ import ContenedorLateral from "../components/contenedorLateral"; // Asegúrate d
 import ContenedorImagenes from "../components/contenedorImagenes";
 import MapaBolivia from "../components/mapaBolivia";
 import ImagenInteractiva from "../components/imagenInteractiva";
+import CarruselImagenes from "../components/carruselImagenes";
 const HomePage = () => {
   return (
     <div className="w-full min-h-screen flex flex-col gap-8">
@@ -73,16 +74,14 @@ const HomePage = () => {
       />
 
 
-      <ContenedorImagenes
-        alto="50vh"
-        imagenes={[
-          { titulo: "CBN", ruta: "/media/homePage/empresa1.png" },
-          { titulo: "TIGO", ruta: "/media/homePage/empresa2.png" },
-          { titulo: "TOYOSA", ruta: "/media/homePage/empresa3.png" },
-        ]}
+
+      <CarruselImagenes
+        altura={400}
+        filas={3}
+        backendUrl="http://localhost:3000/api/imagenes" 
+        modoPrueba={true}
       />
 
-      <MapaBolivia/>
 
 
     </div>
