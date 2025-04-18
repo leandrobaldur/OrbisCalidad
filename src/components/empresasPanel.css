@@ -1,0 +1,472 @@
+/* ====== RESET GENERAL ====== */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  font-family: 'Arial', sans-serif;
+}
+
+.empresas-wrapper {
+  width: 100%;
+}
+
+/* ====== BARRA SUPERIOR ====== */
+.barra-superior {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #3c3c3c;
+  padding: 10px 20px;
+  border-radius: 10px 10px 0 0;
+  margin: 20px auto 0;
+  max-width: 960px;
+}
+
+.barra-izquierda {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: white;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.barra-centro {
+  position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.barra-centro input {
+  width: 240px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  height: 30px;
+}
+
+.icono-busqueda {
+  position: absolute;
+  right: calc(50% - 110px);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: black;
+}
+
+.barra-derecha {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.barra-derecha img {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+}
+
+/* Estilos para los botones */
+.boton-antiguedad {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: white;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+  padding: 0;
+}
+
+.boton-icono {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.boton-icono img {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+}
+
+/* ====== PANEL PRINCIPAL ====== */
+.empresas-panel-container {
+  display: flex;
+  background-color: #1a1a1a;
+  padding: 30px 20px;
+  gap: 20px;
+  border-radius: 0 0 10px 10px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* Imagen lateral */
+.imagen-lateral {
+  width: 140px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.imagen-lateral img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+/* ====== TARJETAS DE EMPRESAS ====== */
+.empresas-panel {
+  flex: 1;
+}
+
+.empresas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.2rem;
+}
+
+.empresa-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  height: 150px;
+  background-color: #2a2a2a;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.empresa-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.empresa-img-contenedor {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.empresa-img-contenedor img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Modificado el estilo del nombre por defecto para que sea como en la imagen */
+.empresa-nombre-default {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000;  /* Cambiado a negro */
+  text-align: center;
+  z-index: 1;
+  padding: 5px 10px;
+  background-color: rgba(255, 255, 255, 0.7);  /* Fondo blanco semitransparente */
+  border-radius: 5px;
+  width: fit-content;  /* Ajustar al contenido */
+  min-width: 60%;
+  transition: opacity 0.3s ease;
+}
+
+/* Modificado el overlay para que sea similar a la imagen de hidroponía */
+.empresa-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.empresa-card:hover .empresa-overlay {
+  opacity: 1;
+}
+
+.empresa-card:hover .empresa-nombre-default {
+  opacity: 0;
+}
+
+/* Contenedor para la información en el overlay */
+.empresa-overlay-content {
+  background-color: rgba(255, 255, 255, 0.7);
+  color: #000;
+  padding: 10px 15px;
+  border-radius: 6px;
+  width: fit-content;
+  max-width: 90%;
+  text-align: center;
+}
+
+.empresa-overlay .nombre {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #000;
+}
+
+.empresa-overlay .rubro {
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+  color: #000;
+}
+
+.empresa-overlay .slogan {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #000;
+}
+
+/* ====== MODAL ====== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-header {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #555;
+}
+
+.close-modal:hover {
+  color: #000;
+}
+
+.modal-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-imagen {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.modal-imagen img {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+}
+
+.modal-info h3 {
+  margin-top: 0;
+  color: #666;
+  font-style: italic;
+  font-size: 18px;
+}
+
+.descripcion {
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.info-detalle p {
+  margin: 8px 0;
+}
+
+.modal-footer {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 1px solid #eee;
+}
+
+.btn-visitar, .btn-contactar {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-visitar {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.btn-contactar {
+  background-color: #0066cc;
+  color: white;
+}
+
+.btn-visitar:hover {
+  background-color: #e0e0e0;
+}
+
+.btn-contactar:hover {
+  background-color: #0055aa;
+}
+
+/* Animación para el modal */
+@keyframes fadeIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Estilos para íconos específicos */
+.icono-medalla, .icono-numero, .icono-codigo, .icono-perfil {
+  width: 24px;
+  height: 24px;
+}
+
+/* Botones de ordenar */
+.botones-ordenar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .empresas-panel-container {
+    flex-direction: column;
+    padding: 20px 15px;
+  }
+  
+  .imagen-lateral {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .imagen-lateral img {
+    max-width: 140px;
+    margin: 0 auto;
+  }
+  
+  .barra-superior {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+  }
+  
+  .barra-centro {
+    width: 100%;
+    margin: 10px 0;
+  }
+  
+  .barra-centro input {
+    width: 100%;
+  }
+  
+  .icono-busqueda {
+    right: 15px;
+  }
+  
+  .empresas-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+  
+  .modal-body {
+    flex-direction: column;
+  }
+  
+  .modal-imagen {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+}
+
+@media (min-width: 768px) {
+  .modal-body {
+    flex-direction: row;
+  }
+  
+  .modal-imagen {
+    flex: 0 0 40%;
+    margin-right: 20px;
+    margin-bottom: 0;
+  }
+  
+  .modal-info {
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .empresas-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+  
+  .empresa-nombre-default {
+    font-size: 1.2rem;
+  }
+  
+  .empresa-overlay .nombre {
+    font-size: 1rem;
+  }
+  
+  .empresa-overlay .rubro {
+    font-size: 0.9rem;
+  }
+  
+  .empresa-overlay .slogan {
+    font-size: 0.8rem;
+  }
+  
+  .modal-content {
+    width: 95%;
+  }
+}
