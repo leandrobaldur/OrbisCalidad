@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
@@ -9,19 +8,24 @@ import ContactoPage from './screens/contactoPage';
 import HistoriaPage from './screens/historiaPage';
 import EditorEmpresasPage from './screens/editorEmpresasPage';
 import EditorUsuariosPage from './screens/editorUsuariosPage';
-import Navbar from './components/Navbar';
+
+import Header from './components/header'; // ⬅️ Este es el nuevo import
+import Navbar from './components/navbar.jsx';
 
 ReactDOM.render(
   <Router>
-    <Navbar />
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/empresas" element={<EmpresasPage />} />
-      <Route path="/contacto" element={<ContactoPage />} />
-      <Route path="/historia" element={<HistoriaPage />} />
-      <Route path="/editor-empresas" element={<EditorEmpresasPage />} />
-      <Route path="/editor-usuarios" element={<EditorUsuariosPage />} />
-    </Routes>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <Header />
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/empresas" element={<EmpresasPage />} />
+        <Route path="/contacto" element={<ContactoPage />} />
+        <Route path="/historia" element={<HistoriaPage />} />
+        <Route path="/editor-empresas" element={<EditorEmpresasPage />} />
+        <Route path="/editor-usuarios" element={<EditorUsuariosPage />} />
+      </Routes>
+    </div>
   </Router>,
   document.getElementById('root')
 );
