@@ -5,9 +5,7 @@ import ContenedorLateral from "../components/contenedorLateral";
 import ContenedorImagenes from "../components/contenedorImagenes";
 import MapaBolivia from "../components/mapaBolivia";
 import ImagenInteractiva from "../components/imagenInteractiva";
-import InicioSesion from "../components/inicioSesion";
-import FooterBar from "../components/footerBar";
-
+import CarruselImagenes from "../components/carruselImagenes";
 const HomePage = () => {
   return (
     <div className="w-full min-h-screen flex flex-col gap-8">
@@ -75,16 +73,15 @@ const HomePage = () => {
         imagen="/media/homePage/barra.png"
       />
 
-      <ContenedorImagenes
-        alto="50vh"
-        imagenes={[
-          { titulo: "CBN", ruta: "/media/homePage/empresa1.png" },
-          { titulo: "TIGO", ruta: "/media/homePage/empresa2.png" },
-          { titulo: "TOYOSA", ruta: "/media/homePage/empresa3.png" },
-        ]}
+
+
+      <CarruselImagenes
+        altura={400}
+        filas={3}
+        backendUrl="http://localhost:3000"
+        modoPrueba={true}
       />
 
-      <MapaBolivia />
 
       {/* Se agrega el componente de Inicio de Sesión */}
       <InicioSesion onLogin={(data) => console.log("Inicio de sesión:", data)} />
