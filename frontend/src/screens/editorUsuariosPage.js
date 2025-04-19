@@ -1,8 +1,14 @@
-
-import React from 'react';
+import React from "react";
+import PanelEditorUsuarios from "../components/panelEditorUsuarios";
 
 const EditorUsuariosPage = () => {
-  return <div><h1>Editor Usuarios Page</h1></div>;
+  return (
+    
+    <div style={{ height: "100vh", width: "100vw" }}>
+      
+      <PanelEditorUsuarios />
+    </div>
+  );
 };
 
 export default EditorUsuariosPage;
