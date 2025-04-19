@@ -1,10 +1,13 @@
 import React from "react";
 import VideoPanel from "../components/videoPanel";
 import BarraHorizontal from "../components/barraHorizontal";
-import ContenedorLateral from "../components/contenedorLateral"; // Asegúrate de usar la ruta correcta
+import ContenedorLateral from "../components/contenedorLateral";
 import ContenedorImagenes from "../components/contenedorImagenes";
 import MapaBolivia from "../components/mapaBolivia";
 import ImagenInteractiva from "../components/imagenInteractiva";
+import InicioSesion from "../components/inicioSesion";
+import FooterBar from "../components/footerBar";
+
 const HomePage = () => {
   return (
     <div className="w-full min-h-screen flex flex-col gap-8">
@@ -72,7 +75,6 @@ const HomePage = () => {
         imagen="/media/homePage/barra.png"
       />
 
-
       <ContenedorImagenes
         alto="50vh"
         imagenes={[
@@ -82,9 +84,13 @@ const HomePage = () => {
         ]}
       />
 
-      <MapaBolivia/>
+      <MapaBolivia />
 
+      {/* Se agrega el componente de Inicio de Sesión */}
+      <InicioSesion onLogin={(data) => console.log("Inicio de sesión:", data)} />
 
+      {/* Se agrega el FooterBar al final de la página */}
+      <FooterBar />
     </div>
   );
 };
