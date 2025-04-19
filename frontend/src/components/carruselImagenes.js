@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-//import axios from 'axios';
+import axios from 'axios';
 
 const shuffleArray = (array) => {
   const newArray = [...array];
@@ -10,10 +10,11 @@ const shuffleArray = (array) => {
   return newArray;
 };
 
-const CarruselImagenes = ({ altura, filas, backendUrl, modoPrueba = true }) => {
-  const [imagenes, setImagenes] = useState([]);
+const CarruselImagenes = ({ altura, filas, backendUrl }) => {
   const [imagenesDistribuidas, setImagenesDistribuidas] = useState([]);
   const contenedorRef = useRef(null);
+
+  const CLOUDINARY_BASE_URL = 'https://res.cloudinary.com/diswqpy8v/image/upload/v1745018920';
 
   const distribuirEquitativamente = (imagenes, filas) => {
     const distribuidas = Array.from({ length: filas }, () => []);
@@ -23,44 +24,25 @@ const CarruselImagenes = ({ altura, filas, backendUrl, modoPrueba = true }) => {
     return distribuidas;
   };
 
-  /*
-  const obtenerImagenes = async () => {
+  const obtenerImagenesDesdeBackend = async () => {
     try {
-      const res = await axio.get(backendUrl);
-      const imagenesBarajadas = shuffleArray(res.data);
-      setImagenes(imagenesBarajadas);
-      setImagenesDistribuidas(distribuirEquitativamente(imagenesBarajadas, filas));
+      const res = await axios.get(`${backendUrl}/empresas`);
+      const urls = res.data
+        .map((empresa) => empresa.url)
+        .filter((nombre) => nombre && typeof nombre === 'string')
+        .map((nombre) => `${CLOUDINARY_BASE_URL}/${nombre}`);
+
+      const imagenesBarajadas = shuffleArray(urls);
+      const distribuidas = distribuirEquitativamente(imagenesBarajadas, filas);
+      setImagenesDistribuidas(distribuidas);
     } catch (error) {
-      console.error('Error al obtener imágenes:', error);
+      console.error('Error al obtener imágenes desde backend:', error);
     }
-  };
-    */
-  const obtenerImagenesPrueba = () => {
-    const cantidad = 30;
-    const rutas = Array.from({ length: cantidad }, (_, i) => 
-      `/media/homePage/carruselImagenes/img${i + 1}.jpg`
-    );
-
-    const imagenesBarajadas = shuffleArray(rutas);
-    setImagenes(imagenesBarajadas);
-    setImagenesDistribuidas(distribuirEquitativamente(imagenesBarajadas, filas));
   };
 
   useEffect(() => {
-    if (modoPrueba) {
-      obtenerImagenesPrueba();
-    } else {
-      //obtenerImagenes();
-    }
-  }, [backendUrl, modoPrueba]);
-
-  useEffect(() => {
-    const intervalo = setInterval(() => {
-      const siguiente = shuffleArray(imagenes);
-      setImagenesDistribuidas(distribuirEquitativamente(siguiente, filas));
-    }, 10000);
-    return () => clearInterval(intervalo);
-  }, [imagenes, filas]);
+    obtenerImagenesDesdeBackend();
+  }, [backendUrl]);
 
   return (
     <div
@@ -75,12 +57,12 @@ const CarruselImagenes = ({ altura, filas, backendUrl, modoPrueba = true }) => {
           style={{
             top: `${(100 / filas) * i}%`,
             height: `${100 / filas}%`,
-            animation: `${i % 2 === 0 ? 'moverIzquierda' : 'moverDerecha'} 20s linear infinite`
+            animation: `${i % 2 === 0 ? 'moverIzquierda' : 'moverDerecha'} 30s linear infinite`
           }}
         >
-          {fila.map((img, idx) => (
+          {fila.concat(fila).map((img, idx) => (
             <img
-              key={idx}
+              key={`${i}-${idx}`}
               src={img}
               alt={`img-${idx}`}
               className="object-cover"
@@ -96,10 +78,10 @@ const CarruselImagenes = ({ altura, filas, backendUrl, modoPrueba = true }) => {
       <style>{`
         @keyframes moverIzquierda {
           0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+          100% { transform: translateX(-100%); }
         }
         @keyframes moverDerecha {
-          0% { transform: translateX(-50%); }
+          0% { transform: translateX(-100%); }
           100% { transform: translateX(0); }
         }
       `}</style>

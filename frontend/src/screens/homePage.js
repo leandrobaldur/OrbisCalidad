@@ -78,7 +78,7 @@ const HomePage = () => {
       <CarruselImagenes
         altura={400}
         filas={3}
-        backendUrl="http://localhost:3000/api/imagenes" 
+        backendUrl="http://localhost:3000"
         modoPrueba={true}
       />
 
