@@ -1,8 +1,13 @@
 
 import React from 'react';
+import PanelEditorEmpresas from '../components/panelEditorEmpresas';
 
 const EditorEmpresasPage = () => {
-  return <div><h1>Editor Empresas Page</h1></div>;
+  return (
+    <div className="min-h-screen bg-[#0d2d2a] text-[#f2f0df] p-4">
+      <PanelEditorEmpresas />
+    </div>
+  );
 };
 
 export default EditorEmpresasPage;
