@@ -81,10 +81,21 @@ const router = express.Router();
  */
 
 router.post('/ingresarEmpresa', empresaController.crearEmpresa);
+
 router.get('/empresas', empresaController.listarEmpresas);
 router.get('/buscarEmpresas', empresaController.buscarEmpresas);
+
 router.get('/premios', empresaController.obtenerPremios);
 router.get('/empresas/premio/:id_premio', empresaController.filtrarEmpresasPorPremio);
+
+
+router.get('/rubros', empresaController.obtenerRubros);
+router.get('/empresas/rubro/:id_rubro', empresaController.filtrarEmpresasPorRubro);
+
+router.get('/empresas/antiguas', empresaController.obtenerEmpresasMayoresA50);
+
+router.get('/departamentos', empresaController.obtenerDepartamentos);
+router.get('/empresas/departamento/:id_departamento', empresaController.filtrarEmpresasPorDepartamento);
 
 
 export default router;

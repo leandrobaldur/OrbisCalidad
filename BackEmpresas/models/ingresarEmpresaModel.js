@@ -99,10 +99,104 @@ const obtenerEmpresasPorPremio = async (idPremio) => {
   }
 };
 
+const obtenerRubros = async () => {
+  const query = `SELECT id_rublo, nombre_rubro FROM rubros`;
+  try {
+    const { rows } = await pool.query(query);
+    return rows;
+  } catch (error) {
+    console.error('Error al obtener rubros:', error);
+    throw new Error('Error al obtener rubros');
+  }
+};
+
+const obtenerEmpresasPorRubro = async (idRublo) => {
+  const query = `
+    SELECT DISTINCT e.id_empresa, e.nombre_comercial, e.denominacion_social
+    FROM empresas e
+    JOIN empresa_actividad ea ON e.id_empresa = ea.id_empresa
+    JOIN rubros_actividades ra ON ea.id_actividad = ra.id_actividad
+    WHERE ra.id_rublo = $1
+  `;
+  try {
+    const { rows } = await pool.query(query, [idRublo]);
+    return rows;
+  } catch (error) {
+    console.error('Error al filtrar empresas por rubro:', error);
+    throw new Error('Error al filtrar empresas por rubro');
+  }
+};
+
+const obtenerEmpresasMayoresA50 = async () => {
+  const query = `
+    SELECT 
+      id_empresa, 
+      nombre_comercial, 
+      denominacion_social,
+      fecha_fundacion,
+      fecha_cierre,
+      EXTRACT(YEAR FROM COALESCE(fecha_cierre, CURRENT_DATE)) - EXTRACT(YEAR FROM fecha_fundacion) AS antiguedad
+    FROM empresas
+    WHERE 
+      (EXTRACT(YEAR FROM COALESCE(fecha_cierre, CURRENT_DATE)) - EXTRACT(YEAR FROM fecha_fundacion)) > 50
+  `;
+
+  try {
+    const { rows } = await pool.query(query);
+    return rows;
+  } catch (error) {
+    console.error('Error al obtener empresas mayores a 50 años:', error);
+    throw new Error('Error al obtener empresas con antigüedad mayor a 50 años');
+  }
+};
+
+// Obtener todos los departamentos
+const obtenerDepartamentos = async () => {
+  const query = `SELECT id_departamento, nombre_depto FROM departamentos`;
+  try {
+    const { rows } = await pool.query(query);
+    return rows;
+  } catch (error) {
+    console.error('Error al obtener departamentos:', error);
+    throw new Error('Error al obtener departamentos');
+  }
+};
+
+
+const obtenerEmpresasPorDepartamento = async (idDepartamento) => {
+  const query = `
+    SELECT DISTINCT e.id_empresa, e.nombre_comercial, e.denominacion_social
+    FROM empresas e
+    INNER JOIN empresas_sedes es ON e.id_empresa = es.id_empresa
+    INNER JOIN sedes s ON es.id_ubicacion = s.id_ubicacion
+    INNER JOIN municipios m ON s.id_municipio = m.id_municipio
+    INNER JOIN ciudades c ON m.id_ciudad = c.id_ciudad
+    INNER JOIN departamentos d ON c.id_departamento = d.id_departamento
+    WHERE d.id_departamento = $1
+  `;
+
+  try {
+    const { rows } = await pool.query(query, [idDepartamento]);
+    return rows;
+  } catch (error) {
+    console.error('Error al filtrar empresas por departamento:', error.message); // más claro
+    throw new Error('Error al filtrar empresas por departamento');
+  }
+};
+
+
+
+
+
 export default {
   insertarEmpresa,
   obtenerEmpresas,
   obtenerEmpresasConPropietarios,
   obtenerPremios,
-  obtenerEmpresasPorPremio
+  obtenerEmpresasPorPremio,
+  obtenerRubros,
+  obtenerEmpresasPorRubro,
+  obtenerEmpresasMayoresA50,
+  obtenerDepartamentos,
+  obtenerEmpresasPorDepartamento,
 };

@@ -78,10 +78,68 @@ const filtrarEmpresasPorPremio = async (req, res) => {
   }
 };
 
+const obtenerRubros = async (req, res) => {
+  try {
+    const rubros = await ingresarEmpresaModel.obtenerRubros();
+    res.status(200).json(rubros);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al obtener rubros' });
+  }
+};
+
+const filtrarEmpresasPorRubro = async (req, res) => {
+  const { id_rubro } = req.params;
+  try {
+    const empresas = await ingresarEmpresaModel.obtenerEmpresasPorRubro(id_rubro);
+    res.status(200).json(empresas);
+  } catch (error) {
+    console.error('Error en filtrarEmpresasPorRubro:', error);
+    res.status(500).json({ mensaje: 'Error al filtrar empresas por rubro' });
+  }
+};
+
+const obtenerEmpresasMayoresA50 = async (req, res) => {
+  try {
+    const empresas = await ingresarEmpresaModel.obtenerEmpresasMayoresA50();
+    res.status(200).json(empresas);
+  } catch (error) {
+    console.error('Error en obtenerEmpresasMayoresA50:', error);
+    res.status(500).json({ mensaje: 'Error al obtener empresas mayores a 50 años' });
+  }
+};
+
+
+const obtenerDepartamentos = async (req, res) => {
+  try {
+    const departamentos = await ingresarEmpresaModel.obtenerDepartamentos();
+    res.status(200).json(departamentos);
+  } catch (error) {
+    console.error('Error en obtenerDepartamentos:', error);
+    res.status(500).json({ mensaje: 'Error al obtener departamentos' });
+  }
+};
+
+const filtrarEmpresasPorDepartamento = async (req, res) => {
+  const { id_departamento } = req.params;
+  try {
+    const empresas = await ingresarEmpresaModel.obtenerEmpresasPorDepartamento(id_departamento);
+    res.status(200).json(empresas);
+  } catch (error) {
+    console.error('Error en filtrarEmpresasPorDepartamento:', error);
+    res.status(500).json({ mensaje: 'Error al filtrar empresas por departamento' });
+  }
+};
+
+
 export default {
   crearEmpresa,
   listarEmpresas,
   buscarEmpresas,
   obtenerPremios,
   filtrarEmpresasPorPremio,
+  obtenerRubros,
+  filtrarEmpresasPorRubro,
+  obtenerEmpresasMayoresA50,
+  obtenerDepartamentos,
+  filtrarEmpresasPorDepartamento,
 };

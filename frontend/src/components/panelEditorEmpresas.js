@@ -5,26 +5,77 @@ const PanelEditorEmpresas = () => {
   const [empresas, setEmpresas] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [premios, setPremios] = useState([]);
+  const [rubros, setRubros] = useState([]);
+  const [departamentos, setDepartamentos] = useState([]);
   const [selectedPremio, setSelectedPremio] = useState('');
+  const [selectedRubro, setSelectedRubro] = useState('');
+  const [selectedDepartamento, setSelectedDepartamento] = useState('');
   const [mostrarComboPremios, setMostrarComboPremios] = useState(false);
+  const [mostrarComboRubros, setMostrarComboRubros] = useState(false);
+  const [mostrarComboDepartamentos, setMostrarComboDepartamentos] = useState(false);
+  const [filtrarAntiguas, setFiltrarAntiguas] = useState(false);
 
-  useEffect(() => {
+  const cargarEmpresas = () => {
     axios.get(`http://localhost:3000/buscarEmpresas`)
       .then(res => setEmpresas(res.data))
       .catch(err => console.error('Error al buscar empresas:', err));
+  };
+
+  useEffect(() => {
+    cargarEmpresas();
   }, []);
 
   const togglePremios = () => {
     if (mostrarComboPremios) {
       setMostrarComboPremios(false);
       setPremios([]);
+      setSelectedPremio('');
+      cargarEmpresas();
     } else {
       axios.get('http://localhost:3000/premios')
         .then(res => {
           setPremios(res.data);
           setMostrarComboPremios(true);
+          setMostrarComboRubros(false);
+          setMostrarComboDepartamentos(false);
         })
         .catch(err => console.error('Error al cargar premios:', err));
+    }
+  };
+
+  const toggleRubros = () => {
+    if (mostrarComboRubros) {
+      setMostrarComboRubros(false);
+      setRubros([]);
+      setSelectedRubro('');
+      cargarEmpresas();
+    } else {
+      axios.get('http://localhost:3000/rubros')
+        .then(res => {
+          setRubros(res.data);
+          setMostrarComboRubros(true);
+          setMostrarComboPremios(false);
+          setMostrarComboDepartamentos(false);
+        })
+        .catch(err => console.error('Error al cargar rubros:', err));
+    }
+  };
+
+  const toggleDepartamentos = () => {
+    if (mostrarComboDepartamentos) {
+      setMostrarComboDepartamentos(false);
+      setDepartamentos([]);
+      setSelectedDepartamento('');
+      cargarEmpresas();
+    } else {
+      axios.get('http://localhost:3000/departamentos')
+        .then(res => {
+          setDepartamentos(res.data);
+          setMostrarComboDepartamentos(true);
+          setMostrarComboPremios(false);
+          setMostrarComboRubros(false);
+        })
+        .catch(err => console.error('Error al cargar departamentos:', err));
     }
   };
 
@@ -32,13 +83,48 @@ const PanelEditorEmpresas = () => {
     const idPremio = e.target.value;
     setSelectedPremio(idPremio);
     if (idPremio === '') {
-      axios.get(`http://localhost:3000/buscarEmpresas`)
-        .then(res => setEmpresas(res.data))
-        .catch(err => console.error('Error al buscar empresas:', err));
+      cargarEmpresas();
     } else {
       axios.get(`http://localhost:3000/empresas/premio/${idPremio}`)
         .then(res => setEmpresas(res.data))
-        .catch(err => console.error('Error al filtrar empresas:', err));
+        .catch(err => console.error('Error al filtrar empresas por premio:', err));
+    }
+  };
+
+  const filtrarPorRubro = (e) => {
+    const idRubro = e.target.value;
+    setSelectedRubro(idRubro);
+    if (idRubro === '') {
+      cargarEmpresas();
+    } else {
+      axios.get(`http://localhost:3000/empresas/rubro/${idRubro}`)
+        .then(res => setEmpresas(res.data))
+        .catch(err => console.error('Error al filtrar empresas por rubro:', err));
+    }
+  };
+
+  const filtrarPorDepartamento = (e) => {
+    const idDepto = e.target.value;
+    setSelectedDepartamento(idDepto);
+    if (idDepto === '') {
+      cargarEmpresas();
+    } else {
+      axios.get(`http://localhost:3000/empresas/departamento/${idDepto}`)
+        .then(res => setEmpresas(res.data))
+        .catch(err => console.error('Error al filtrar empresas por departamento:', err));
+    }
+  };
+
+  const toggleAntiguedad = () => {
+    const nuevoEstado = !filtrarAntiguas;
+    setFiltrarAntiguas(nuevoEstado);
+
+    if (nuevoEstado) {
+      axios.get('http://localhost:3000/empresas/antiguas')
+        .then(res => setEmpresas(res.data))
+        .catch(err => console.error('Error al filtrar por antigüedad:', err));
+    } else {
+      cargarEmpresas();
     }
   };
 
@@ -87,11 +173,54 @@ const PanelEditorEmpresas = () => {
                 </select>
               )}
               <div className="flex items-center">
-                <img src="/icons/plus.png" alt="Plus" className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                <span className="text-[#e1e4c5] text-sm sm:text-base">50</span>
+                <img
+                  src="/icons/plus.png"
+                  alt="Filtrar por antigüedad"
+                  className={`w-3 h-3 sm:w-4 sm:h-4 mr-1 cursor-pointer ${filtrarAntiguas ? 'invert' : ''}`}
+                  onClick={toggleAntiguedad}
+                  title="Filtrar empresas con más de 10 años"
+                />
               </div>
-              <img src="/icons/cerebro.png" alt="Cerebro" className="w-4 h-4 sm:w-5 sm:h-5" />
-              <img src="/icons/mapa.png" alt="Mapa" className="w-4 h-4 sm:w-5 sm:h-5" />
+              <img
+                src="/icons/cerebro.png"
+                alt="Cerebro"
+                className="w-4 h-4 sm:w-5 sm:h-5 cursor-pointer"
+                onClick={toggleRubros}
+              />
+              {mostrarComboRubros && (
+                <select
+                  onChange={filtrarPorRubro}
+                  value={selectedRubro}
+                  className="bg-[#e1e4c5] text-black text-sm px-2 py-2 rounded text-xs"
+                >
+                  <option value="">Todos los rubros</option>
+                  {rubros.map(rubro => (
+                    <option key={rubro.id_rublo} value={rubro.id_rublo}>
+                      {rubro.nombre_rubro}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <img
+                src="/icons/mapa.png"
+                alt="Departamento"
+                className="w-4 h-4 sm:w-5 sm:h-5 cursor-pointer"
+                onClick={toggleDepartamentos}
+              />
+              {mostrarComboDepartamentos && (
+                <select
+                  onChange={filtrarPorDepartamento}
+                  value={selectedDepartamento}
+                  className="bg-[#e1e4c5] text-black text-sm px-2 py-2 rounded text-xs"
+                >
+                  <option value="">Todos los departamentos</option>
+                  {departamentos.map(depto => (
+                    <option key={depto.id_departamento} value={depto.id_departamento}>
+                      {depto.nombre_depto}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
           </div>
         </div>
