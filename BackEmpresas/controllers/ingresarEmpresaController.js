@@ -12,7 +12,7 @@ const crearEmpresa = async (req, res) => {
   ];
 
   const missingFields = requiredFields.filter(field => !req.body[field]);
-  
+
   if (missingFields.length > 0) {
     return res.status(400).json({
       mensaje: `Faltan campos requeridos: ${missingFields.join(', ')}`
@@ -35,9 +35,7 @@ const crearEmpresa = async (req, res) => {
     });
   } catch (error) {
     console.error('Error en crearEmpresa:', error);
-    res.status(500).json({
-      mensaje: 'Error del servidor al crear la empresa'
-    });
+    res.status(500).json({ mensaje: 'Error del servidor al crear la empresa' });
   }
 };
 
@@ -50,7 +48,6 @@ const listarEmpresas = async (req, res) => {
   }
 };
 
-
 const buscarEmpresas = async (req, res) => {
   try {
     const empresas = await ingresarEmpresaModel.obtenerEmpresasConPropietarios();
@@ -61,9 +58,30 @@ const buscarEmpresas = async (req, res) => {
   }
 };
 
+const obtenerPremios = async (req, res) => {
+  try {
+    const premios = await ingresarEmpresaModel.obtenerPremios();
+    res.status(200).json(premios);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al obtener premios' });
+  }
+};
+
+const filtrarEmpresasPorPremio = async (req, res) => {
+  const { id_premio } = req.params;
+  try {
+    const empresas = await ingresarEmpresaModel.obtenerEmpresasPorPremio(id_premio);
+    res.status(200).json(empresas);
+  } catch (error) {
+    console.error('Error en filtrarEmpresasPorPremio:', error);
+    res.status(500).json({ mensaje: 'Error al filtrar empresas por premio' });
+  }
+};
 
 export default {
   crearEmpresa,
   listarEmpresas,
   buscarEmpresas,
+  obtenerPremios,
+  filtrarEmpresasPorPremio,
 };

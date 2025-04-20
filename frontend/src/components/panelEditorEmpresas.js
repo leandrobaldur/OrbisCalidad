@@ -4,15 +4,43 @@ import axios from 'axios';
 const PanelEditorEmpresas = () => {
   const [empresas, setEmpresas] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [premios, setPremios] = useState([]);
+  const [selectedPremio, setSelectedPremio] = useState('');
+  const [mostrarComboPremios, setMostrarComboPremios] = useState(false);
 
-  // Efecto que escucha cambios en searchTerm
   useEffect(() => {
     axios.get(`http://localhost:3000/buscarEmpresas`)
       .then(res => setEmpresas(res.data))
       .catch(err => console.error('Error al buscar empresas:', err));
   }, []);
-  
-  
+
+  const togglePremios = () => {
+    if (mostrarComboPremios) {
+      setMostrarComboPremios(false);
+      setPremios([]);
+    } else {
+      axios.get('http://localhost:3000/premios')
+        .then(res => {
+          setPremios(res.data);
+          setMostrarComboPremios(true);
+        })
+        .catch(err => console.error('Error al cargar premios:', err));
+    }
+  };
+
+  const filtrarPorPremio = (e) => {
+    const idPremio = e.target.value;
+    setSelectedPremio(idPremio);
+    if (idPremio === '') {
+      axios.get(`http://localhost:3000/buscarEmpresas`)
+        .then(res => setEmpresas(res.data))
+        .catch(err => console.error('Error al buscar empresas:', err));
+    } else {
+      axios.get(`http://localhost:3000/empresas/premio/${idPremio}`)
+        .then(res => setEmpresas(res.data))
+        .catch(err => console.error('Error al filtrar empresas:', err));
+    }
+  };
 
   return (
     <div className="min-h-screen w-full bg-[#f2f0df] p-3 sm:p-4 md:p-6 flex flex-col items-center">
@@ -38,7 +66,26 @@ const PanelEditorEmpresas = () => {
               />
             </div>
             <div className="flex gap-3 sm:gap-4 items-center mt-2 sm:mt-0">
-              <img src="/icons/medalla.png" alt="Medalla" className="w-4 h-4 sm:w-5 sm:h-5" />
+              <img
+                src="/icons/medalla.png"
+                alt="Medalla"
+                className="w-4 h-4 sm:w-5 sm:h-5 cursor-pointer"
+                onClick={togglePremios}
+              />
+              {mostrarComboPremios && (
+                <select
+                  onChange={filtrarPorPremio}
+                  value={selectedPremio}
+                  className="bg-[#e1e4c5] text-black text-sm px-2 py-2 rounded text-xs"
+                >
+                  <option value="">Todos los premios</option>
+                  {premios.map(premio => (
+                    <option key={premio.id_premio} value={premio.id_premio}>
+                      {premio.descripcion}
+                    </option>
+                  ))}
+                </select>
+              )}
               <div className="flex items-center">
                 <img src="/icons/plus.png" alt="Plus" className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 <span className="text-[#e1e4c5] text-sm sm:text-base">50</span>
@@ -57,33 +104,32 @@ const PanelEditorEmpresas = () => {
         </div>
 
         <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 px-3 sm:px-4 md:px-6 py-3 sm:py-4 md:py-6">
-        {empresas
-  .filter(empresa => {
-    const nombreEmpresa = empresa.nombre_comercial?.toLowerCase() || '';
-    const nombrePropietario = empresa.nombre_propietario?.toLowerCase() || '';
-    const search = searchTerm.toLowerCase();
-    return (
-      nombreEmpresa.startsWith(search) ||
-      nombrePropietario.startsWith(search)
-    );
-  })
-  .map((empresa, index) => (
-    <div
-      key={empresa.id_empresa || index}
-      className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 text-black shadow-md flex flex-col justify-center items-start"
-    >
-      <span className="text-[#2b2b2b] font-bold text-lg sm:text-xl">
-        {empresa.nombre_comercial || 'Sin nombre comercial'}
-      </span>
-      <span className="text-gray-600 text-sm sm:text-base mt-1">
-        {empresa.denominacion_social || 'Sin razón social'}
-      </span>
-      <em className="text-gray-500 text-sm italic mt-1">
-        Propietario: {empresa.nombre_propietario || 'Sin propietario'}
-      </em>
-    </div>
-  ))}
-
+          {empresas
+            .filter(empresa => {
+              const nombreEmpresa = empresa.nombre_comercial?.toLowerCase() || '';
+              const nombrePropietario = empresa.nombre_propietario?.toLowerCase() || '';
+              const search = searchTerm.toLowerCase();
+              return (
+                nombreEmpresa.includes(search) ||
+                nombrePropietario.includes(search)
+              );
+            })
+            .map((empresa, index) => (
+              <div
+                key={empresa.id_empresa || index}
+                className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 text-black shadow-md flex flex-col justify-center items-start"
+              >
+                <span className="text-[#2b2b2b] font-bold text-lg sm:text-xl">
+                  {empresa.nombre_comercial || 'Sin nombre comercial'}
+                </span>
+                <span className="text-gray-600 text-sm sm:text-base mt-1">
+                  {empresa.denominacion_social || 'Sin razón social'}
+                </span>
+                <em className="text-gray-500 text-sm italic mt-1">
+                  Propietario: {empresa.nombre_propietario || 'Sin propietario'}
+                </em>
+              </div>
+            ))}
         </div>
       </div>
     </div>

@@ -71,10 +71,38 @@ const obtenerEmpresasConPropietarios = async () => {
   }
 };
 
+const obtenerPremios = async () => {
+  const query = `SELECT id_premio, descripcion FROM premios`;
+  try {
+    const { rows } = await pool.query(query);
+    return rows;
+  } catch (error) {
+    console.error('Error al obtener premios:', error);
+    throw new Error('Error al obtener premios');
+  }
+};
 
+const obtenerEmpresasPorPremio = async (idPremio) => {
+  const query = `
+    SELECT e.id_empresa, e.nombre_comercial, e.denominacion_social
+    FROM empresas e
+    JOIN premios_empresas pe ON e.id_empresa = pe.id_empresa
+    JOIN premios p ON pe.id_premio = p.id_premio
+    WHERE pe.id_premio = $1
+  `;
+  try {
+    const { rows } = await pool.query(query, [idPremio]);
+    return rows;
+  } catch (error) {
+    console.error('Error al filtrar empresas por premio:', error);
+    throw new Error('Error al filtrar empresas por premio');
+  }
+};
 
 export default {
   insertarEmpresa,
   obtenerEmpresas,
   obtenerEmpresasConPropietarios,
+  obtenerPremios,
+  obtenerEmpresasPorPremio
 };
