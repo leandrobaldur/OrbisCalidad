@@ -18,7 +18,8 @@ app.use(express.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
-app.use('/', ingresarEmpresaRouter);
+app.use('/empresas', ingresarEmpresaRouter);
+
 
 app.use('/usuarios', usuarioRoutes); 
 app.use(busquedaRouter);
@@ -31,3 +32,4 @@ app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
   console.log(`📚 Documentación Swagger en http://localhost:${PORT}/api-docs`);
 });
+  

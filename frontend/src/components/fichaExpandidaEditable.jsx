@@ -67,7 +67,7 @@ const FichaExpandidaEditable = ({ empresa, onClose }) => {
 
   const guardarCambios = async () => {
     try {
-      await axios.put(`http://localhost:3000/empresa/${form.id_empresa}`, form);
+      await axios.put(`http://localhost:3000/empresas/${form.id_empresa}`, form);
       alert('✅ Cambios guardados correctamente');
       onClose();
     } catch (error) {

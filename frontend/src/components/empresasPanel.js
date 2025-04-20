@@ -18,7 +18,7 @@ const EmpresasPanel = () => {
 
   const handleEmpresaClick = async (id_empresa) => {
     try {
-      const res = await axios.get(`http://localhost:3000/empresa/${id_empresa}`);
+      const res = await axios.get(`http://localhost:3000/empresas/${id_empresa}`);
       setEmpresaSeleccionada(res.data);
       setShowFicha(true);
     } catch (err) {

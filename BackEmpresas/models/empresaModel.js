@@ -19,7 +19,7 @@ export const obtenerEmpresaPorId = async (id_empresa) => {
       e.eslogan, e.descripcion,
 
       -- Propietarios
-      json_agg(DISTINCT jsonb_build_object(
+      json_agg(DISTINCT jsonb_build_objec t(
         'nombre', p.nombre,
         'apellido_paterno', p.apellido_paterno,
         'apellido_materno', p.apellido_materno,
@@ -64,7 +64,7 @@ export const obtenerEmpresaPorId = async (id_empresa) => {
       -- Sedes y Ubicación
       json_agg(DISTINCT jsonb_build_object(
         'departamento', d.nombre_depto,
-        'ciudad', c.nombre_ciudad,
+        ' ', c.nombre_ciudad,
         'municipio', m.nombre_municipio,
         'nombre_edificio', s.nombre_edificio
       )) AS sedes,

@@ -14,7 +14,7 @@ const DashboardPage = () => {
 
         if (lista.length > 0) {
           const primera = lista[0];
-          const detalle = await axios.get(`http://localhost:3000/empresa/${primera.id_empresa}`);
+          const detalle = await axios.get(`http://localhost:3000/empresas/${primera.id_empresa}`);
           setEmpresa(detalle.data);
         }
       } catch (error) {

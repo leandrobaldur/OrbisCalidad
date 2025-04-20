@@ -42,7 +42,8 @@ const CarruselImagenes = ({ altura, filas, backendUrl }) => {
 
   useEffect(() => {
     obtenerImagenesDesdeBackend();
-  }, [backendUrl]);
+  }, [obtenerImagenesDesdeBackend]); // <-- Añade aquí la dependencia
+  
 
   return (
     <div

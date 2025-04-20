@@ -1,6 +1,10 @@
 import express from 'express';
 import empresaController from '../controllers/ingresarEmpresaController.js';
-
+import {
+    getEmpresaDetalle,
+    getTodasEmpresasResumen
+  } from '../controllers/empresaController.js';
+  
 const router = express.Router();
 
 /**
@@ -81,6 +85,9 @@ const router = express.Router();
  */
 
 router.post('/ingresarEmpresa', empresaController.crearEmpresa);
+// Rutas internas:
+router.get('/', getTodasEmpresasResumen); // será: GET /empresas/
+router.get('/:id', getEmpresaDetalle);    // será: GET /empresas/1
 
 router.get('/empresas', empresaController.listarEmpresas);
 
