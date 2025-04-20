@@ -1,7 +1,6 @@
-// src/components/inicioSesion.js
 import React, { useState } from "react";
 
-// SVG de persona a 60×60px
+// SVG de persona
 const UserIcon = () => (
   <svg viewBox="0 0 24 24" style={{ width: "60px", height: "60px", fill: "#333" }}>
     <path d="M12 12c2.76 0 5-2.24 5-5S14.76 2 12 2 7 4.24 7 7s2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z" />
@@ -11,23 +10,25 @@ const UserIcon = () => (
 const InicioSesion = ({ onLogin, onClose }) => {
   const [usuario, setUsuario] = useState("");
   const [contrasena, setContrasena] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!usuario || !contrasena) {
       alert("Por favor, rellena todos los campos");
       return;
     }
-    // Simula login
-    localStorage.setItem("loggedIn", "true");
-    if (onLogin) {
-      onLogin({ usuario, contrasena });
-    } else {
-      console.log("Login data:", { usuario, contrasena });
-    }
-    // Cierra el modal / vuelve al Home
-    if (onClose) {
-      onClose();
+
+    setLoading(true);
+
+    try {
+      await onLogin({ usuario, contrasena });
+    } catch (error) {
+      alert("Error al iniciar sesión. Verifica tus datos.");
+      console.error("Error en inicio de sesión:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -138,6 +139,7 @@ const InicioSesion = ({ onLogin, onClose }) => {
           />
           <button
             type="submit"
+            disabled={loading}
             style={{
               margin: "20px auto 0 auto",
               padding: "8px 20px",
@@ -146,11 +148,12 @@ const InicioSesion = ({ onLogin, onClose }) => {
               borderRadius: "8px",
               backgroundColor: "transparent",
               color: "#333",
-              cursor: "pointer",
+              cursor: loading ? "not-allowed" : "pointer",
               display: "block",
+              opacity: loading ? 0.6 : 1,
             }}
           >
-            Enviar
+            {loading ? "Iniciando..." : "Enviar"}
           </button>
         </form>
       </div>

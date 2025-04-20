@@ -1,4 +1,5 @@
 import usuarioModel from '../models/usuarioModel.js';
+import pool from '../db.js';
 
 const loginUsuario = async (req, res) => {
   const { usuario, contrasenia } = req.body;
@@ -33,7 +34,16 @@ const loginUsuario = async (req, res) => {
     });
   }
 };
-
+const obtenerTodosUsuarios = async (req, res) => {
+  try {
+    const result = await pool.query('SELECT usuario, contrasenia FROM USUARIOS');
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error al obtener usuarios:", err);
+    res.status(500).json({ mensaje: "Error interno del servidor" });
+  }
+};
 export default {
   loginUsuario,
+  obtenerTodosUsuarios
 };

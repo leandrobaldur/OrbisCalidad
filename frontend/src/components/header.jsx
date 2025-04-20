@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaComments, FaUserCircle } from "react-icons/fa";
 import InicioSesion from "./inicioSesion";
+import axios from "axios";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -9,24 +10,37 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
-  // Efecto inicial + escucha cambios de login en localStorage
   useEffect(() => {
     const checkLoginStatus = () => {
       setLoggedIn(localStorage.getItem("loggedIn") === "true");
     };
 
-    checkLoginStatus(); // Al montar el componente
-
-    window.addEventListener("storage", checkLoginStatus); // Si otro componente cambia el login
+    checkLoginStatus();
+    window.addEventListener("storage", checkLoginStatus);
     return () => window.removeEventListener("storage", checkLoginStatus);
   }, []);
 
   const handleLoginClick = () => setShowLogin(true);
 
-  const handleLoginSuccess = ({ usuario, contrasena }) => {
-    localStorage.setItem("loggedIn", "true");
-    setLoggedIn(true);
-    setShowLogin(false);
+  const handleLoginSuccess = async ({ usuario, contrasena }) => {
+    try {
+      const res = await axios.post("http://localhost:3000/usuarios/login", {
+        usuario,
+        contrasenia: contrasena,
+      });
+
+      if (res.data && res.data.encontrado === 1) {
+        localStorage.setItem("loggedIn", "true");
+        localStorage.setItem("userInfo", JSON.stringify(res.data.usuario));
+        setLoggedIn(true);
+        setShowLogin(false);
+      } else {
+        alert("Credenciales incorrectas");
+      }
+    } catch (error) {
+      console.error("Error en login:", error);
+      alert("Error al iniciar sesión");
+    }
   };
 
   const handleCloseLogin = () => setShowLogin(false);
@@ -35,6 +49,7 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("loggedIn");
+    localStorage.removeItem("userInfo");
     setLoggedIn(false);
     setMenuOpen(false);
     navigate("/");
