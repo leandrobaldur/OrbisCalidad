@@ -40,7 +40,19 @@ const FichaExpandida = ({ empresa, onClose }) => {
             <span><strong>Cierre:</strong> {cierre || '-'}</span>
           </div>
 
-          <h4 className="text-lg font-semibold mt-4 mb-2">Eslogan:</h4>
+          {/* Propietarios */}
+          <h4 className="text-lg font-semibold mt-4 mb-2">Propietarios:</h4>
+          <ul className="list-disc list-inside text-gray-700 space-y-1">
+            {empresa.propietarios?.map((p, idx) => {
+              const nombreCompleto = [p.nombre, p.apellido_paterno, p.apellido_materno].filter(Boolean).join(' ');
+              return <li key={idx}>{nombreCompleto}</li>;
+            })}
+            {(!empresa.propietarios || empresa.propietarios.length === 0) && (
+              <li className="italic text-gray-500">Sin propietarios registrados</li>
+            )}
+          </ul>
+
+          <h4 className="text-lg font-semibold mt-6 mb-2">Eslogan:</h4>
           <p className="italic text-gray-700">{empresa.eslogan || '—'}</p>
 
           <h4 className="text-lg font-semibold mt-6 mb-2">Descripción:</h4>
