@@ -24,11 +24,16 @@ const crearEmpresa = async (req, res) => {
     });
   }
 
+  if (req.body.fecha_cierre && req.body.fecha_cierre !== '') {
+    if (isNaN(Date.parse(req.body.fecha_cierre))) {
+      return res.status(400).json({
+        mensaje: 'Formato de fecha inválido. Use YYYY-MM-DD'
+      });
+    }
+  }
+
   try {
     const idEmpresa = await ingresarEmpresaModel.insertarEmpresa(req.body);
-    const { id_usuario } = req.body;
-    await logsModel.registrarLog({id_usuario, tabla: 'empresas', tipo_log: 'insert'});
-
     res.status(201).json({
       mensaje: 'Empresa creada exitosamente',
       id_empresa: idEmpresa
@@ -94,8 +99,21 @@ const actualizarEmpresa = async (req, res) => {
   }
 };
 
+
+const buscarEmpresas = async (req, res) => {
+  try {
+    const empresas = await ingresarEmpresaModel.obtenerEmpresasConPropietarios();
+    res.status(200).json(empresas);
+  } catch (error) {
+    console.error('Error en buscarEmpresas:', error);
+    res.status(500).json({ mensaje: 'Error al obtener empresas' });
+  }
+};
+
+
 export default {
   crearEmpresa,
-  actualizarEmpresa
+  listarEmpresas,
+  buscarEmpresas,
 };
 

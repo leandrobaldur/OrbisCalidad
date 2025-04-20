@@ -85,7 +85,34 @@ const actualizarEmpresa = async (id, empresaData) => {
   }
 };
 
+const obtenerEmpresasConPropietarios = async () => {
+  const query = `
+    SELECT 
+      e.id_empresa,
+      e.nombre_comercial,
+      e.denominacion_social,
+      COALESCE(STRING_AGG(
+        CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno), ', '
+      ), 'Sin propietario') AS nombre_propietario
+    FROM empresas e
+    LEFT JOIN historial_propiedad hp ON e.id_empresa = hp.id_empresa
+    LEFT JOIN propietarios p ON hp.id_propietario = p.id_propietario
+    GROUP BY e.id_empresa, e.nombre_comercial, e.denominacion_social
+  `;
+
+  try {
+    const { rows } = await pool.query(query);
+    return rows;
+  } catch (error) {
+    console.error('Error en obtenerEmpresasConPropietarios:', error);
+    throw new Error('Error al obtener empresas');
+  }
+};
+
+
+
 export default {
   insertarEmpresa,
-  actualizarEmpresa
+  obtenerEmpresas,
+  obtenerEmpresasConPropietarios,
 };

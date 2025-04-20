@@ -5,32 +5,16 @@ import RegistroEmpresa from './registroEmpresa';
 
 const PanelEditorEmpresas = () => {
   const [empresas, setEmpresas] = useState([]);
-  const [empresaSeleccionada, setEmpresaSeleccionada] = useState(null);
-  const [showFicha, setShowFicha] = useState(false);
-  const [showRegistro, setShowRegistro] = useState(false);
-  const [busqueda, setBusqueda] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const CLOUDINARY_BASE_URL = 'https://res.cloudinary.com/diswqpy8v/image/upload';
-
+  // Efecto que escucha cambios en searchTerm
   useEffect(() => {
-    axios.get('http://localhost:3000/empresas')
+    axios.get(`http://localhost:3000/buscarEmpresas`)
       .then(res => setEmpresas(res.data))
-      .catch(err => console.error('Error al obtener empresas:', err));
-  }, [showRegistro]);
-
-  const handleEmpresaClick = async (id_empresa) => {
-    try {
-      const res = await axios.get(`http://localhost:3000/empresas/${id_empresa}`);
-      setEmpresaSeleccionada(res.data);
-      setShowFicha(true);
-    } catch (err) {
-      console.error('Error al obtener detalles de empresa:', err);
-    }
-  };
-
-  const empresasFiltradas = empresas.filter((e) =>
-    e.denominacion_social.toLowerCase().includes(busqueda.toLowerCase())
-  );
+      .catch(err => console.error('Error al buscar empresas:', err));
+  }, []);
+  
+  
 
   return (
     <div className="min-h-screen w-full bg-[#0000] p-[1vw] flex flex-col items-center">
@@ -49,10 +33,10 @@ const PanelEditorEmpresas = () => {
             <div className="relative w-full max-w-[40vw]">
               <input
                 type="text"
-                placeholder="Buscar..."
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
-                className="rounded-full px-[1vw] py-[0.5vw] pl-[2.5vw] w-full bg-[#FCFCFD] text-black focus:outline-none text-[0.9rem]"
+                placeholder="Buscar por empresa o propietario..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="rounded-full px-3 py-1 pl-8 sm:pl-10 w-full bg-[#e1e4c5] text-black focus:outline-none text-sm sm:text-base"
               />
               <img
                 src="/icons/lupa.png"
@@ -81,30 +65,34 @@ const PanelEditorEmpresas = () => {
           </button>
         </div>
 
-        {/* TARJETAS */}
-        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[1.9vw] px-[2vw] pb-[2vw]">
-          {empresasFiltradas.map((empresa, index) => {
-            const imageUrl = `${CLOUDINARY_BASE_URL}/${empresa.url}`;
-            return (
-              <div
-                key={empresa.id_empresa || index}
-                onClick={() => handleEmpresaClick(empresa.id_empresa)}
-                className="cursor-pointer relative bg-black rounded-xl overflow-hidden shadow-md group hover:scale-105 transition-all duration-300"
-                style={{ height: '200px' }}
-              >
-                <img
-                  src={imageUrl}
-                  alt={empresa.denominacion_social}
-                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
-                  <span className="text-white font-bold text-lg drop-shadow-lg">
-                    {empresa.denominacion_social || 'Sin nombre comercial'}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 px-3 sm:px-4 md:px-6 py-3 sm:py-4 md:py-6">
+        {empresas
+  .filter(empresa => {
+    const nombreEmpresa = empresa.nombre_comercial?.toLowerCase() || '';
+    const nombrePropietario = empresa.nombre_propietario?.toLowerCase() || '';
+    const search = searchTerm.toLowerCase();
+    return (
+      nombreEmpresa.startsWith(search) ||
+      nombrePropietario.startsWith(search)
+    );
+  })
+  .map((empresa, index) => (
+    <div
+      key={empresa.id_empresa || index}
+      className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 text-black shadow-md flex flex-col justify-center items-start"
+    >
+      <span className="text-[#2b2b2b] font-bold text-lg sm:text-xl">
+        {empresa.nombre_comercial || 'Sin nombre comercial'}
+      </span>
+      <span className="text-gray-600 text-sm sm:text-base mt-1">
+        {empresa.denominacion_social || 'Sin razón social'}
+      </span>
+      <em className="text-gray-500 text-sm italic mt-1">
+        Propietario: {empresa.nombre_propietario || 'Sin propietario'}
+      </em>
+    </div>
+  ))}
+
         </div>
       </div>
 
