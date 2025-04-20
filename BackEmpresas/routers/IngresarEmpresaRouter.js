@@ -81,7 +81,8 @@ const router = express.Router();
  */
 
 router.post('/ingresarEmpresa', empresaController.crearEmpresa);
-
 router.get('/empresas', empresaController.listarEmpresas);
+router.get('/buscarEmpresas', empresaController.buscarEmpresas);
+
 
 export default router;

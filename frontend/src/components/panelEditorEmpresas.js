@@ -3,12 +3,16 @@ import axios from 'axios';
 
 const PanelEditorEmpresas = () => {
   const [empresas, setEmpresas] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
+  // Efecto que escucha cambios en searchTerm
   useEffect(() => {
-    axios.get('http://localhost:3000/empresas')
+    axios.get(`http://localhost:3000/buscarEmpresas`)
       .then(res => setEmpresas(res.data))
-      .catch(err => console.error('Error al obtener empresas:', err));
+      .catch(err => console.error('Error al buscar empresas:', err));
   }, []);
+  
+  
 
   return (
     <div className="min-h-screen w-full bg-[#f2f0df] p-3 sm:p-4 md:p-6 flex flex-col items-center">
@@ -22,7 +26,9 @@ const PanelEditorEmpresas = () => {
             <div className="relative w-full max-w-md">
               <input
                 type="text"
-                placeholder="Buscar..."
+                placeholder="Buscar por empresa o propietario..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="rounded-full px-3 py-1 pl-8 sm:pl-10 w-full bg-[#e1e4c5] text-black focus:outline-none text-sm sm:text-base"
               />
               <img 
@@ -51,7 +57,17 @@ const PanelEditorEmpresas = () => {
         </div>
 
         <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 px-3 sm:px-4 md:px-6 py-3 sm:py-4 md:py-6">
-  {empresas.map((empresa, index) => (
+        {empresas
+  .filter(empresa => {
+    const nombreEmpresa = empresa.nombre_comercial?.toLowerCase() || '';
+    const nombrePropietario = empresa.nombre_propietario?.toLowerCase() || '';
+    const search = searchTerm.toLowerCase();
+    return (
+      nombreEmpresa.startsWith(search) ||
+      nombrePropietario.startsWith(search)
+    );
+  })
+  .map((empresa, index) => (
     <div
       key={empresa.id_empresa || index}
       className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 text-black shadow-md flex flex-col justify-center items-start"
@@ -62,12 +78,13 @@ const PanelEditorEmpresas = () => {
       <span className="text-gray-600 text-sm sm:text-base mt-1">
         {empresa.denominacion_social || 'Sin razón social'}
       </span>
+      <em className="text-gray-500 text-sm italic mt-1">
+        Propietario: {empresa.nombre_propietario || 'Sin propietario'}
+      </em>
     </div>
   ))}
-</div>
 
-
-
+        </div>
       </div>
     </div>
   );

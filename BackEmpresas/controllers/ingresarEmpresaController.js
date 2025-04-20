@@ -11,7 +11,6 @@ const crearEmpresa = async (req, res) => {
     'url'
   ];
 
-  // Verificar campos requeridos
   const missingFields = requiredFields.filter(field => !req.body[field]);
   
   if (missingFields.length > 0) {
@@ -20,7 +19,6 @@ const crearEmpresa = async (req, res) => {
     });
   }
 
-  // Validar formato de fecha si se envía fecha_cierre
   if (req.body.fecha_cierre && req.body.fecha_cierre !== '') {
     if (isNaN(Date.parse(req.body.fecha_cierre))) {
       return res.status(400).json({
@@ -31,7 +29,6 @@ const crearEmpresa = async (req, res) => {
 
   try {
     const idEmpresa = await ingresarEmpresaModel.insertarEmpresa(req.body);
-    
     res.status(201).json({
       mensaje: 'Empresa creada exitosamente',
       id_empresa: idEmpresa
@@ -54,8 +51,19 @@ const listarEmpresas = async (req, res) => {
 };
 
 
+const buscarEmpresas = async (req, res) => {
+  try {
+    const empresas = await ingresarEmpresaModel.obtenerEmpresasConPropietarios();
+    res.status(200).json(empresas);
+  } catch (error) {
+    console.error('Error en buscarEmpresas:', error);
+    res.status(500).json({ mensaje: 'Error al obtener empresas' });
+  }
+};
+
 
 export default {
   crearEmpresa,
   listarEmpresas,
+  buscarEmpresas,
 };
