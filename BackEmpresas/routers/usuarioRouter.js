@@ -60,5 +60,6 @@ const router = express.Router();
 
 
 router.post('/login', usuarioController.loginUsuario);
+router.get('/all', usuarioController.obtenerTodosUsuarios);
 
 export default router;

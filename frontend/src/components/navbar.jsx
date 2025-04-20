@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const Navbar = () => {
   const links = [
     { label: "HISTORIA", path: "/historia" },
-    { label: "PRESENTACIONES", path: "/presentaciones" }, // ruta futura
+    { label: "DASHBOARDS", path: "/dashboards" },
     { label: "INICIO", path: "/" },
     { label: "EMPRESAS", path: "/empresas" },
     { label: "CONTACTO", path: "/contacto" },

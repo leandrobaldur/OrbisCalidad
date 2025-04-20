@@ -1,76 +1,77 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const PanelEditorEmpresas = () => {
-  const rubros = [
-    'Comercio',
-    'Tecnología',
-    'Turismo',
-    'Educación',
-    'Salud',
-    'Gastronomía',
-    'Industria',
-    'Artesanía',
-    'Medios',
-    'Construcción'
-  ];
+const EmpresasPanel = () => {
+  const [empresas, setEmpresas] = useState([]);
+  const [imagenLateral, setImagenLateral] = useState('');
+  const [ordenAntigüedad, setOrdenAntigüedad] = useState('desc');
+  const [selectedEmpresa, setSelectedEmpresa] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/empresas')
+      .then(res => setEmpresas(res.data))
+      .catch(err => console.error('Error al obtener empresas:', err));
+  }, []);
 
   return (
-    <div className="min-h-screen w-full bg-[#f2f0df] p-3 sm:p-4 md:p-6 flex flex-col items-center">
-      <h1 className="text-xl sm:text-2xl md:text-3xl text-[#9fa56c] font-bold font-mono tracking-wide mb-4 sm:mb-6 md:mb-8">Panel de edición</h1>
-
-      <div className="bg-[#202020] w-full max-w-6xl rounded-lg shadow-lg overflow-hidden">
-        {/* Header section - more responsive */}
-        <div className="bg-[#2b2b2b] px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-3 md:gap-4">
-          <span className="text-[#e1e4c5] text-base sm:text-lg w-full sm:w-auto text-center sm:text-left mb-2 sm:mb-0">DATOS</span>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 w-full">
-            <img src="/icons/filtro.png" alt="Filtro" className="w-4 h-4 sm:w-5 sm:h-5 hidden sm:block" />
-            <div className="relative w-full max-w-md">
+    <div className="min-h-screen w-full bg-[#0000] p-[2.5vw] flex flex-col items-center">
+      <div className="bg-[#202020] w-full max-w-[90vw] min-h-[75vh] rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-[#2b2b2b] px-[2vw] py-[3vh] flex flex-col sm:flex-row justify-between items-center gap-4">
+          <span className="text-[#F9F9FA] text-[1rem] sm:text-[1.2rem] w-full sm:w-auto text-center sm:text-left mb-4 sm:mb-0">
+            EMPRESAS
+          </span>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-[1.5vw] w-full">
+            <img src="/icons/filtro.png" alt="Filtro" className="w-[1.3vw] h-[1.3vw] hidden sm:block" />
+            <div className="relative w-full max-w-[40vw]">
               <input
                 type="text"
                 placeholder="Buscar..."
-                className="rounded-full px-3 py-1 pl-8 sm:pl-10 w-full bg-[#e1e4c5] text-black focus:outline-none text-sm sm:text-base"
+                className="rounded-full px-[1vw] py-[0.5vw] pl-[2.5vw] w-full bg-[#FCFCFD] text-black focus:outline-none text-[0.9rem]"
               />
-              <img 
-                src="/icons/lupa.png" 
-                alt="Buscar" 
-                className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4" 
+              <img
+                src="/icons/lupa.png"
+                alt="Buscar"
+                className="absolute left-[0.8vw] top-1/2 -translate-y-1/2 w-[1vw] h-[1vw]"
               />
             </div>
-            <div className="flex gap-3 sm:gap-4 items-center mt-2 sm:mt-0">
-              <img src="/icons/medalla.png" alt="Medalla" className="w-4 h-4 sm:w-5 sm:h-5" />
-              <div className="flex items-center">
-                <img src="/icons/plus.png" alt="Plus" className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                <span className="text-[#e1e4c5] text-sm sm:text-base">50</span>
-              </div>
-              <img src="/icons/cerebro.png" alt="Cerebro" className="w-4 h-4 sm:w-5 sm:h-5" />
-              <img src="/icons/mapa.png" alt="Mapa" className="w-4 h-4 sm:w-5 sm:h-5" />
+            <div className="flex gap-[1vw] items-center mt-2 sm:mt-0">
+              <img src="/icons/medalla.png" alt="Medalla" className="w-[2.5vw] h-[2.5vw]" />
+              <img src="/icons/plus.png" alt="Plus" className="w-[2.5vw] h-[2.5vw]" />
+              <img src="/icons/cerebro.png" alt="Cerebro" className="w-[2.5vw] h-[2.5vw]" />
+              <img src="/icons/mapa.png" alt="Mapa" className="w-[2.5vw] h-[2.5vw]" />
             </div>
           </div>
         </div>
 
-        {/* Button section - more responsive */}
-        <div className="px-3 sm:px-4 md:px-6 py-2 sm:py-3 flex justify-end">
-          <button className="bg-[#9fa56c] text-white px-3 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-semibold hover:bg-[#8a944e] transition flex items-center">
-            <img src="/icons/plus.png" alt="Añadir" className="w-3 h-3 sm:w-4 sm:h-4 mr-1 invert" />
-            <span className="hidden xs:inline">Añadir rubro</span>
-          </button>
-        </div>
-
-        {/* Grid section - more responsive with better breakpoints */}
-        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 px-3 sm:px-4 md:px-6 py-3 sm:py-4 md:py-6">
-          {rubros.map((rubro, index) => (
+        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[1.9vw] px-[2vw] py-[2vw]">
+          {empresas.map((empresa, index) => (
             <div
-              key={index}
-              className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 text-black shadow-md flex flex-col justify-center items-start"
-            >
-              <span className="text-[#2b2b2b] font-semibold text-base sm:text-lg">Rubro</span>
-              <input
-                type="text"
-                value={rubro}
-                disabled
-                className="w-full mt-1 sm:mt-2 p-1 sm:p-2 rounded-md bg-[#e1e4c5] text-black text-sm sm:text-base"
-              />
-            </div>
+  key={empresa.id_empresa || index}
+  className="bg-white rounded-xl min-h-[15vh] min-w-[18vw] text-black shadow-md flex flex-col justify-center"
+  style={{ paddingLeft: '40px', paddingRight: '24px', paddingTop: '24px', paddingBottom: '24px' }}
+>
+  <span
+    className="text-[#2b2b2b] font-bold text-[1.2rem] sm:text-[1.5rem]"
+    style={{ display: 'block', marginBottom: '0.5rem' }}
+  >
+    {empresa.denominacion_social || 'Sin nombre comercial'}
+  </span>
+  <span
+    className="text-gray-600 text-sm sm:text-base"
+    style={{ display: 'block' }}
+  >
+    {empresa.id_empresa || 'Sin razón social'}
+  </span>
+</div>
+  
+          
+
+
+          
+
+
+          
           ))}
         </div>
       </div>
@@ -78,4 +79,4 @@ const PanelEditorEmpresas = () => {
   );
 };
 
-export default PanelEditorEmpresas;
+export default EmpresasPanel;

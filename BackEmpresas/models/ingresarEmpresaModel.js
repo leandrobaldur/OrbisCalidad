@@ -36,6 +36,20 @@ const insertarEmpresa = async (empresaData) => {
   }
 };
 
+const obtenerEmpresas = async () => {
+  const query = "SELECT id_empresa, nombre_comercial, denominacion_social FROM EMPRESAS";
+  try {
+    const { rows } = await pool.query(query);
+    return rows;
+  } catch (error) {
+    console.error('Error al obtener empresas:', error);
+    throw new Error('Error al obtener empresas');
+  }
+};
+
+
+
 export default {
   insertarEmpresa,
+  obtenerEmpresas,
 };

@@ -8,6 +8,8 @@ import ContactoPage from './screens/contactoPage';
 import HistoriaPage from './screens/historiaPage';
 import EditorEmpresasPage from './screens/editorEmpresasPage';
 import EditorUsuariosPage from './screens/editorUsuariosPage';
+import DashboardPage from './screens/dashboardPage';
+
 
 import Header from './components/header'; // ⬅️ Este es el nuevo import
 import Navbar from './components/navbar.jsx';
@@ -24,6 +26,8 @@ ReactDOM.render(
         <Route path="/historia" element={<HistoriaPage />} />
         <Route path="/editor-empresas" element={<EditorEmpresasPage />} />
         <Route path="/editor-usuarios" element={<EditorUsuariosPage />} />
+        <Route path="/dashboards" element={<DashboardPage />} />
+
       </Routes>
     </div>
   </Router>,
