@@ -44,6 +44,18 @@ const crearEmpresa = async (req, res) => {
   }
 };
 
+const listarEmpresas = async (req, res) => {
+  try {
+    const empresas = await ingresarEmpresaModel.obtenerEmpresas();
+    res.status(200).json(empresas);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al obtener empresas' });
+  }
+};
+
+
+
 export default {
   crearEmpresa,
+  listarEmpresas,
 };
