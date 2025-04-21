@@ -3,24 +3,27 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const links = [
-    { label: "CONTACTO", path: "/contacto" },
-    { label: "DASHBOARDS", path: "/dashboards" },
+    { label: "NOSOTROS", path: "/historia" },
+    { label: "DASHBOARDS", path: "/dashboards" }, // ruta futura
     { label: "INICIO", path: "/" },
     { label: "EMPRESAS", path: "/empresas" },
-    { label: "NOSOTROS", path: "/historia" },
-
+    { label: "CONTACTO", path: "/contacto" },
   ];
 
   const styles = {
     navbar: {
-      width: "100%",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      gap: "1.5rem",
-      padding: "1rem 0",
-      backgroundColor: "white",
-      borderBottom: "1px solid #e5e7eb",
+        width: "100%",
+        position: "sticky",      // <-- esto lo hace "pegajoso"
+        top: 0,                  // <-- se queda arriba al hacer scroll
+        zIndex: 10,              // <-- para que no lo tape nada
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: "2rem",
+        padding: "1rem 0",
+        backgroundColor: "white",
+        borderBottom: "1px solid #e5e7eb",
+        boxShadow: "0px 2px 4px rgba(0,0,0,0.05)", // sutil sombra
     },
     link: (isInicio) => ({
       fontSize: "0.875rem",
@@ -33,15 +36,19 @@ const Navbar = () => {
 
   return (
     <nav style={styles.navbar}>
-      {links.map((item, index) => (
+    {links.map((item, index) => (
+        <React.Fragment key={index}>
         <Link
-          key={index}
-          to={item.path}
-          style={styles.link(item.label === "INICIO")}
+            to={item.path}
+            style={styles.link(item.label === "INICIO")}
         >
-          {item.label}
+            {item.label}
         </Link>
-      ))}
+        {index < links.length - 1 && (
+            <span style={{ color: "#ccc", fontWeight: "100" }}>|</span>
+        )}
+        </React.Fragment>
+    ))}
     </nav>
   );
 };

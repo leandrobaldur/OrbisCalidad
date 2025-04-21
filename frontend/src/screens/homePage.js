@@ -23,7 +23,7 @@ const HomePage = () => {
       <div className="w-full flex justify-start items-start gap-[0vw] px-[0vw]">
         <div className="mt-[10vh]">
           <ImagenInteractiva
-            ancho="40vw"
+            ancho="30vw"
             imagenDefault="/media/homePage/defaultImage.png"
             items={[
               {
@@ -55,7 +55,7 @@ const HomePage = () => {
       </div>
 
         <ContenedorLateral
-          subtitulo="Novedades"
+          subtitulo="SEMANA DE ACTIVIDADES"
           texto="Explorá las últimas noticias, actualizaciones y promociones disponibles en nuestra plataforma."
           imagen="/media/homePage/lateral.png"
           ancho="70vw"
@@ -76,8 +76,8 @@ const HomePage = () => {
 
 
       <CarruselImagenes
-        altura={400}
-        filas={3}
+        altura={800}
+        filas={6}
         backendUrl="http://localhost:3000"
         modoPrueba={true}
       />

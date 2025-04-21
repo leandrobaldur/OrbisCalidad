@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import FichaExpandidaEditable from './fichaExpandidaEditable';
+import RegistroEmpresa from '../components/registroEmpresa';
 
 const PanelEditorEmpresas = () => {
   const [empresas, setEmpresas] = useState([]);
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState(null);
   const [showFicha, setShowFicha] = useState(false);
+  const [showRegistro, setShowRegistro] = useState(false);
   const [busqueda, setBusqueda] = useState('');
 
   const CLOUDINARY_BASE_URL = 'https://res.cloudinary.com/diswqpy8v/image/upload';
@@ -14,7 +16,7 @@ const PanelEditorEmpresas = () => {
     axios.get('http://localhost:3000/empresas')
       .then(res => setEmpresas(res.data))
       .catch(err => console.error('Error al obtener empresas:', err));
-  }, []);
+  }, [showRegistro]);
 
   const handleEmpresaClick = async (id_empresa) => {
     try {
@@ -62,7 +64,7 @@ const PanelEditorEmpresas = () => {
             {/* ÍCONOS */}
             <div className="flex gap-[2vw] items-center mt-2 sm:mt-0">
               <img src="/media/busqueda/medalla.png" alt="Medalla" className="w-[2vw] h-[2.5vw]" />
-              <img src="/media/busqueda/plus.png" alt="Plus" className="w-[2vw] h-[2.5vw]" />
+              <img src="/media/busqueda/plus.png" alt="Plus" className="w-[2vw] h-[2.5vw] cursor-pointer" onClick={() => setShowRegistro(true)} />
               <img src="/media/busqueda/cerebro.png" alt="Cerebro" className="w-[2vw] h-[2.5vw]" />
               <img src="/media/busqueda/mapa.png" alt="Mapa" className="w-[2vw] h-[3vw]" />
             </div>
@@ -71,7 +73,10 @@ const PanelEditorEmpresas = () => {
 
         {/* BOTÓN DE NUEVA EMPRESA */}
         <div className="flex justify-center py-4">
-          <button className="bg-white text-black font-bold rounded-full px-4 py-2 border border-black hover:bg-gray-200 transition">
+          <button
+            className="bg-white text-black font-bold rounded-full px-4 py-2 border border-black hover:bg-gray-200 transition"
+            onClick={() => setShowRegistro(true)}
+          >
             + Nueva Empresa
           </button>
         </div>
@@ -109,6 +114,21 @@ const PanelEditorEmpresas = () => {
           empresa={empresaSeleccionada}
           onClose={() => setShowFicha(false)}
         />
+      )}
+
+      {/* MODAL DE REGISTRO */}
+      {showRegistro && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center p-4">
+          <div className="bg-white p-6 rounded-xl shadow-lg max-w-[900px] w-full max-h-[90vh] overflow-auto relative">
+            <button
+              onClick={() => setShowRegistro(false)}
+              className="absolute top-3 right-4 text-black hover:text-red-600 text-xl font-bold"
+            >
+              ×
+            </button>
+            <RegistroEmpresa ancho="100%" alto="80vh" />
+          </div>
+        </div>
       )}
     </div>
   );

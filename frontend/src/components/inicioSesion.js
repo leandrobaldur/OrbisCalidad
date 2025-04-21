@@ -35,22 +35,23 @@ const InicioSesion = ({ onLogin, onClose }) => {
   return (
     <div
       style={{
-        backgroundColor: "rgba(0,0,0,0.7)",
-        width: "100%",
-        maxWidth: "700px",
-        margin: "40px auto",
-        padding: "80px 50px",
-        borderRadius: "10px",
+        position: "fixed", // 👈 flotante encima de todo
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "rgba(0, 0, 0, 0.7)",
         display: "flex",
         justifyContent: "center",
-        position: "relative",
+        alignItems: "center",
+        zIndex: 9999, // 👈 siempre encima
         fontFamily: "'Merriweather', serif",
       }}
     >
       <div
         style={{
           position: "relative",
-          backgroundColor: "rgba(245,230,210,0.95)",
+          backgroundColor: "rgba(247, 247, 247, 0.97)",
           borderRadius: "15px",
           width: "400px",
           padding: "40px 20px 20px 20px",
@@ -63,8 +64,8 @@ const InicioSesion = ({ onLogin, onClose }) => {
           onClick={onClose}
           style={{
             position: "absolute",
-            top: "8px",
-            right: "8px",
+            top: "2vh",
+            right: "2vh",
             background: "none",
             border: "none",
             fontSize: "18px",
@@ -75,11 +76,11 @@ const InicioSesion = ({ onLogin, onClose }) => {
           X
         </button>
 
-        {/* Icono centrado */}
+        {/* Icono centrado arriba */}
         <div
           style={{
             position: "absolute",
-            bottom: "100%",
+            bottom: "99%",
             left: "50%",
             transform: "translateX(-50%)",
           }}

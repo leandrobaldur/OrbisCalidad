@@ -13,6 +13,7 @@ const router = express.Router();
  *     summary: Obtener lista de todas las empresas (id, nombre y URL)
  *     tags:
  *       - Empresas
+ * 
  *     responses:
  *       200:
  *         description: Lista de empresas

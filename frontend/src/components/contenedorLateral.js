@@ -10,7 +10,7 @@ const ContenedorLateral = ({
   cuadroRedondez,
 }) => {
   // Calculamos el tamaño proporcional del óvalo
-  const ovaloAncho = `calc(${ancho} * 0.3)`; // 40% del ancho del contenedor
+  const ovaloAncho = `calc(${ancho} * 0.4)`; // 40% del ancho del contenedor
   const ovaloAlto = `calc(${alto} * 0.10)`;  // 15% del alto del contenedor
 
   return (
@@ -20,7 +20,7 @@ const ContenedorLateral = ({
         width: ancho, // Ancho del contenedor
         height: alto, // Alto del contenedor
         borderRadius: `${cuadroRedondez} 0 0 ${cuadroRedondez}`,        // Sin redondez en la parte  derecha 
-        backgroundColor: "#202020", // Fondo gris para el contenedor grande
+        backgroundColor: "#292A2C", // Fondo gris para el contenedor grande
         marginTop: "5vh", // Ajustamos un poco más abajo el contenedor
       }}
     >
@@ -28,7 +28,7 @@ const ContenedorLateral = ({
       <div className="relative w-full h-full flex flex-col items-center justify-start">
         {/* Subtítulo en óvalo blanco */}
         <div
-          className="absolute bg-white text-black text-center font-semibold shadow px-6 py-2 text-sm md:text-base lg:text-lg flex items-center justify-center"
+        className="absolute bg-[#FDFDFD] text-black text-center font-semibold shadow px-6 py-2 text-sm md:text-base lg:text-lg flex items-center justify-center"
           style={{
             borderRadius: ovaloRedondez, // Redondez dinámica del óvalo
             left: "30%", // Centramos el óvalo horizontalmente
@@ -43,7 +43,7 @@ const ContenedorLateral = ({
         </div>
 
         {/* Contenido dentro del contenedor */}
-        <div className="w-full text-white text-sm text-center space-y-9 mt-16">
+        <div className="w-full text-white text-sm text-center space-y-10 mt-28 vh-10">
           {/* Agregamos margen superior al texto */}
           <p className="leading-relaxed text-xs sm:text-sm md:text-base lg:text-lg">
             {texto}

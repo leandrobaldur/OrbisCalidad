@@ -6,7 +6,7 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "60vw" }) => {
 
   const anchoNum = parseFloat(ancho);
   const margenLateral = (anchoNum * 0.05) + "vw"; // 5% del ancho como margen lateral
-  const iconoWidth = (anchoNum * 0.9) / items.length + "vw"; // Distribuir 90% del ancho entre los íconos
+  const iconoWidth = (anchoNum * 0.4) / items.length + "vw"; // Distribuir 90% del ancho entre los íconos
 
   return (
     <div
@@ -26,7 +26,7 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "60vw" }) => {
             <img
               src={item.icono}
               alt={`icono-${index}`}
-              className="h-[4vw] cursor-pointer hover:opacity-80"
+              className="h-[3vw] cursor-pointer hover:opacity-80"
               onClick={() => setSeleccionado(item)}
             />
           </div>
