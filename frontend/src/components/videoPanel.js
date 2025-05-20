@@ -8,6 +8,8 @@ const VideoPanel = ({ children, height = "50vh" }) => {
         height: height,
         position: "relative",
         overflow: "hidden",
+        borderTop: "2px solid orange",    // borde superior naranja
+        borderBottom: "2px solid orange", // borde inferior naranja
       }}
     >
       <div

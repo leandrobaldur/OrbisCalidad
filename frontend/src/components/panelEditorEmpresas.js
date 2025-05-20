@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import FichaExpandidaEditable from './fichaExpandidaEditable';
-import RegistroEmpresa from '../components/registroEmpresa';
+import RegistroEmpresa from './registroEmpresa';
 
 const PanelEditorEmpresas = () => {
   const [empresas, setEmpresas] = useState([]);

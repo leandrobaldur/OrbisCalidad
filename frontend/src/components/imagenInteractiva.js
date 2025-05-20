@@ -14,10 +14,20 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "60vw" }) => {
       style={{ width: ancho, aspectRatio: '4 / 3', marginLeft: 0 }}
     >
       {/* Barra de iconos */}
-      <div
-        className="w-full bg-black flex items-center py-[0.5vw] gap-[1vw]"
-        style={{ paddingLeft: margenLateral, paddingRight: margenLateral, justifyContent: "space-between" }}
-      >
+    <div
+      className="w-full flex items-center py-[0.5vw] gap-[1vw]"
+      style={{
+        paddingLeft: margenLateral,
+        paddingRight: margenLateral,
+        justifyContent: "space-between",
+        backgroundColor: "#2f2f2f",    // gris oscuro personalizado
+        borderTop: "4px solid #1193eb",    // borde azul arriba
+        borderBottom: "4px solid #1193eb"  // borde azul abajo
+      }}
+    >
+
+
+
         {items.map((item, index) => (
           <div
             key={index}

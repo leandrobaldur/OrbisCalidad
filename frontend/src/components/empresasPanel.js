@@ -32,7 +32,7 @@ const EmpresasPanel = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#0000] p-[1vw] flex flex-col items-center">
-      <div className="bg-[#202020] w-full max-w-[85vw] min-h-[70vh] rounded-lg shadow-lg overflow-hidden">
+      <div className="bg-[#202020] w-full max-w-[90vw] min-h-[70vh] rounded-lg shadow-lg overflow-hidden">
 
         {/* HEADER */}
         <div className="bg-[#2b2b2b] px-[3vw] py-[1vh] flex flex-col sm:flex-row justify-between items-center gap-4">

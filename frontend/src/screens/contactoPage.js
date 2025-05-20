@@ -15,7 +15,7 @@ const ContactoPage = () => {
   );
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-white p-6">
+    <div className="min-h-screen flex justify-center items-center bg-white p-7">
       <div className="w-full max-w-screen-xl bg-[rgba(0,0,0,0.7)] rounded-3xl p-9 shadow-2xl">
         <div className="bg-[rgb(255,255,255)] rounded-2xl p-6 space-y-8 font-sans text-black">
           
