@@ -13,7 +13,7 @@ body {
 #root {
   display: block; /* Cambiamos esto para evitar que se centre el contenido */
   height: 100%; /* Asegura que el contenido ocupe todo el alto */
-  background-color: #f4f4f4;
+  background-color: #E6DFD4;
 }
 
 
@@ -27,7 +27,7 @@ nav ul {
 }
 
 nav ul li a {
-  color: white;
+  color:  #E6DFD4;
   text-decoration: none;
 }
 

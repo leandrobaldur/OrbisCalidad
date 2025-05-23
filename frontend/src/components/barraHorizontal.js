@@ -3,7 +3,7 @@ import React from "react";
 const BarraHorizontal = ({
   texto,
   height = "10vh",
-  margenHorizontal = "10vw",
+  margenHorizontal = "5vw",
   imagen,
 }) => {
   const containerStyle = {
@@ -19,7 +19,7 @@ const BarraHorizontal = ({
     backgroundRepeat: "repeat-x",
     backgroundPosition: "center",
     backgroundSize: "auto 100%",
-    height: "80%",
+    height: "60%",
     width: margenHorizontal,
     flexShrink: 0,
     margin: 0,  // Sin separación

@@ -21,8 +21,8 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "60vw" }) => {
         paddingRight: margenLateral,
         justifyContent: "space-between",
         backgroundColor: "#2f2f2f",    // gris oscuro personalizado
-        borderTop: "4px solid #1193eb",    // borde azul arriba
-        borderBottom: "4px solid #1193eb"  // borde azul abajo
+        borderTop: "1vh solid #064276",    // borde azul arriba
+        borderBottom: "1vh solid #064276"  // borde azul abajo
       }}
     >
 

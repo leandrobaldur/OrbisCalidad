@@ -19,9 +19,9 @@ const ContenedorLateral = ({
       style={{
         width: ancho, // Ancho del contenedor
         height: alto, // Alto del contenedor
-        border: `4px solid #012026`, // Borde azul oscuro con grosor reducido a 1px
+        border: `0.4vh solid #012026`, // Borde azul oscuro con grosor reducido a 1px
         borderRadius: `${cuadroRedondez} 0 0 ${cuadroRedondez}`, // Sin redondez en la parte derecha 
-        backgroundColor: "#FFFFFF", // Fondo blanco
+        backgroundColor: "#F2EFE7", // Fondo blanco
         marginTop: "5vh", // Ajustamos un poco más abajo el contenedor
         color: "#000000", // Texto negro por defecto dentro del contenedor
       }}
@@ -30,22 +30,25 @@ const ContenedorLateral = ({
       <div className="relative w-full h-full flex flex-col items-center justify-start">
         {/* Subtítulo en óvalo blanco con texto negro y borde naranja en la letra */}
         <div
-          className="absolute bg-[#FDFDFD] text-black text-center font-semibold shadow px-2 py-2 text-sm md:text-base lg:text-lg flex items-center justify-center"
+          className="absolute bg-[#FCF9F0] text-black text-center font-semibold shadow px-2 py-2 text-sm md:text-base lg:text-lg flex items-center justify-center"
           style={{
+            fontSize: "1.7rem",
+            color: "#013B2B", // Color del texto actualizado
+            fontFamily: "Century Gothic", // Cambiamos la fuente a Century Gothic
             borderRadius: ovaloRedondez, // Redondez dinámica del óvalo
             left: "30%", // Centramos el óvalo horizontalmente
             transform: "translateX(-50%)", // Para que se mantenga centrado
             width: ovaloAncho, // Ancho del óvalo
             height: ovaloAlto, // Altura del óvalo
             top: `calc(${alto} * -0.05)`, // Ajustamos un poco más arriba el óvalo
-            border: "2px solid black", // Borde negro para el óvalo blanco
+            border: "0.2vh solid black", // Borde negro para el óvalo blanco
             /* Borde naranja en la letra con sombra de texto */
             textShadow: `
-              -0.1px -0.1px 0 #FFA500,
-              0.1px -0.1px 0 #FFA500,
-              -0.1px 0.1px 0 #FFA500,
-              0.1px 0.1px 0 #FFA500
-            `,
+            -0.25px -0.25px 0 black,
+            0.25px -0.25px 0 black,
+            -0.25px 0.25px 0 black,
+            0.25px 0.25px 0 black
+          `,
           }}
         >
           {subtitulo}

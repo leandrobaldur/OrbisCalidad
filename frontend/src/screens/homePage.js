@@ -8,15 +8,15 @@ import FooterBar from "../components/footerBar";
 
 const HomePage = () => {
   return (
-    <div className="w-full min-h-screen flex flex-col gap-8">
+    <div className="w-full min-h-screen flex flex-col gap-8 mt-3">
       <VideoPanel height="60vh">
         <video src="/media/homePage/video.webm" autoPlay muted loop />
       </VideoPanel>
 
       <BarraHorizontal
-        texto="¡Bienvenidos a nuestra página!"
+        texto="EMPRESAS QUE FORJARON EL PAIS"
         height="3vh"
-        margenHorizontal="30vw"
+        margenHorizontal="35vw"
         imagen="/media/homePage/barra.png"
       />
 
