@@ -32,8 +32,9 @@ const ContenedorLateral = ({
         <div
           className="absolute bg-[#FCF9F0] text-black text-center font-semibold shadow px-2 py-2 text-sm md:text-base lg:text-lg flex items-center justify-center"
           style={{
-            fontSize: "1.7rem",
-            color: "#013B2B", // Color del texto actualizado
+            letterSpacing: "0.12em", // ← Espacio entre letras aumentado
+            fontSize: "1.6rem",
+            color: "#03213B", // Color del texto actualizado
             fontFamily: "Century Gothic", // Cambiamos la fuente a Century Gothic
             borderRadius: ovaloRedondez, // Redondez dinámica del óvalo
             left: "30%", // Centramos el óvalo horizontalmente

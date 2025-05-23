@@ -3,7 +3,7 @@ import React from "react";
 const BarraHorizontal = ({
   texto,
   height = "10vh",
-  margenHorizontal = "5vw",
+  margenHorizontal = "10vw",
   imagen,
 }) => {
   const containerStyle = {
@@ -27,18 +27,20 @@ const BarraHorizontal = ({
   };
 
   const textoStyle = {
+    color: "#001E15", // ← Color de texto actualizado
     flexGrow: 1,
     height: "100%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "calc(0.3rem + 1vw)",
+    fontSize: "2.2vh",
     fontWeight: "bold",
-    fontFamily: "sans-serif", // o alguna que no tenga tanto padding interno
+    fontFamily: "Century Gothic",
     margin: 0,
     padding: 0,
     lineHeight: "normal",
     transform: "translateY(-2%)", // Ajuste fino
+    letterSpacing: "0.35em", // ← Espacio entre letras aumentado
   };
   
 

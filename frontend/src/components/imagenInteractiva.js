@@ -20,9 +20,9 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "60vw" }) => {
         paddingLeft: margenLateral,
         paddingRight: margenLateral,
         justifyContent: "space-between",
-        backgroundColor: "#2f2f2f",    // gris oscuro personalizado
-        borderTop: "1vh solid #064276",    // borde azul arriba
-        borderBottom: "1vh solid #064276"  // borde azul abajo
+        backgroundColor: "#F5F2EE",    // gris oscuro personalizado
+        borderTop: "1.2vh solid #053259",    // borde azul arriba
+        borderBottom: "1.2vh solid #053259"  // borde azul abajo
       }}
     >
 
@@ -45,8 +45,8 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "60vw" }) => {
 
       {/* Panel de contenido */}
       <div
-        className="w-full bg-gray-100 text-black flex flex-col items-center gap-[1vw] flex-grow overflow-auto"
-        style={{ paddingLeft: margenLateral, paddingRight: margenLateral, paddingTop: "2vw", paddingBottom: "2vw" }}
+        className="w-full bg-[rgb(238,231,225)] text-black flex flex-col items-center gap-[1vw] flex-grow overflow-auto"
+        style={{ paddingLeft: margenLateral, paddingRight: margenLateral, paddingTop: "1vw", paddingBottom: "2vw" }}
       >
         {seleccionado ? (
           <>

@@ -16,7 +16,7 @@ const HomePage = () => {
       <BarraHorizontal
         texto="EMPRESAS QUE FORJARON EL PAIS"
         height="3vh"
-        margenHorizontal="35vw"
+        margenHorizontal="30vw"
         imagen="/media/homePage/barra.png"
       />
 
@@ -67,7 +67,7 @@ const HomePage = () => {
 
       
       <BarraHorizontal
-        texto="EMPRESAS CON RECORRIDO DE +500 AÑOS"
+        texto="RECORRIDOS DE +100 AÑOS"
         height="3vh"
         margenHorizontal="30vw"
         imagen="/media/homePage/barra.png"
