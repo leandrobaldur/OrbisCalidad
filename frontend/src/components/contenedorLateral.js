@@ -15,7 +15,7 @@ const ContenedorLateral = ({
 
   return (
    <div
-      className="relative flex flex-col items-center justify-start z-10 shadow-2xl ml-auto"
+      className="relative flex flex-col items-center justify-start z-10 shadow-xl ml-auto"
       style={{
         width: ancho, // Ancho del contenedor
         height: alto, // Alto del contenedor
@@ -30,7 +30,7 @@ const ContenedorLateral = ({
       <div className="relative w-full h-full flex flex-col items-center justify-start">
         {/* Subtítulo en óvalo blanco con texto negro y borde naranja en la letra */}
         <div
-            className="absolute bg-[#FCF9F0] text-black text-center font-semibold shadow px-2 py-2 flex items-center justify-center"
+            className="absolute bg-[#FCF9F0] text-black text-center font-semibold shadow px-1 py-2 flex items-center justify-center"
             style={{
               fontWeight: 360,
               lineHeight: 1.2,

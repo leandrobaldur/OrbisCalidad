@@ -21,7 +21,7 @@ const Navbar = () => {
         alignItems: "center",
         gap: "2rem",
         padding: "01rem 0",
-        backgroundColor: "rgb(238, 231, 225)",
+        backgroundColor: "rgb(243, 235, 231)",
         borderBottom: "1px solid #e5e7eb",
         boxShadow: "0px 2px 4px rgba(0,0,0,0.05)", // sutil sombra
     },

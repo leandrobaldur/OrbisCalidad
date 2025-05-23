@@ -61,7 +61,7 @@ const Header = () => {
       justifyContent: "space-between",
       alignItems: "center",
       padding: "1rem 2.5rem 0.5rem 2.5rem",
-      backgroundColor: "#E6DFD4",
+      backgroundColor: "#f3efe8",
       position: "relative",
       zIndex: 50,
     },

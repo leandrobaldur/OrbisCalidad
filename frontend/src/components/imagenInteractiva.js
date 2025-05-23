@@ -45,7 +45,7 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "60vw" }) => {
 
       {/* Panel de contenido */}
       <div
-        className="w-full  bg-[#02101E] text-black flex flex-col items-center gap-[1vw] flex-grow overflow-auto"
+        className="w-full  bg-[#f9efe1] text-black flex flex-col items-center gap-[1vw] flex-grow overflow-auto"
         style={{ paddingLeft: margenLateral, paddingRight: margenLateral, paddingTop: "1vw", paddingBottom: "2vw" }}
       >
         {seleccionado ? (
