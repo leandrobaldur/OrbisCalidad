@@ -30,28 +30,33 @@ const ContenedorLateral = ({
       <div className="relative w-full h-full flex flex-col items-center justify-start">
         {/* Subtítulo en óvalo blanco con texto negro y borde naranja en la letra */}
         <div
-          className="absolute bg-[#FCF9F0] text-black text-center font-semibold shadow px-2 py-2 text-sm md:text-base lg:text-lg flex items-center justify-center"
-          style={{
-            letterSpacing: "0.12em", // ← Espacio entre letras aumentado
-            fontSize: "1.6rem",
-            color: "#03213B", // Color del texto actualizado
-            fontFamily: "Century Gothic", // Cambiamos la fuente a Century Gothic
-            borderRadius: ovaloRedondez, // Redondez dinámica del óvalo
-            left: "30%", // Centramos el óvalo horizontalmente
-            transform: "translateX(-50%)", // Para que se mantenga centrado
-            width: ovaloAncho, // Ancho del óvalo
-            height: ovaloAlto, // Altura del óvalo
-            top: `calc(${alto} * -0.05)`, // Ajustamos un poco más arriba el óvalo
-            border: "0.2vh solid black", // Borde negro para el óvalo blanco
-            /* Borde naranja en la letra con sombra de texto */
-            textShadow: `
-            -0.25px -0.25px 0 black,
-            0.25px -0.25px 0 black,
-            -0.25px 0.25px 0 black,
-            0.25px 0.25px 0 black
-          `,
-          }}
-        >
+            className="absolute bg-[#FCF9F0] text-black text-center font-semibold shadow px-2 py-2 flex items-center justify-center"
+            style={{
+              fontWeight: 360,
+              lineHeight: 1.2,
+              letterSpacing: "0.12rem",
+              fontSize: "clamp(1rem, 2.5vw, 1.854rem)",
+              color: "#03213B",
+              fontFamily: "Century Gothic",
+              borderRadius: ovaloRedondez,
+              left: "35%",       // mueve a la izquierda desde 50%
+              top: "-5%",        // sube un poco arriba
+              transform: "translateX(-50%)",
+              maxWidth: ovaloAncho,
+              width: "90%",
+              height: ovaloAlto,
+              border: "0.2vh solid black",
+              textShadow: `
+                -0.25px -0.25px 0 black,
+                0.25px -0.25px 0 black,
+                -0.25px 0.25px 0 black,
+                0.25px 0.25px 0 black
+              `,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
           {subtitulo}
         </div>
 

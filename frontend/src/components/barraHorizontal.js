@@ -33,7 +33,7 @@ const BarraHorizontal = ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "2.2vh",
+    fontSize: "1.146 rem",
     fontWeight: "bold",
     fontFamily: "Century Gothic",
     margin: 0,

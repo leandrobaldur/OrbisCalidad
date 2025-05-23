@@ -20,13 +20,14 @@ const Navbar = () => {
         justifyContent: "center",
         alignItems: "center",
         gap: "2rem",
-        padding: "1rem 0",
+        padding: "01rem 0",
         backgroundColor: "rgb(238, 231, 225)",
         borderBottom: "1px solid #e5e7eb",
         boxShadow: "0px 2px 4px rgba(0,0,0,0.05)", // sutil sombra
     },
     link: (isInicio) => ({
-      fontSize: "0.875rem",
+      font: "Century Gothic",
+      fontSize: "1.146rem",
       letterSpacing: "0.1em",
       fontWeight: isInicio ? "600" : "300",
       color: "#1f2937",

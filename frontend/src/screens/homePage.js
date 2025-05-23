@@ -8,7 +8,7 @@ import FooterBar from "../components/footerBar";
 
 const HomePage = () => {
   return (
-    <div className="w-full min-h-screen flex flex-col gap-8 mt-3">
+    <div className="w-full min-h-screen flex flex-col gap-8 mt-5">
       <VideoPanel height="60vh">
         <video src="/media/homePage/video.webm" autoPlay muted loop />
       </VideoPanel>
@@ -36,7 +36,7 @@ const HomePage = () => {
                 icono: "/media/homePage/recicleIcon.png",
                 subtitulo: "Segunda Selección",
                 imagen: "/media/contenido/contenido2.png",
-                texto: "Información para el segundo ícono seleccionada.",
+                texto: "Información para el s3.5gundo ícono seleccionada.",
               },
               {
                 icono: "/media/homePage/secureIcon.png",
@@ -59,7 +59,7 @@ const HomePage = () => {
           texto="Explorá las últimas noticias, actualizaciones y promociones disponibles en nuestra plataforma."
           imagen="/media/homePage/lateral.png"
           ancho="70vw"
-          alto="80vh"
+          alto="43.5vw"
           ovaloRedondez="20px"
           cuadroRedondez="10px"
         />
