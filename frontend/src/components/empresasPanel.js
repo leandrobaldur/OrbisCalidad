@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import FichaExpandida from './fichaExpandida'; // Asegúrate de tener este archivo en el mismo nivel
+import { motion, AnimatePresence } from "motion/react";
+import './empresasPanel.css';
 
 const EmpresasPanel = () => {
   const [empresas, setEmpresas] = useState([]);
@@ -11,99 +11,225 @@ const EmpresasPanel = () => {
   const CLOUDINARY_BASE_URL = 'https://res.cloudinary.com/diswqpy8v/image/upload';
 
   useEffect(() => {
-    axios.get('http://localhost:3000/empresas')
-      .then(res => setEmpresas(res.data))
-      .catch(err => console.error('Error al obtener empresas:', err));
+    // Datos estáticos de empresas más realistas
+    const empresasFake = [
+      {
+        nombre: 'ENTEL',
+        imagen: 'https://via.placeholder.com/300x150?text=ENTEL',
+        rubro: 'Telecomunicaciones',
+        slogan: 'Conectando personas',
+        descripcion:
+          'ENTEL es una empresa líder en telecomunicaciones en Chile. Ofrece servicios de telefonía móvil, internet y televisión para hogares y empresas.',
+        fundacion: 1964,
+        sede: 'Santiago, Chile',
+        empleados: '4.500+',
+        sitioWeb: 'www.entel.cl',
+      },
+      {
+        nombre: 'BANCO ESTADO',
+        imagen: 'https://via.placeholder.com/300x150?text=BANCO+ESTADO',
+        rubro: 'Servicios financieros',
+        slogan: 'Para todos los chilenos',
+        descripcion:
+          'BancoEstado es el único banco público de Chile. Ofrece servicios financieros a todos los chilenos, con énfasis en la inclusión financiera y el apoyo a las pequeñas empresas.',
+        fundacion: 1953,
+        sede: 'Santiago, Chile',
+        empleados: '10.000+',
+        sitioWeb: 'www.bancoestado.cl',
+      },
+      {
+        nombre: 'FALABELLA',
+        imagen: 'https://via.placeholder.com/300x150?text=FALABELLA',
+        rubro: 'Retail',
+        slogan: 'Hacemos que tu hogar sea único',
+        descripcion:
+          'Falabella es una de las tiendas por departamentos más grandes de América Latina, con presencia en Chile, Argentina, Perú y Colombia. Ofrece productos de moda, hogar, electrónica y más.',
+        fundacion: 1889,
+        sede: 'Santiago, Chile',
+        empleados: '95.000+',
+        sitioWeb: 'www.falabella.com',
+      },
+      {
+        nombre: 'COPEC',
+        imagen: 'https://via.placeholder.com/300x150?text=COPEC',
+        rubro: 'Energía',
+        slogan: 'La energía que mueve Chile',
+        descripcion:
+          'Copec es la principal distribuidora de combustibles en Chile. También opera en el sector forestal, pesquero y de lubricantes, a través de diversas filiales.',
+        fundacion: 1934,
+        sede: 'Santiago, Chile',
+        empleados: '13.000+',
+        sitioWeb: 'www.copec.cl',
+      },
+    ];
+    setEmpresas(empresasFake);
+    setImagenLateral('https://via.placeholder.com/150?text=Lateral');
   }, []);
 
-  const handleEmpresaClick = async (id_empresa) => {
-    try {
-      const res = await axios.get(`http://localhost:3000/empresas/${id_empresa}`);
-      setEmpresaSeleccionada(res.data);
-      setShowFicha(true);
-    } catch (err) {
-      console.error('Error al obtener detalles de empresa:', err);
-    }
+  // Función para manejar el click en el botón de antigüedad
+  const handleAntigüedadClick = () => {
+    setOrdenAntigüedad(ordenAntigüedad === 'asc' ? 'desc' : 'asc');
+    console.log(
+      `Ordenando por antigüedad: ${
+        ordenAntigüedad === 'asc' ? 'descendente' : 'ascendente'
+      }`
+    );
   };
 
-  const empresasFiltradas = empresas.filter((e) =>
-    e.denominacion_social.toLowerCase().includes(busqueda.toLowerCase())
-  );
+  // Funciones para manejar los clicks en los botones de iconos
+  const handleIconClick = (iconNumber) => {
+    console.log(`Icono ${iconNumber} clickeado`);
+  };
+
+  // Función para manejar el click en una tarjeta de empresa
+  const handleEmpresaClick = (empresa) => {
+    setSelectedEmpresa(empresa);
+    setShowModal(true);
+  };
+
+  // Función para cerrar el modal
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedEmpresa(null);
+  };
 
   return (
-    <div className="min-h-screen w-full bg-[#0000] p-[1vw] flex flex-col items-center">
-      <div className="bg-[#202020] w-full max-w-[90vw] min-h-[70vh] rounded-lg shadow-lg overflow-hidden">
-
-        {/* HEADER */}
-        <div className="bg-[#2b2b2b] px-[3vw] py-[1vh] flex flex-col sm:flex-row justify-between items-center gap-4">
-          <span className="text-[#F9F9FA] text-[1rem] sm:text-[1.2rem] w-full sm:w-auto text-center sm:text-left mb-4 sm:mb-0">
-            EMPRESAS
-          </span>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-[1.5vw] w-full">
-            <img src="/icons/filtro.png" alt="Filtro" className="w-[1.3vw] h-[1.3vw] hidden sm:block" />
-            
-            {/* BUSCADOR */}
-            <div className="relative w-full max-w-[40vw]">
-              <input
-                type="text"
-                placeholder="Buscar..."
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
-                className="rounded-full px-[1vw] py-[0.5vw] pl-[2.5vw] w-full bg-[#FCFCFD] text-black focus:outline-none text-[0.9rem]"
-              />
-              <img
-                src="/icons/lupa.png"
-                alt="Buscar"
-                className="absolute left-[0.8vw] top-1/2 -translate-y-1/2 w-[1vw] h-[1vw]"
-              />
-            </div>
-
-            {/* ÍCONOS */}
-            <div className="flex gap-[2vw] items-center mt-2 sm:mt-0">
-              <img src="/media/busqueda/medalla.png" alt="Medalla" className="w-[2vw] h-[2.5vw]" />
-              <img src="/media/busqueda/plus.png" alt="Plus" className="w-[2vw] h-[2.5vw]" />
-              <img src="/media/busqueda/cerebro.png" alt="Cerebro" className="w-[2vw] h-[2.5vw]" />
-              <img src="/media/busqueda/mapa.png" alt="Mapa" className="w-[2vw] h-[3  vw]" />
-            </div>
-          </div>
+    <motion.div
+      className="empresas-wrapper"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      {/* Barra superior */}
+      <div className="barra-superior">
+        <button
+          className="barra-izquierda boton-antiguedad"
+          onClick={handleAntigüedadClick}
+        >
+          ANTIGÜEDAD <span>{ordenAntigüedad === 'asc' ? '↑' : '↓'}</span>
+        </button>
+        <div className="barra-centro">
+          <input type="text" placeholder="Buscar empresa..." />
+          <span className="icono-busqueda">🔍</span>
         </div>
-
-        {/* TARJETAS */}
-        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[1.9vw] px-[2vw] py-[2vw]">
-          {empresasFiltradas.map((empresa, index) => {
-            const imageUrl = `${CLOUDINARY_BASE_URL}/${empresa.url}`;
-            return (
-              <div
-                key={empresa.id_empresa || index}
-                onClick={() => handleEmpresaClick(empresa.id_empresa)}
-                className="cursor-pointer relative bg-black rounded-xl overflow-hidden shadow-md group hover:scale-105 transition-all duration-300"
-                style={{ height: '200px' }}
-              >
-                <img
-                  src={imageUrl}
-                  alt={empresa.denominacion_social}
-                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
-                  <span className="text-white font-bold text-lg drop-shadow-lg">
-                    {empresa.denominacion_social || 'Sin nombre comercial'}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+        <div className="barra-derecha">
+          <button className="boton-icono" onClick={() => handleIconClick(1)}>
+            <img src="/iconos/icon1.png" alt="icono1" />
+          </button>
+          <button className="boton-icono" onClick={() => handleIconClick(2)}>
+            <img src="/iconos/icon2.png" alt="icono2" />
+          </button>
+          <button className="boton-icono" onClick={() => handleIconClick(3)}>
+            <img src="/iconos/icon3.png" alt="icono3" />
+          </button>
+          <button className="boton-icono" onClick={() => handleIconClick(4)}>
+            <img src="/iconos/icon4.png" alt="icono4" />
+          </button>
         </div>
       </div>
 
-      {/* MODAL */}
-      {showFicha && (
-        <FichaExpandida
-          empresa={empresaSeleccionada}
-          onClose={() => setShowFicha(false)}
-        />
-      )}
-    </div>
+      {/* Contenedor principal */}
+      <div className="empresas-panel-container">
+        <div className="imagen-lateral">
+          <img src={imagenLateral} alt="Imagen lateral" />
+        </div>
+
+        <div className="empresas-panel">
+          <div className="empresas-grid">
+            {empresas.map((empresa, i) => (
+              <motion.div
+                className="empresa-card"
+                key={i}
+                onClick={() => handleEmpresaClick(empresa)}
+                whileHover={{ scale: 1.05 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: i * 0.1 }}
+              >
+                <div className="empresa-img-contenedor">
+                  {empresa.imagen && (
+                    <img src={empresa.imagen} alt={empresa.nombre} />
+                  )}
+                  {/* Mostrar solo el nombre por defecto */}
+                  <div className="empresa-nombre-default">{empresa.nombre}</div>
+                  {/* Overlay con detalles que aparece al hacer hover */}
+                  <div className="empresa-overlay">
+                    <div className="nombre">{empresa.nombre}</div>
+                    <div className="rubro">{empresa.rubro}</div>
+                    <div className="slogan">{empresa.slogan}</div>
+                  </div>
+                </div>
+                <div className="empresa-info-box" />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Modal */}
+      <AnimatePresence>
+        {showModal && (
+          <motion.div
+            className="modal-overlay"
+            onClick={closeModal}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="modal-content"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="modal-header">
+                <h2>{selectedEmpresa?.nombre}</h2>
+                <button className="close-modal" onClick={closeModal}>
+                  ×
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="modal-imagen">
+                  <img
+                    src={selectedEmpresa?.imagen}
+                    alt={selectedEmpresa?.nombre}
+                  />
+                </div>
+                <div className="modal-info">
+                  <h3>{selectedEmpresa?.slogan}</h3>
+                  <p className="descripcion">{selectedEmpresa?.descripcion}</p>
+                  <div className="info-detalle">
+                    <p>
+                      <strong>Rubro:</strong> {selectedEmpresa?.rubro}
+                    </p>
+                    <p>
+                      <strong>Año de fundación:</strong>{' '}
+                      {selectedEmpresa?.fundacion}
+                    </p>
+                    <p>
+                      <strong>Sede principal:</strong> {selectedEmpresa?.sede}
+                    </p>
+                    <p>
+                      <strong>Número de empleados:</strong>{' '}
+                      {selectedEmpresa?.empleados}
+                    </p>
+                    <p>
+                      <strong>Sitio web:</strong> {selectedEmpresa?.sitioWeb}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button className="btn-visitar">Visitar sitio web</button>
+                <button className="btn-contactar">Contactar</button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };
 
