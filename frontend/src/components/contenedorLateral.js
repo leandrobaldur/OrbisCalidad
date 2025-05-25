@@ -21,7 +21,7 @@ const ContenedorLateral = ({
         height: alto, // Alto del contenedor
         border: `0.4vh solid #012026`, // Borde azul oscuro con grosor reducido a 1px
         borderRadius: `${cuadroRedondez} 0 0 ${cuadroRedondez}`, // Sin redondez en la parte derecha 
-        backgroundColor: "#F2EFE7", // Fondo blanco
+        backgroundColor: "#F2EFE2", // Fondo blanco
         marginTop: "5vh", // Ajustamos un poco más abajo el contenedor
         color: "#000000", // Texto negro por defecto dentro del contenedor
       }}
