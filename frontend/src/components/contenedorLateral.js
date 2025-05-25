@@ -21,7 +21,7 @@ const ContenedorLateral = ({
         height: alto, // Alto del contenedor
         border: `0.4vh solid #012026`, // Borde azul oscuro con grosor reducido a 1px
         borderRadius: `${cuadroRedondez} 0 0 ${cuadroRedondez}`, // Sin redondez en la parte derecha 
-        backgroundColor: "#F2EFE2", // Fondo blanco
+        backgroundColor: "#FCF6F3", // Fondo blanco
         marginTop: "5vh", // Ajustamos un poco más abajo el contenedor
         color: "#000000", // Texto negro por defecto dentro del contenedor
       }}
@@ -30,13 +30,13 @@ const ContenedorLateral = ({
       <div className="relative w-full h-full flex flex-col items-center justify-start">
         {/* Subtítulo en óvalo blanco con texto negro y borde naranja en la letra */}
         <div
-            className="absolute bg-[#FCF9F0] text-black text-center font-semibold shadow px-1 py-2 flex items-center justify-center"
+            className="absolute bg-[#FCF4F3] text-black text-center font-semibold shadow px-1 py-2 flex items-center justify-center"
             style={{
               fontWeight: 360,
               lineHeight: 1.2,
               letterSpacing: "0.12rem",
               fontSize: "clamp(1rem, 2.5vw, 1.854rem)",
-              color: "#03213B",
+              color: "#01213B",
               fontFamily: "Century Gothic",
               borderRadius: ovaloRedondez,
               left: "35%",       // mueve a la izquierda desde 50%
