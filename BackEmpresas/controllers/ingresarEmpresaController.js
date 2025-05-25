@@ -1,4 +1,5 @@
 import ingresarEmpresaModel from '../models/ingresarEmpresaModel.js';
+import logsModel from '../models/logsModel.js';
 
 const crearEmpresa = async (req, res) => {
   const requiredFields = [
@@ -6,32 +7,28 @@ const crearEmpresa = async (req, res) => {
     'nombre_comercial',
     'fecha_fundacion',
     'nit',
-    'eslogan',
+    'vision',
+    'mision',
     'descripcion',
-    'url'
+    'url',
+    'direccion_web',
+    'id_actividad',
+    'id_tamanio'
   ];
 
-  // Verificar campos requeridos
   const missingFields = requiredFields.filter(field => !req.body[field]);
-  
+
   if (missingFields.length > 0) {
     return res.status(400).json({
       mensaje: `Faltan campos requeridos: ${missingFields.join(', ')}`
     });
   }
 
-  // Validar formato de fecha si se envía fecha_cierre
-  if (req.body.fecha_cierre && req.body.fecha_cierre !== '') {
-    if (isNaN(Date.parse(req.body.fecha_cierre))) {
-      return res.status(400).json({
-        mensaje: 'Formato de fecha inválido. Use YYYY-MM-DD'
-      });
-    }
-  }
-
   try {
     const idEmpresa = await ingresarEmpresaModel.insertarEmpresa(req.body);
-    
+    const { id_usuario } = req.body;
+    await logsModel.registrarLog({id_usuario, tabla: 'empresas', tipo_log: 'insert'});
+
     res.status(201).json({
       mensaje: 'Empresa creada exitosamente',
       id_empresa: idEmpresa
@@ -44,18 +41,61 @@ const crearEmpresa = async (req, res) => {
   }
 };
 
-const listarEmpresas = async (req, res) => {
+const actualizarEmpresa = async (req, res) => {
+  const { id } = req.params;
+  const {
+    id_usuario,
+    denominacion_social,
+    nombre_comercial,
+    fecha_fundacion,
+    nit,
+    vision,
+    mision,
+    descripcion,
+    url,
+    direccion_web,
+    id_actividad,
+    id_tamanio
+  } = req.body;
+
+  const requiredFields = [
+    'id_usuario',
+    'denominacion_social',
+    'nombre_comercial',
+    'fecha_fundacion',
+    'nit',
+    'vision',
+    'mision',
+    'descripcion',
+    'url',
+    'direccion_web',
+    'id_actividad',
+    'id_tamanio'
+  ];
+
+  const missingFields = requiredFields.filter(field => !req.body[field]);
+  if (missingFields.length > 0) {
+    return res.status(400).json({
+      mensaje: `Faltan campos requeridos: ${missingFields.join(', ')}`
+    });
+  }
+
   try {
-    const empresas = await ingresarEmpresaModel.obtenerEmpresas();
-    res.status(200).json(empresas);
+    const empresaActualizada = await ingresarEmpresaModel.actualizarEmpresa(id, req.body);
+    await logsModel.registrarLog({ id_usuario, tabla: 'empresas', tipo_log: 'update' });
+
+    res.status(200).json({
+      mensaje: 'Empresa actualizada exitosamente',
+      empresa: empresaActualizada
+    });
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al obtener empresas' });
+    console.error('Error en actualizarEmpresa:', error);
+    res.status(500).json({ mensaje: 'Error al actualizar la empresa' });
   }
 };
 
-
-
 export default {
   crearEmpresa,
-  listarEmpresas,
+  actualizarEmpresa
 };
+

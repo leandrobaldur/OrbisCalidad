@@ -76,6 +76,9 @@ router.get('/tipos-societarios', getTiposSocietarios);
  *                 type: string
  *                 format: date
  *                 example: 2025-04-17
+ *               id_usuario:
+ *                 type: integer
+ *                 example: 1
  *     responses:
  *       201:
  *         description: Tipo societario asignado correctamente a la empresa

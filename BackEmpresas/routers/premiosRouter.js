@@ -65,15 +65,17 @@ router.get('/premios', premiosController.obtenerPremios);
  *       required:
  *         - id_premio
  *         - id_empresa
- *         - fecha_p
+ *         - anio
+ *         - id_usuario
  *       properties:
  *         id_premio:
  *           type: integer
  *         id_empresa:
  *           type: integer
- *         fecha_p:
- *           type: string
- *           format: date
+ *         anio:
+ *           type: integer
+ *         id_usuario:
+ *           type: integer
  * 
  * tags:
  *   - name: Premios-Empresas
