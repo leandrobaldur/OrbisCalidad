@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import InicioSesion from "./inicioSesion";
-import axios from "axios";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -21,25 +20,12 @@ const Header = () => {
 
   const handleLoginClick = () => setShowLogin(true);
 
-  const handleLoginSuccess = async ({ usuario, contrasena }) => {
-    try {
-      const res = await axios.post("http://localhost:3000/usuarios/login", {
-        usuario,
-        contrasenia: contrasena,
-      });
-
-      if (res.data && res.data.encontrado === 1) {
-        localStorage.setItem("loggedIn", "true");
-        localStorage.setItem("userInfo", JSON.stringify(res.data.usuario));
-        setLoggedIn(true);
-        setShowLogin(false);
-      } else {
-        alert("Credenciales incorrectas");
-      }
-    } catch (error) {
-      console.error("Error en login:", error);
-      alert("Error al iniciar sesión");
-    }
+  // Aquí corregido: recibe directamente el usuario autenticado
+  const handleLoginSuccess = (usuario) => {
+    localStorage.setItem("loggedIn", "true");
+    localStorage.setItem("userInfo", JSON.stringify(usuario));
+    setLoggedIn(true);
+    setShowLogin(false);
   };
 
   const handleCloseLogin = () => setShowLogin(false);

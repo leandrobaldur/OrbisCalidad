@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Colores base
 const PALETTE = {
   CLEMENTINA: "#FF4201",
   SKYNE: "#199ECA",
@@ -16,7 +15,6 @@ const PALETTE = {
 const ICON_SVG_SIZE = "40px";
 const ICON_CONTAINER_PADDING = "10px";
 
-// Icono de Usuario
 const UserIcon = ({ color, size = ICON_SVG_SIZE }) => (
   <svg
     viewBox="0 0 24 24"
@@ -28,13 +26,11 @@ const UserIcon = ({ color, size = ICON_SVG_SIZE }) => (
 
 const InicioSesion = ({ onLogin, onClose }) => {
   const [usuario, setUsuario] = useState("");
-  // El backend espera 'contrasenia', así que cambiamos el nombre del estado para mayor claridad
   const [contrasenia, setContrasenia] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null); // Estado para manejar errores
+  const [mensaje, setMensaje] = useState(null); // Mensaje de error o éxito
   const [isVisible, setIsVisible] = useState(true);
 
-  // Variantes de animación (sin cambios)
   const backdropVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.3 } },
@@ -57,59 +53,46 @@ const InicioSesion = ({ onLogin, onClose }) => {
     hover: { scale: 1.05, transition: { duration: 0.2 } },
   };
 
-  // ✅ *** MODIFICACIÓN PRINCIPAL AQUÍ *** ✅
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Limpiar errores previos
+    setMensaje(null);
 
     if (!usuario || !contrasenia) {
-      setError("Por favor, rellena todos los campos.");
+      setMensaje("Por favor, rellena todos los campos");
       return;
     }
 
     setLoading(true);
-
     try {
-      const response = await fetch("http://localhost:3000/usuarios/login", {
+      const res = await fetch("http://localhost:3000/usuarios/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // El backend espera 'usuario' y 'contrasenia' en el body
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ usuario, contrasenia }),
       });
+      const data = await res.json();
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        // Si la respuesta no es 2xx, lanzamos un error con el mensaje del backend
-        throw new Error(data.mensaje || "Error al iniciar sesión.");
-      }
-
-      // Si el login es exitoso (encontrado: 1)
-      if (data.encontrado === 1) {
-        alert("¡Login exitoso!");
-        onLogin(data.usuario); // Pasamos los datos del usuario a la función onLogin
-        handleClose(); // Cerramos el modal
+      if (res.ok && data.encontrado === 1) {
+        setMensaje("Iniciaste sesión correctamente");
+        onLogin(data.usuario);
+        setTimeout(() => {
+          setIsVisible(false);
+          if (onClose) onClose();
+        }, 1500);
       } else {
-        // Por si acaso el backend devuelve 200 pero encontrado: 0
-        throw new Error(data.mensaje || "Credenciales incorrectas.");
+        setMensaje(data.mensaje || "Credenciales incorrectas");
       }
-    } catch (err) {
-      // Capturamos cualquier error y lo mostramos
-      setError(err.message);
-      console.error("Error de login:", err);
+    } catch {
+      setMensaje("Error de conexión con el servidor");
     } finally {
       setLoading(false);
     }
   };
 
-
   const handleClose = () => {
     setIsVisible(false);
+    if (onClose) onClose();
   };
 
-  // Estilos (sin cambios)
   const inputBaseStyle = {
     width: "100%",
     padding: "12px 15px",
@@ -117,12 +100,13 @@ const InicioSesion = ({ onLogin, onClose }) => {
     border: `1px solid ${PALETTE.INPUT_BORDER}`,
     borderRadius: "8px",
     backgroundColor: PALETTE.WHITE,
-    boxSizing: "border-box",
     marginBottom: "18px",
     textAlign: "center",
     color: PALETTE.NEGRO,
     fontFamily: "'Caveat', cursive",
+    boxSizing: "border-box",
   };
+
   const iconContainerStyle = {
     position: "absolute",
     top: "-30px",
@@ -146,12 +130,14 @@ const InicioSesion = ({ onLogin, onClose }) => {
     boxShadow: `0 0 0 10px ${PALETTE.SHADOW_CONTOUR_COLOR}`,
   };
 
+  const mensajeStyle = {
+    marginBottom: "10px",
+    fontWeight: "bold",
+    color: mensaje === "Iniciaste sesión correctamente" ? PALETTE.VERDE : PALETTE.CLEMENTINA,
+  };
+
   return (
-    <AnimatePresence
-      onExitComplete={() => {
-        onClose();
-      }}
-    >
+    <AnimatePresence onExitComplete={handleClose}>
       {isVisible && (
         <motion.div
           key="backdrop"
@@ -223,9 +209,9 @@ const InicioSesion = ({ onLogin, onClose }) => {
               Inicio de Sesión
             </h2>
 
+            {mensaje && <p style={mensajeStyle}>{mensaje}</p>}
+
             <form onSubmit={handleSubmit}>
-               {/* Mensaje de error */}
-               {error && <p style={{ color: 'red', marginBottom: '15px' }}>{error}</p>}
               <motion.input
                 type="text"
                 placeholder="USUARIO"
@@ -273,4 +259,5 @@ const InicioSesion = ({ onLogin, onClose }) => {
     </AnimatePresence>
   );
 };
+
 export default InicioSesion;
