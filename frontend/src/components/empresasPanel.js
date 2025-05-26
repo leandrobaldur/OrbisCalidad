@@ -4,10 +4,11 @@ import './empresasPanel.css';
 
 const EmpresasPanel = () => {
   const [empresas, setEmpresas] = useState([]);
-  const [imagenLateral, setImagenLateral] = useState('');
-  const [ordenAntigüedad, setOrdenAntigüedad] = useState('desc'); // 'asc' o 'desc'
-  const [selectedEmpresa, setSelectedEmpresa] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [empresaSeleccionada, setEmpresaSeleccionada] = useState(null);
+  const [showFicha, setShowFicha] = useState(false);
+  const [busqueda, setBusqueda] = useState('');
+
+  const CLOUDINARY_BASE_URL = 'https://res.cloudinary.com/diswqpy8v/image/upload';
 
   useEffect(() => {
     // Datos estáticos de empresas más realistas

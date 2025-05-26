@@ -14,7 +14,28 @@ const CarruselImagenes = ({ altura, filas, backendUrl }) => {
   const [imagenesDistribuidas, setImagenesDistribuidas] = useState([]);
   const contenedorRef = useRef(null);
 
-  const CLOUDINARY_BASE_URL = 'https://res.cloudinary.com/diswqpy8v/image/upload/v1745018920';
+  const obtenerImagenesDesdeBackend = async () => {
+    try {
+      // Paso 1: Obtener resumen de empresas (solo ID)
+      const resumen = await axios.get(`${backendUrl}/empresas/resumen`);
+      const ids = resumen.data.map((e) => e.id_empresa);
+
+      // Paso 2: Obtener detalles por ID para extraer las URLs
+      const respuestas = await Promise.all(
+        ids.map((id) => axios.get(`${backendUrl}/empresa/${id}`))
+      );
+
+      const urls = respuestas
+        .map((res) => res.data.url)
+        .filter((url) => url && typeof url === 'string');
+
+      const imagenesBarajadas = shuffleArray(urls);
+      const distribuidas = distribuirEquitativamente(imagenesBarajadas, filas);
+      setImagenesDistribuidas(distribuidas);
+    } catch (error) {
+      console.error('❌ Error al obtener imágenes desde backend:', error);
+    }
+  };
 
   const distribuirEquitativamente = (imagenes, filas) => {
     const distribuidas = Array.from({ length: filas }, () => []);
@@ -24,25 +45,9 @@ const CarruselImagenes = ({ altura, filas, backendUrl }) => {
     return distribuidas;
   };
 
-  const obtenerImagenesDesdeBackend = async () => {
-    try {
-      const res = await axios.get(`${backendUrl}/empresas`);
-      const urls = res.data
-        .map((empresa) => empresa.url)
-        .filter((nombre) => nombre && typeof nombre === 'string')
-        .map((nombre) => `${CLOUDINARY_BASE_URL}/${nombre}`);
-
-      const imagenesBarajadas = shuffleArray(urls);
-      const distribuidas = distribuirEquitativamente(imagenesBarajadas, filas);
-      setImagenesDistribuidas(distribuidas);
-    } catch (error) {
-      console.error('Error al obtener imágenes desde backend:', error);
-    }
-  };
-
   useEffect(() => {
     obtenerImagenesDesdeBackend();
-  }, [backendUrl]);
+  }, []);
 
   return (
     <div
@@ -64,7 +69,8 @@ const CarruselImagenes = ({ altura, filas, backendUrl }) => {
             <img
               key={`${i}-${idx}`}
               src={img}
-              alt={`img-${idx}`}
+              alt={`Logo empresa ${idx}`}
+              loading="lazy"
               className="object-cover"
               style={{
                 height: '100%',

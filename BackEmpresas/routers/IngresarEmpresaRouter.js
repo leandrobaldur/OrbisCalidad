@@ -6,62 +6,64 @@ const router = express.Router();
 /**
  * @swagger
  * components:
- *   definitions:
+ *   schemas:
  *     NuevaEmpresa:
  *       type: object
  *       required:
+ *         - id_usuario
  *         - denominacion_social
  *         - nombre_comercial
  *         - fecha_fundacion
  *         - nit
- *         - eslogan
+ *         - vision
+ *         - mision
  *         - descripcion
  *         - url
+ *         - direccion_web
+ *         - id_actividad
+ *         - id_tamanio
  *       properties:
+ *         id_usuario:
+ *           type: integer
  *         denominacion_social:
  *           type: string
- *           example: "Empresa S.A."
  *         nombre_comercial:
  *           type: string
- *           example: "La mejor empresa"
  *         fecha_fundacion:
  *           type: string
  *           format: date
- *           example: "2020-01-01"
- *         fecha_cierre:
- *           type: string
- *           format: date
- *           nullable: true
- *           example: "2020-01-01 (mandar cadena vacia en caso de que sea null)"
  *         nit:
  *           type: integer
- *           example: 123456789
- *         eslogan:
+ *         vision:
  *           type: string
- *           example: "Haciendo lo imposible"
+ *         mision:
+ *           type: string
  *         descripcion:
  *           type: string
- *           example: "Descripción detallada de la empresa"
  *         url:
  *           type: string
- *           example: "https://empresa.com"
- * 
+ *         direccion_web:
+ *           type: string
+ *         id_actividad:
+ *           type: integer
+ *         id_tamanio:
+ *           type: integer
+ *
  * tags:
  *   - name: Empresas
  *     description: Operaciones con empresas
- * 
+ *
  * /ingresarEmpresa:
  *   post:
  *     tags:
  *       - Empresas
  *     summary: Crea una nueva empresa
- *     description: Registra una nueva empresa en la base de datos
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/definitions/NuevaEmpresa'
+ *             $ref: '#/components/schemas/NuevaEmpresa'
  *     responses:
  *       201:
  *         description: Empresa creada exitosamente
@@ -81,21 +83,10 @@ const router = express.Router();
  */
 
 router.post('/ingresarEmpresa', empresaController.crearEmpresa);
-
 router.get('/empresas', empresaController.listarEmpresas);
 router.get('/buscarEmpresas', empresaController.buscarEmpresas);
-
 router.get('/premios', empresaController.obtenerPremios);
 router.get('/empresas/premio/:id_premio', empresaController.filtrarEmpresasPorPremio);
-
-
-router.get('/rubros', empresaController.obtenerRubros);
-router.get('/empresas/rubro/:id_rubro', empresaController.filtrarEmpresasPorRubro);
-
-router.get('/empresas/antiguas', empresaController.obtenerEmpresasMayoresA50);
-
-router.get('/departamentos', empresaController.obtenerDepartamentos);
-router.get('/empresas/departamento/:id_departamento', empresaController.filtrarEmpresasPorDepartamento);
 
 
 export default router;

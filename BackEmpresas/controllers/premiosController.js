@@ -26,20 +26,11 @@ const obtenerPremios = async (req, res) => {
 };
 
 const registrarPremioEmpresa = async (req, res) => {
-  const { id_premio, id_empresa, fecha_p } = req.body;
+  const { id_premio, id_empresa, anio } = req.body;
 
-  if (!id_premio || !id_empresa || !fecha_p) {
+  if (!id_premio || !id_empresa || !anio) {
     return res.status(400).json({
       mensaje: 'Faltan datos requeridos',
-      registrado: 0
-    });
-  }
-
-  // Validar formato con regex y luego verificar si la fecha es real
-  const fechaRegex = /^\d{4}-\d{2}-\d{2}$/;
-  if (!fechaRegex.test(fecha_p) || isNaN(new Date(fecha_p).getTime())) {
-    return res.status(400).json({
-      mensaje: 'Formato de fecha inválido. Use YYYY-MM-DD',
       registrado: 0
     });
   }
@@ -48,7 +39,7 @@ const registrarPremioEmpresa = async (req, res) => {
     const nuevoRegistro = await premiosModel.registrarPremioEmpresa({
       id_premio,
       id_empresa,
-      fecha_p
+      anio
     });
 
     res.status(201).json({

@@ -15,12 +15,12 @@ const ContactoPage = () => {
   );
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-white p-6">
+    <div className="min-h-screen flex justify-center items-center bg-white p-7">
       <div className="w-full max-w-screen-xl bg-[rgba(0,0,0,0.7)] rounded-3xl p-9 shadow-2xl">
         <div className="bg-[rgb(255,255,255)] rounded-2xl p-6 space-y-8 font-sans text-black">
           
           {/* Título principal */}
-          <h1 className="text-4xl font-bold text-center mb-8">PAGINA DE CONTACTO</h1>
+          <h1 className="text-4xl font-bold text-center mb-8">UNIVERSIDAD CATÓLICA BOLIVIANA</h1>
 
           {/* Encabezado con imágenes */}
           <div className="flex flex-col md:flex-row justify-center items-center gap-4">
@@ -47,7 +47,7 @@ const ContactoPage = () => {
               <img src="/media/contactoPage/equipo.jpg" alt="Equipo" className="mx-auto w-full rounded-xl object-contain" />
             </div>
             <p>
-              Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.
+            Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.
             </p>
           </section>
 

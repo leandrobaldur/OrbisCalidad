@@ -1,4 +1,5 @@
 import ingresarEmpresaModel from '../models/ingresarEmpresaModel.js';
+import logsModel from '../models/logsModel.js';
 
 const crearEmpresa = async (req, res) => {
   const requiredFields = [
@@ -6,9 +7,13 @@ const crearEmpresa = async (req, res) => {
     'nombre_comercial',
     'fecha_fundacion',
     'nit',
-    'eslogan',
+    'vision',
+    'mision',
     'descripcion',
-    'url'
+    'url',
+    'direccion_web',
+    'id_actividad',
+    'id_tamanio'
   ];
 
   const missingFields = requiredFields.filter(field => !req.body[field]);
@@ -39,12 +44,56 @@ const crearEmpresa = async (req, res) => {
   }
 };
 
-const listarEmpresas = async (req, res) => {
+const actualizarEmpresa = async (req, res) => {
+  const { id } = req.params;
+  const {
+    id_usuario,
+    denominacion_social,
+    nombre_comercial,
+    fecha_fundacion,
+    nit,
+    vision,
+    mision,
+    descripcion,
+    url,
+    direccion_web,
+    id_actividad,
+    id_tamanio
+  } = req.body;
+
+  const requiredFields = [
+    'id_usuario',
+    'denominacion_social',
+    'nombre_comercial',
+    'fecha_fundacion',
+    'nit',
+    'vision',
+    'mision',
+    'descripcion',
+    'url',
+    'direccion_web',
+    'id_actividad',
+    'id_tamanio'
+  ];
+
+  const missingFields = requiredFields.filter(field => !req.body[field]);
+  if (missingFields.length > 0) {
+    return res.status(400).json({
+      mensaje: `Faltan campos requeridos: ${missingFields.join(', ')}`
+    });
+  }
+
   try {
-    const empresas = await ingresarEmpresaModel.obtenerEmpresas();
-    res.status(200).json(empresas);
+    const empresaActualizada = await ingresarEmpresaModel.actualizarEmpresa(id, req.body);
+    await logsModel.registrarLog({ id_usuario, tabla: 'empresas', tipo_log: 'update' });
+
+    res.status(200).json({
+      mensaje: 'Empresa actualizada exitosamente',
+      empresa: empresaActualizada
+    });
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al obtener empresas' });
+    console.error('Error en actualizarEmpresa:', error);
+    res.status(500).json({ mensaje: 'Error al actualizar la empresa' });
   }
 };
 
@@ -78,68 +127,11 @@ const filtrarEmpresasPorPremio = async (req, res) => {
   }
 };
 
-const obtenerRubros = async (req, res) => {
-  try {
-    const rubros = await ingresarEmpresaModel.obtenerRubros();
-    res.status(200).json(rubros);
-  } catch (error) {
-    res.status(500).json({ mensaje: 'Error al obtener rubros' });
-  }
-};
-
-const filtrarEmpresasPorRubro = async (req, res) => {
-  const { id_rubro } = req.params;
-  try {
-    const empresas = await ingresarEmpresaModel.obtenerEmpresasPorRubro(id_rubro);
-    res.status(200).json(empresas);
-  } catch (error) {
-    console.error('Error en filtrarEmpresasPorRubro:', error);
-    res.status(500).json({ mensaje: 'Error al filtrar empresas por rubro' });
-  }
-};
-
-const obtenerEmpresasMayoresA50 = async (req, res) => {
-  try {
-    const empresas = await ingresarEmpresaModel.obtenerEmpresasMayoresA50();
-    res.status(200).json(empresas);
-  } catch (error) {
-    console.error('Error en obtenerEmpresasMayoresA50:', error);
-    res.status(500).json({ mensaje: 'Error al obtener empresas mayores a 50 años' });
-  }
-};
-
-
-const obtenerDepartamentos = async (req, res) => {
-  try {
-    const departamentos = await ingresarEmpresaModel.obtenerDepartamentos();
-    res.status(200).json(departamentos);
-  } catch (error) {
-    console.error('Error en obtenerDepartamentos:', error);
-    res.status(500).json({ mensaje: 'Error al obtener departamentos' });
-  }
-};
-
-const filtrarEmpresasPorDepartamento = async (req, res) => {
-  const { id_departamento } = req.params;
-  try {
-    const empresas = await ingresarEmpresaModel.obtenerEmpresasPorDepartamento(id_departamento);
-    res.status(200).json(empresas);
-  } catch (error) {
-    console.error('Error en filtrarEmpresasPorDepartamento:', error);
-    res.status(500).json({ mensaje: 'Error al filtrar empresas por departamento' });
-  }
-};
-
-
 export default {
   crearEmpresa,
   listarEmpresas,
   buscarEmpresas,
   obtenerPremios,
   filtrarEmpresasPorPremio,
-  obtenerRubros,
-  filtrarEmpresasPorRubro,
-  obtenerEmpresasMayoresA50,
-  obtenerDepartamentos,
-  filtrarEmpresasPorDepartamento,
 };
+

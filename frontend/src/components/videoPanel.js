@@ -3,11 +3,14 @@ import React from "react";
 const VideoPanel = ({ children, height = "50vh" }) => {
   return (
     <div
+    
       style={{
         width: "100%",
         height: height,
         position: "relative",
         overflow: "hidden",
+        borderTop: "0.7vh solid #03213B",    // borde superior actualizado
+        borderBottom: "0.7vh solid #03213B", // borde inferior actualizado
       }}
     >
       <div

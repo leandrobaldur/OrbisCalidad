@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaComments, FaUserCircle } from "react-icons/fa";
 import InicioSesion from "./inicioSesion";
+import axios from "axios";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -9,24 +9,37 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
-  // Efecto inicial + escucha cambios de login en localStorage
   useEffect(() => {
     const checkLoginStatus = () => {
       setLoggedIn(localStorage.getItem("loggedIn") === "true");
     };
 
-    checkLoginStatus(); // Al montar el componente
-
-    window.addEventListener("storage", checkLoginStatus); // Si otro componente cambia el login
+    checkLoginStatus();
+    window.addEventListener("storage", checkLoginStatus);
     return () => window.removeEventListener("storage", checkLoginStatus);
   }, []);
 
   const handleLoginClick = () => setShowLogin(true);
 
-  const handleLoginSuccess = ({ usuario, contrasena }) => {
-    localStorage.setItem("loggedIn", "true");
-    setLoggedIn(true);
-    setShowLogin(false);
+  const handleLoginSuccess = async ({ usuario, contrasena }) => {
+    try {
+      const res = await axios.post("http://localhost:3000/usuarios/login", {
+        usuario,
+        contrasenia: contrasena,
+      });
+
+      if (res.data && res.data.encontrado === 1) {
+        localStorage.setItem("loggedIn", "true");
+        localStorage.setItem("userInfo", JSON.stringify(res.data.usuario));
+        setLoggedIn(true);
+        setShowLogin(false);
+      } else {
+        alert("Credenciales incorrectas");
+      }
+    } catch (error) {
+      console.error("Error en login:", error);
+      alert("Error al iniciar sesión");
+    }
   };
 
   const handleCloseLogin = () => setShowLogin(false);
@@ -35,6 +48,7 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("loggedIn");
+    localStorage.removeItem("userInfo");
     setLoggedIn(false);
     setMenuOpen(false);
     navigate("/");
@@ -46,18 +60,36 @@ const Header = () => {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      padding: "1rem 2.5rem",
-      backgroundColor: "white",
+      padding: "1rem 2.5rem 0.5rem 2.5rem",
+      backgroundColor: "#f3efe8",
       position: "relative",
       zIndex: 50,
     },
-    icon: {
-      color: "black",
+    iconImg: {
+      height: "4.5vh",
+      width: "4.5vh",
       cursor: "pointer",
-    },
-    logo: {
-      height: "64px",
       objectFit: "contain",
+      userSelect: "none",
+      opacity: 0.8,
+    },
+    logoSmall: {
+      height: "40px",
+      objectFit: "contain",
+      opacity: 0.7,
+      cursor: "default",
+    },
+    centerContainer: {
+      display: "flex",
+      alignItems: "center",
+      gap: "1rem",
+      userSelect: "none",
+    },
+    title: {
+      fontFamily: "'Trajan Pro', serif",
+      fontSize: "clamp(20px, 4vw, 60px)",
+      color: "black",
+      whiteSpace: "nowrap",
     },
     dropdown: {
       position: "absolute",
@@ -82,48 +114,74 @@ const Header = () => {
   return (
     <>
       <header style={styles.header}>
-        <FaComments size={28} style={styles.icon} />
-        <img src="/media/header/logo.png" alt="Logo Bicentenario" style={styles.logo} />
-        <div>
-          <FaUserCircle
-            size={30}
-            style={styles.icon}
-            onClick={loggedIn ? handleUserClick : handleLoginClick}
-            title={loggedIn ? "Panel de administrador" : "Iniciar sesión"}
+        {/* Icono diálogo usando imagen */}
+        <img
+          src="/media/header/translate.png" // ajusta nombre según archivo
+          alt="Icono Diálogo"
+          style={styles.iconImg}
+          draggable={false}
+        />
+
+        {/* Centro: logos y título */}
+        <div style={styles.centerContainer}>
+          <img
+            src="/media/header/logo.png"
+            alt="Logo Bicentenario"
+            style={styles.logoSmall}
+            draggable={false}
           />
-          {loggedIn && menuOpen && (
-            <div style={styles.dropdown}>
-              <div
-                style={styles.dropdownItem}
-                onClick={() => {
-                  navigate("/editor-empresas");
-                  setMenuOpen(false);
-                }}
-              >
-                Admin.Empresas
-              </div>
-              <div
-                style={styles.dropdownItem}
-                onClick={() => {
-                  navigate("/editor-usuarios");
-                  setMenuOpen(false);
-                }}
-              >
-                Admin.Usuarios
-              </div>
-              <div
-                style={{
-                  ...styles.dropdownItem,
-                  color: "red",
-                  borderBottom: "none",
-                }}
-                onClick={handleLogout}
-              >
-                Cerrar Sesión
-              </div>
-            </div>
-          )}
+          <h1 style={styles.title}>LEGADO BOLIVIANO</h1>
+          <img
+            src="/media/header/logo.png"
+            alt="Logo Bicentenario"
+            style={styles.logoSmall}
+            draggable={false}
+          />
         </div>
+
+        {/* Icono usuario usando imagen */}
+        <img
+          src="/media/header/login.png" // ajusta nombre según archivo
+          alt={loggedIn ? "Panel de administrador" : "Iniciar sesión"}
+          style={styles.iconImg}
+          onClick={loggedIn ? handleUserClick : handleLoginClick}
+          draggable={false}
+          title={loggedIn ? "Panel de administrador" : "Iniciar sesión"}
+        />
+
+        {/* Menú desplegable */}
+        {loggedIn && menuOpen && (
+          <div style={styles.dropdown}>
+            <div
+              style={styles.dropdownItem}
+              onClick={() => {
+                navigate("/editor-empresas");
+                setMenuOpen(false);
+              }}
+            >
+              Admin.Empresas
+            </div>
+            <div
+              style={styles.dropdownItem}
+              onClick={() => {
+                navigate("/editor-usuarios");
+                setMenuOpen(false);
+              }}
+            >
+              Admin.Usuarios
+            </div>
+            <div
+              style={{
+                ...styles.dropdownItem,
+                color: "red",
+                borderBottom: "none",
+              }}
+              onClick={handleLogout}
+            >
+              Cerrar Sesión
+            </div>
+          </div>
+        )}
       </header>
 
       {showLogin && (

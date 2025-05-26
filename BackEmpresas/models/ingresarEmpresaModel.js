@@ -6,12 +6,15 @@ const insertarEmpresa = async (empresaData) => {
       denominacion_social,
       nombre_comercial,
       fecha_fundacion,
-      fecha_cierre,
       nit,
-      eslogan,
+      vision,
+      mision,
       descripcion,
-      url
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      url,
+      direccion_web,
+      id_actividad,
+      id_tamanio
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
     RETURNING id_empresa
   `;
 
@@ -19,11 +22,14 @@ const insertarEmpresa = async (empresaData) => {
     empresaData.denominacion_social,
     empresaData.nombre_comercial,
     empresaData.fecha_fundacion,
-    empresaData.fecha_cierre || null,
     empresaData.nit,
-    empresaData.eslogan,
+    empresaData.vision,
+    empresaData.mision,
     empresaData.descripcion,
-    empresaData.url
+    empresaData.url,
+    empresaData.direccion_web,
+    empresaData.id_actividad,
+    empresaData.id_tamanio
   ];
 
   try {
@@ -36,14 +42,46 @@ const insertarEmpresa = async (empresaData) => {
   }
 };
 
-const obtenerEmpresas = async () => {
-  const query = "SELECT id_empresa, nombre_comercial, denominacion_social FROM EMPRESAS";
+const actualizarEmpresa = async (id, empresaData) => {
+  const query = `
+    UPDATE EMPRESAS
+    SET
+      denominacion_social = $1,
+      nombre_comercial = $2,
+      fecha_fundacion = $3,
+      nit = $4,
+      vision = $5,
+      mision = $6,
+      descripcion = $7,
+      url = $8,
+      direccion_web = $9,
+      id_actividad = $10,
+      id_tamanio = $11
+    WHERE id_empresa = $12
+    RETURNING id_empresa
+  `;
+
+  const values = [
+    empresaData.denominacion_social,
+    empresaData.nombre_comercial,
+    empresaData.fecha_fundacion,
+    empresaData.nit,
+    empresaData.vision,
+    empresaData.mision,
+    empresaData.descripcion,
+    empresaData.url,
+    empresaData.direccion_web,
+    empresaData.id_actividad,
+    empresaData.id_tamanio,
+    id
+  ];
+
   try {
-    const { rows } = await pool.query(query);
-    return rows;
+    const { rows } = await pool.query(query, values);
+    return rows[0];
   } catch (error) {
-    console.error('Error al obtener empresas:', error);
-    throw new Error('Error al obtener empresas');
+    console.error('Error en actualizarEmpresa:', error);
+    throw new Error('Error al actualizar la empresa');
   }
 };
 
@@ -99,104 +137,10 @@ const obtenerEmpresasPorPremio = async (idPremio) => {
   }
 };
 
-const obtenerRubros = async () => {
-  const query = `SELECT id_rublo, nombre_rubro FROM rubros`;
-  try {
-    const { rows } = await pool.query(query);
-    return rows;
-  } catch (error) {
-    console.error('Error al obtener rubros:', error);
-    throw new Error('Error al obtener rubros');
-  }
-};
-
-const obtenerEmpresasPorRubro = async (idRublo) => {
-  const query = `
-    SELECT DISTINCT e.id_empresa, e.nombre_comercial, e.denominacion_social
-    FROM empresas e
-    JOIN empresa_actividad ea ON e.id_empresa = ea.id_empresa
-    JOIN rubros_actividades ra ON ea.id_actividad = ra.id_actividad
-    WHERE ra.id_rublo = $1
-  `;
-  try {
-    const { rows } = await pool.query(query, [idRublo]);
-    return rows;
-  } catch (error) {
-    console.error('Error al filtrar empresas por rubro:', error);
-    throw new Error('Error al filtrar empresas por rubro');
-  }
-};
-
-const obtenerEmpresasMayoresA50 = async () => {
-  const query = `
-    SELECT 
-      id_empresa, 
-      nombre_comercial, 
-      denominacion_social,
-      fecha_fundacion,
-      fecha_cierre,
-      EXTRACT(YEAR FROM COALESCE(fecha_cierre, CURRENT_DATE)) - EXTRACT(YEAR FROM fecha_fundacion) AS antiguedad
-    FROM empresas
-    WHERE 
-      (EXTRACT(YEAR FROM COALESCE(fecha_cierre, CURRENT_DATE)) - EXTRACT(YEAR FROM fecha_fundacion)) > 50
-  `;
-
-  try {
-    const { rows } = await pool.query(query);
-    return rows;
-  } catch (error) {
-    console.error('Error al obtener empresas mayores a 50 años:', error);
-    throw new Error('Error al obtener empresas con antigüedad mayor a 50 años');
-  }
-};
-
-// Obtener todos los departamentos
-const obtenerDepartamentos = async () => {
-  const query = `SELECT id_departamento, nombre_depto FROM departamentos`;
-  try {
-    const { rows } = await pool.query(query);
-    return rows;
-  } catch (error) {
-    console.error('Error al obtener departamentos:', error);
-    throw new Error('Error al obtener departamentos');
-  }
-};
-
-
-const obtenerEmpresasPorDepartamento = async (idDepartamento) => {
-  const query = `
-    SELECT DISTINCT e.id_empresa, e.nombre_comercial, e.denominacion_social
-    FROM empresas e
-    INNER JOIN empresas_sedes es ON e.id_empresa = es.id_empresa
-    INNER JOIN sedes s ON es.id_ubicacion = s.id_ubicacion
-    INNER JOIN municipios m ON s.id_municipio = m.id_municipio
-    INNER JOIN ciudades c ON m.id_ciudad = c.id_ciudad
-    INNER JOIN departamentos d ON c.id_departamento = d.id_departamento
-    WHERE d.id_departamento = $1
-  `;
-
-  try {
-    const { rows } = await pool.query(query, [idDepartamento]);
-    return rows;
-  } catch (error) {
-    console.error('Error al filtrar empresas por departamento:', error.message); // más claro
-    throw new Error('Error al filtrar empresas por departamento');
-  }
-};
-
-
-
-
-
 export default {
   insertarEmpresa,
   obtenerEmpresas,
   obtenerEmpresasConPropietarios,
   obtenerPremios,
-  obtenerEmpresasPorPremio,
-  obtenerRubros,
-  obtenerEmpresasPorRubro,
-  obtenerEmpresasMayoresA50,
-  obtenerDepartamentos,
-  obtenerEmpresasPorDepartamento,
+  obtenerEmpresasPorPremio
 };
