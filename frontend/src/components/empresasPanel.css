@@ -11,7 +11,11 @@ body {
 }
 
 .empresas-wrapper {
-  width: 100%;
+  width: 80%;
+
+  margin: 4vh auto;  /* centrado horizontal con margen arriba y abajo */
+  box-sizing: border-box;
+  min-height: 80vh; /* opcional para altura mínima */
 }
 
 /* ====== BARRA SUPERIOR ====== */
@@ -19,11 +23,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: rgba(0, 64, 124, 0.8);
-  padding: 10px 20px;
+  background-color: #052018;
+  padding: 2.5vh 3%;
   border-radius: 10px 10px 0 0;
-  margin: 20px auto 0;
-  max-width: 960px;
+  margin: 0 auto 0px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .barra-izquierda {
@@ -37,23 +42,23 @@ body {
 }
 
 .boton-antiguedad {
-  background-color: rgba(229, 199, 133, 0.6);
+  background-color: rgba(151, 149, 147, 0.4);
   border: none;
   cursor: pointer;
   font-weight: bold;
   display: flex;
   align-items: center;
   gap: 5px;
-  color: rgba(0, 64, 124, 0.9);
+  color: rgb(208, 211, 218);
   text-transform: uppercase;
-  font-size: 0.95rem;
+  font-size: 1.5rem;
   padding: 6px 12px;
   border-radius: 6px;
   transition: background 0.2s;
 }
 .boton-antiguedad:hover {
-  background-color: rgba(0, 64, 124, 0.9);
-  color: rgba(248, 240, 230, 0.9);
+  background-color: rgba(52, 57, 63, 0.9);
+  color: rgba(182, 180, 176, 0.9);
 }
 
 .barra-centro {
@@ -64,23 +69,23 @@ body {
 }
 
 .barra-centro input {
-  width: 240px;
-  padding: 6px 10px;
-  border-radius: 20px;
-  border: 2px solid rgba(0, 64, 124, 0.6);
+  width: 80%;
+  padding: 1.5% 3%;
+  border-radius: 5vh;
+  border: 0.1vh solid rgb(208, 211, 218);
   outline: none;
   font-size: 0.9rem;
-  height: 30px;
+  height: 100%;
   font-family: 'Poppins', sans-serif;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.6);
 }
 
 .icono-busqueda {
   position: absolute;
-  right: calc(50% - 110px);
+  right: 3%;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 1rem;
+  font-size: 250%;
   color: rgba(0, 114, 76, 0.7);
 }
 
@@ -91,24 +96,28 @@ body {
 }
 
 .barra-derecha img {
-  width: 24px;
-  height: 24px;
+  width: 60%;
+  height: 60%;
   filter: brightness(0) invert(1);
 }
 
 /* ====== PANEL PRINCIPAL ====== */
 .empresas-panel-container {
   display: flex;
-  background-color: rgba(0, 114, 76, 0.6);
-  padding: 30px 20px;
-  gap: 20px;
+  background-color: rgba(231, 231, 218, 0.6);
+  padding: 2% 2%;
+  gap: 2%;
   border-radius: 0 0 10px 10px;
-  max-width: 960px;
+  border: #052018 0.35vh solid;
+  max-width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
+  flex-wrap: wrap; /* para que en pantallas pequeñas se adapten */
 }
 
 .imagen-lateral {
-  width: 140px;
+  flex: 0 0 15%; /* ocupa 15% del ancho */
+  max-width: 140px;
   display: flex;
   align-items: flex-start;
 }
@@ -120,7 +129,9 @@ body {
 }
 
 .empresas-panel {
-  flex: 1;
+  flex: 1 1 80%; /* ocupa resto del espacio, se adapta */
+  min-width: 300px; /* evita reducción excesiva */
+  box-sizing: border-box;
 }
 
 .empresas-grid {
@@ -136,7 +147,7 @@ body {
   overflow: hidden;
   cursor: pointer;
   height: 150px;
-  background-color: rgba(229, 199, 133, 0.6);
+  background-color: #0D0605;
   position: relative;
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -247,7 +258,7 @@ body {
 .modal-content {
   background-color: rgba(248, 240, 230, 0.95);
   border-radius: 8px;
-  width: 80%;
+  width: 90%;
   max-width: 800px;
   max-height: 90vh;
   overflow-y: auto;
@@ -349,7 +360,6 @@ body {
   background-color: rgba(229, 199, 133, 0.7);
 }
 
-
 /* ANIMACIÓN */
 @keyframes fadeIn {
   from {
@@ -362,9 +372,7 @@ body {
   }
 }
 
-
-
-/* ====== ESTILOS RESPONSIVOS (igual que antes) ====== */
+/* ====== ESTILOS RESPONSIVOS ====== */
 @media (max-width: 768px) {
   .empresas-panel-container {
     flex-direction: column;
