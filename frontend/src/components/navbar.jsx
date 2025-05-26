@@ -1,10 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-// Suponemos id_rol: 1 es Administrador
 const ROL_ADMIN = 1;
 
-// Mapeo de IDs de rol a nombres legibles (esto lo definimos aquí o lo pasamos como prop si viene del backend)
 const getRoleName = (id_rol) => {
   switch (id_rol) {
     case 1:
@@ -16,8 +14,7 @@ const getRoleName = (id_rol) => {
   }
 };
 
-// El Navbar ahora recibe la información del usuario logeado
-const Navbar = ({ loggedInUser, onLogout }) => { // <--- Recibe loggedInUser y onLogout
+const Navbar = ({ loggedInUser, onLogout }) => {
   const baseLinks = [
     { label: "NOSOTROS", path: "/historia" },
     { label: "DASHBOARDS", path: "/dashboards" },
@@ -26,7 +23,6 @@ const Navbar = ({ loggedInUser, onLogout }) => { // <--- Recibe loggedInUser y o
     { label: "CONTACTO", path: "/contacto" },
   ];
 
-  // Si el usuario es administrador, añadir el enlace al Panel de Usuarios
   let finalLinks = [...baseLinks];
   if (loggedInUser && loggedInUser.id_rol === ROL_ADMIN) {
     finalLinks.push({ label: "ADMIN USUARIOS", path: "/panel-usuarios" });
@@ -59,7 +55,7 @@ const Navbar = ({ loggedInUser, onLogout }) => { // <--- Recibe loggedInUser y o
       display: "flex",
       alignItems: "center",
       gap: "1rem",
-      marginLeft: "2rem", // Espacio a la izquierda de los enlaces
+      marginLeft: "2rem",
       color: "#333",
       fontSize: "0.95rem",
     },
@@ -79,10 +75,7 @@ const Navbar = ({ loggedInUser, onLogout }) => { // <--- Recibe loggedInUser y o
     <nav style={styles.navbar}>
       {finalLinks.map((item, index) => (
         <React.Fragment key={index}>
-          <Link
-            to={item.path}
-            style={styles.link(item.label === "INICIO")}
-          >
+          <Link to={item.path} style={styles.link(item.label === "INICIO")}>
             {item.label}
           </Link>
           {index < finalLinks.length - 1 && (
@@ -91,12 +84,9 @@ const Navbar = ({ loggedInUser, onLogout }) => { // <--- Recibe loggedInUser y o
         </React.Fragment>
       ))}
 
-      {/* Mostrar información del usuario y botón de cerrar sesión si está logeado */}
       {loggedInUser && (
         <div style={styles.userInfo}>
-          <span>
-            {loggedInUser.usuario} ({getRoleName(loggedInUser.id_rol)})
-          </span>
+          <span>{loggedInUser.usuario} ({getRoleName(loggedInUser.id_rol)})</span>
           <button style={styles.logoutButton} onClick={onLogout}>
             Cerrar Sesión
           </button>

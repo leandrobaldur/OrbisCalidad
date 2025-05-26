@@ -42,7 +42,7 @@ function App() {
   return (
     <Router>
       <div style={{ fontFamily: "'Poppins', sans-serif" }}>
-        <Header />
+        <Header loggedInUser={loggedInUser} onLogout={handleLogout} onLogin={handleLogin} />
         <Navbar loggedInUser={loggedInUser} onLogout={handleLogout} />
 
         <Routes>
@@ -75,11 +75,19 @@ function App() {
             <>
               <Route
                 path="/editor-empresas"
-                element={<div style={{ padding: 50, textAlign: 'center', color: '#FF4201', fontWeight: 'bold' }}>No tienes permisos para acceder a esta página.</div>}
+                element={
+                  <div style={{ padding: 50, textAlign: 'center', color: '#FF4201', fontWeight: 'bold' }}>
+                    No tienes permisos para acceder a esta página.
+                  </div>
+                }
               />
               <Route
                 path="/panel-usuarios"
-                element={<div style={{ padding: 50, textAlign: 'center', color: '#FF4201', fontWeight: 'bold' }}>No tienes permisos para acceder a esta página.</div>}
+                element={
+                  <div style={{ padding: 50, textAlign: 'center', color: '#FF4201', fontWeight: 'bold' }}>
+                    No tienes permisos para acceder a esta página.
+                  </div>
+                }
               />
             </>
           )}
@@ -88,7 +96,16 @@ function App() {
             <Route
               path="*"
               element={
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 120px)', textAlign: 'center' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: 'calc(100vh - 120px)',
+                    textAlign: 'center',
+                  }}
+                >
                   <h1>Plataforma de Empresas</h1>
                   <p>Por favor, inicie sesión para acceder al sistema.</p>
                   <button

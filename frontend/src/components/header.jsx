@@ -1,44 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InicioSesion from "./inicioSesion";
 
-const Header = () => {
+const Header = ({ loggedInUser, onLogout, onLogin }) => {
   const navigate = useNavigate();
-  const [loggedIn, setLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
-  useEffect(() => {
-    const checkLoginStatus = () => {
-      setLoggedIn(localStorage.getItem("loggedIn") === "true");
-    };
-
-    checkLoginStatus();
-    window.addEventListener("storage", checkLoginStatus);
-    return () => window.removeEventListener("storage", checkLoginStatus);
-  }, []);
-
   const handleLoginClick = () => setShowLogin(true);
-
-  // Aquí corregido: recibe directamente el usuario autenticado
-  const handleLoginSuccess = (usuario) => {
-    localStorage.setItem("loggedIn", "true");
-    localStorage.setItem("userInfo", JSON.stringify(usuario));
-    setLoggedIn(true);
-    setShowLogin(false);
-  };
-
-  const handleCloseLogin = () => setShowLogin(false);
-
   const handleUserClick = () => setMenuOpen((prev) => !prev);
-
-  const handleLogout = () => {
-    localStorage.removeItem("loggedIn");
-    localStorage.removeItem("userInfo");
-    setLoggedIn(false);
-    setMenuOpen(false);
-    navigate("/");
-  };
+  const handleCloseLogin = () => setShowLogin(false);
 
   const styles = {
     header: {
@@ -100,15 +71,13 @@ const Header = () => {
   return (
     <>
       <header style={styles.header}>
-        {/* Icono diálogo usando imagen */}
         <img
-          src="/media/header/translate.png" // ajusta nombre según archivo
+          src="/media/header/translate.png"
           alt="Icono Diálogo"
           style={styles.iconImg}
           draggable={false}
         />
 
-        {/* Centro: logos y título */}
         <div style={styles.centerContainer}>
           <img
             src="/media/header/logo.png"
@@ -125,18 +94,16 @@ const Header = () => {
           />
         </div>
 
-        {/* Icono usuario usando imagen */}
         <img
-          src="/media/header/login.png" // ajusta nombre según archivo
-          alt={loggedIn ? "Panel de administrador" : "Iniciar sesión"}
+          src="/media/header/login.png"
+          alt={loggedInUser ? "Panel de administrador" : "Iniciar sesión"}
           style={styles.iconImg}
-          onClick={loggedIn ? handleUserClick : handleLoginClick}
+          onClick={loggedInUser ? handleUserClick : handleLoginClick}
           draggable={false}
-          title={loggedIn ? "Panel de administrador" : "Iniciar sesión"}
+          title={loggedInUser ? "Panel de administrador" : "Iniciar sesión"}
         />
 
-        {/* Menú desplegable */}
-        {loggedIn && menuOpen && (
+        {loggedInUser && menuOpen && (
           <div style={styles.dropdown}>
             <div
               style={styles.dropdownItem}
@@ -157,12 +124,11 @@ const Header = () => {
               Admin.Usuarios
             </div>
             <div
-              style={{
-                ...styles.dropdownItem,
-                color: "red",
-                borderBottom: "none",
+              style={{ ...styles.dropdownItem, color: "red", borderBottom: "none" }}
+              onClick={() => {
+                onLogout();
+                setMenuOpen(false);
               }}
-              onClick={handleLogout}
             >
               Cerrar Sesión
             </div>
@@ -171,7 +137,11 @@ const Header = () => {
       </header>
 
       {showLogin && (
-        <InicioSesion onLogin={handleLoginSuccess} onClose={handleCloseLogin} />
+        <InicioSesion onLogin={(user) => {
+          onLogout(); // Limpia antes por seguridad si hubiera sesión previa
+          onLogin(user);
+          setShowLogin(false);
+        }} onClose={handleCloseLogin} />
       )}
     </>
   );
