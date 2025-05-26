@@ -10,9 +10,11 @@ import EditorEmpresasPage from './screens/editorEmpresasPage';
 import EditorUsuariosPage from './screens/editorUsuariosPage';
 import DashboardPage from './screens/dashboardPage';
 
-
-import Header from './components/header'; // ⬅️ Este es el nuevo import
+import Header from './components/header';
 import Navbar from './components/navbar.jsx';
+
+// ✅ Importar el componente PanelEditorUsuarios (ajusta la ruta si lo moviste)
+import PanelEditorUsuarios from './components/panelEditorUsuarios';
 
 ReactDOM.render(
   <Router>
@@ -28,6 +30,8 @@ ReactDOM.render(
         <Route path="/editor-usuarios" element={<EditorUsuariosPage />} />
         <Route path="/dashboards" element={<DashboardPage />} />
 
+        {/* ✅ Nueva ruta para PanelEditorUsuarios */}
+        <Route path="/panel-usuarios" element={<PanelEditorUsuarios />} />
       </Routes>
     </div>
   </Router>,

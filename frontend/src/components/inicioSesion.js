@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Colores base, ahora con VERDE agregado
+// Colores base
 const PALETTE = {
   CLEMENTINA: "#FF4201",
   SKYNE: "#199ECA",
@@ -16,65 +16,78 @@ const PALETTE = {
 const ICON_SVG_SIZE = "40px";
 const ICON_CONTAINER_PADDING = "10px";
 
-// SVG de persona
+// Icono de Usuario
 const UserIcon = ({ color, size = ICON_SVG_SIZE }) => (
-  <svg
-    viewBox="0 0 24 24"
-    style={{ width: size, height: size, fill: color, display: "block" }}
-  >
+  <svg viewBox="0 0 24 24" style={{ width: size, height: size, fill: color, display: "block" }}>
     <path d="M12 12c2.76 0 5-2.24 5-5S14.76 2 12 2 7 4.24 7 7s2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z" />
   </svg>
 );
 
 const InicioSesion = ({ onLogin, onClose }) => {
   const [usuario, setUsuario] = useState("");
-  const [contrasena, setContrasena] = useState("");
+  const [contrasenia, setContrasenia] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [isVisible, setIsVisible] = useState(true);
 
-  // Animations variants
   const backdropVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.3 } },
     exit: { opacity: 0, transition: { duration: 0.3 } },
   };
+
   const modalVariants = {
     hidden: { y: -50, opacity: 0 },
     visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 120, damping: 20 } },
     exit: { y: -50, opacity: 0, transition: { duration: 0.3 } },
   };
+
   const iconVariants = {
     hidden: { scale: 0 },
     visible: { scale: 1, transition: { delay: 0.4, type: "spring", stiffness: 150 } },
     exit: { scale: 0, transition: { duration: 0.2 } },
   };
-  const inputVariants = {
-    focus: { scale: 1.02, boxShadow: `0 0 0 2px ${PALETTE.CLEMENTINA}`, transition: { duration: 0.3 } },
-  };
+
   const buttonVariants = {
     hover: { scale: 1.05, transition: { duration: 0.2 } },
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!usuario || !contrasena) {
-      alert("Por favor, rellena todos los campos");
+    setError(null);
+
+    if (!usuario || !contrasenia) {
+      setError("Por favor, rellena todos los campos.");
       return;
     }
+
     setLoading(true);
+
     try {
-      await onLogin({ usuario, contrasena });
-    } catch (error) {
-      alert("Error al iniciar sesión. Verifica tus datos.");
-      console.error(error);
+      const response = await fetch("http://localhost:3000/usuarios/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ usuario, contrasenia }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || data.encontrado !== 1) {
+        throw new Error(data.mensaje || "Credenciales incorrectas.");
+      }
+
+      alert("¡Login exitoso!");
+      onLogin(data.usuario);
+      handleClose();
+    } catch (err) {
+      setError(err.message);
+      console.error("Error de login:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleClose = () => {
-    setIsVisible(false);
-  };
+  const handleClose = () => setIsVisible(false);
 
   const inputBaseStyle = {
     width: "100%",
@@ -89,6 +102,7 @@ const InicioSesion = ({ onLogin, onClose }) => {
     color: PALETTE.NEGRO,
     fontFamily: "'Caveat', cursive",
   };
+
   const iconContainerStyle = {
     position: "absolute",
     top: "-30px",
@@ -113,12 +127,7 @@ const InicioSesion = ({ onLogin, onClose }) => {
   };
 
   return (
-    <AnimatePresence
-      onExitComplete={() => {
-        // Una vez termine la animación de salida, llamamos a onClose
-        onClose();
-      }}
-    >
+    <AnimatePresence onExitComplete={onClose}>
       {isVisible && (
         <motion.div
           key="backdrop"
@@ -147,18 +156,10 @@ const InicioSesion = ({ onLogin, onClose }) => {
             exit="exit"
             style={modalStyle}
           >
-            {/* Icono centrado */}
-            <motion.div
-              variants={iconVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              style={iconContainerStyle}
-            >
+            <motion.div variants={iconVariants} initial="hidden" animate="visible" exit="exit" style={iconContainerStyle}>
               <UserIcon color={PALETTE.NEGRO} />
             </motion.div>
 
-            {/* Botón cerrar */}
             <motion.button
               onClick={handleClose}
               whileHover={{ scale: 1.2 }}
@@ -178,7 +179,6 @@ const InicioSesion = ({ onLogin, onClose }) => {
               &times;
             </motion.button>
 
-            {/* Título */}
             <h2
               style={{
                 margin: "15px 0",
@@ -187,30 +187,25 @@ const InicioSesion = ({ onLogin, onClose }) => {
                 color: PALETTE.NEGRO,
                 textTransform: "uppercase",
                 letterSpacing: "1px",
-                fontFamily: "'Poppins', sans-serif",
               }}
             >
               Inicio de Sesión
             </h2>
 
-            {/* Formulario */}
             <form onSubmit={handleSubmit}>
+              {error && <p style={{ color: "red", marginBottom: "15px" }}>{error}</p>}
               <motion.input
                 type="text"
                 placeholder="USUARIO"
                 value={usuario}
                 onChange={(e) => setUsuario(e.target.value)}
-                variants={inputVariants}
-                whileFocus="focus"
                 style={inputBaseStyle}
               />
               <motion.input
                 type="password"
                 placeholder="CONTRASEÑA"
-                value={contrasena}
-                onChange={(e) => setContrasena(e.target.value)}
-                variants={inputVariants}
-                whileFocus="focus"
+                value={contrasenia}
+                onChange={(e) => setContrasenia(e.target.value)}
                 style={inputBaseStyle}
               />
               <motion.button
@@ -230,7 +225,6 @@ const InicioSesion = ({ onLogin, onClose }) => {
                   cursor: loading ? "not-allowed" : "pointer",
                   textTransform: "uppercase",
                   opacity: loading ? 0.75 : 1,
-                  fontFamily: "'Poppins', sans-serif",
                 }}
               >
                 {loading ? "Iniciando..." : "ENVIAR"}
@@ -242,4 +236,5 @@ const InicioSesion = ({ onLogin, onClose }) => {
     </AnimatePresence>
   );
 };
+
 export default InicioSesion;

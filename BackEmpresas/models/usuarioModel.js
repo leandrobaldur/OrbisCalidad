@@ -20,7 +20,7 @@ const buscarUsuario = async (usuario) => {
 const insertUsuario = async (usuario, contrasenia) => {
   const query = `
     INSERT INTO USUARIOS (id_rol, usuario, contrasenia)
-    VALUES (2, $1, $2))
+    VALUES (2, $1, $2)
     RETURNING id_usuario, usuario, id_rol
   `;
   const values = [usuario, contrasenia];
@@ -34,7 +34,24 @@ const insertUsuario = async (usuario, contrasenia) => {
   }
 };
 
+// ✅ NUEVA FUNCIÓN PARA GET /usuarios
+const obtenerTodosLosUsuarios = async () => {
+  const query = `
+    SELECT id_usuario, id_rol, usuario
+    FROM USUARIOS
+    ORDER BY id_usuario ASC
+  `;
+  try {
+    const { rows } = await pool.query(query);
+    return rows;
+  } catch (error) {
+    console.error('Error en obtenerTodosLosUsuarios:', error);
+    throw new Error('Error al obtener la lista de usuarios');
+  }
+};
+
 export default {
   buscarUsuario,
   insertUsuario,
+  obtenerTodosLosUsuarios, // ✅ agregado al export
 };

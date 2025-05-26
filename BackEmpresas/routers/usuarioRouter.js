@@ -177,6 +177,47 @@ const router = express.Router();
  *                  type: string
  *                  example: "Error al crear colaborador"
  */
+
+/**
+ * @swagger
+ * /usuarios:
+ *   get:
+ *     tags:
+ *       - Autenticación
+ *     summary: Obtener todos los usuarios
+ *     description: Retorna una lista de todos los usuarios registrados con su ID, rol y nombre de usuario.
+ *     responses:
+ *       200:
+ *         description: Lista de usuarios obtenida exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id_usuario:
+ *                     type: integer
+ *                     example: 1
+ *                   id_rol:
+ *                     type: integer
+ *                     example: 2
+ *                   usuario:
+ *                     type: string
+ *                     example: "admin123"
+ *       500:
+ *         description: Error interno al obtener usuarios
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *                   example: "Error interno al obtener usuarios"
+ */
+router.get('/', usuarioController.getUsuarios);
+
 router.post('/login', usuarioController.loginUsuario);
 router.post('/registro', usuarioController.createColaborador);
 
