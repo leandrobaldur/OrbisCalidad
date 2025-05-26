@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Colores base, ahora con VERDE agregado
+// Colores base
 const PALETTE = {
   CLEMENTINA: "#FF4201",
   SKYNE: "#199ECA",
@@ -16,7 +16,7 @@ const PALETTE = {
 const ICON_SVG_SIZE = "40px";
 const ICON_CONTAINER_PADDING = "10px";
 
-// SVG de persona
+// Icono de Usuario
 const UserIcon = ({ color, size = ICON_SVG_SIZE }) => (
   <svg
     viewBox="0 0 24 24"
@@ -28,11 +28,13 @@ const UserIcon = ({ color, size = ICON_SVG_SIZE }) => (
 
 const InicioSesion = ({ onLogin, onClose }) => {
   const [usuario, setUsuario] = useState("");
-  const [contrasena, setContrasena] = useState("");
+  // El backend espera 'contrasenia', así que cambiamos el nombre del estado para mayor claridad
+  const [contrasenia, setContrasenia] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null); // Estado para manejar errores
   const [isVisible, setIsVisible] = useState(true);
 
-  // Animations variants
+  // Variantes de animación (sin cambios)
   const backdropVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.3 } },
@@ -55,27 +57,59 @@ const InicioSesion = ({ onLogin, onClose }) => {
     hover: { scale: 1.05, transition: { duration: 0.2 } },
   };
 
+  // ✅ *** MODIFICACIÓN PRINCIPAL AQUÍ *** ✅
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!usuario || !contrasena) {
-      alert("Por favor, rellena todos los campos");
+    setError(null); // Limpiar errores previos
+
+    if (!usuario || !contrasenia) {
+      setError("Por favor, rellena todos los campos.");
       return;
     }
+
     setLoading(true);
+
     try {
-      await onLogin({ usuario, contrasena });
-    } catch (error) {
-      alert("Error al iniciar sesión. Verifica tus datos.");
-      console.error(error);
+      const response = await fetch("http://localhost:3000/usuarios/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // El backend espera 'usuario' y 'contrasenia' en el body
+        body: JSON.stringify({ usuario, contrasenia }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Si la respuesta no es 2xx, lanzamos un error con el mensaje del backend
+        throw new Error(data.mensaje || "Error al iniciar sesión.");
+      }
+
+      // Si el login es exitoso (encontrado: 1)
+      if (data.encontrado === 1) {
+        alert("¡Login exitoso!");
+        onLogin(data.usuario); // Pasamos los datos del usuario a la función onLogin
+        handleClose(); // Cerramos el modal
+      } else {
+        // Por si acaso el backend devuelve 200 pero encontrado: 0
+        throw new Error(data.mensaje || "Credenciales incorrectas.");
+      }
+    } catch (err) {
+      // Capturamos cualquier error y lo mostramos
+      setError(err.message);
+      console.error("Error de login:", err);
     } finally {
       setLoading(false);
     }
   };
 
+
   const handleClose = () => {
     setIsVisible(false);
   };
 
+  // Estilos (sin cambios)
   const inputBaseStyle = {
     width: "100%",
     padding: "12px 15px",
@@ -115,7 +149,6 @@ const InicioSesion = ({ onLogin, onClose }) => {
   return (
     <AnimatePresence
       onExitComplete={() => {
-        // Una vez termine la animación de salida, llamamos a onClose
         onClose();
       }}
     >
@@ -147,7 +180,6 @@ const InicioSesion = ({ onLogin, onClose }) => {
             exit="exit"
             style={modalStyle}
           >
-            {/* Icono centrado */}
             <motion.div
               variants={iconVariants}
               initial="hidden"
@@ -158,7 +190,6 @@ const InicioSesion = ({ onLogin, onClose }) => {
               <UserIcon color={PALETTE.NEGRO} />
             </motion.div>
 
-            {/* Botón cerrar */}
             <motion.button
               onClick={handleClose}
               whileHover={{ scale: 1.2 }}
@@ -178,7 +209,6 @@ const InicioSesion = ({ onLogin, onClose }) => {
               &times;
             </motion.button>
 
-            {/* Título */}
             <h2
               style={{
                 margin: "15px 0",
@@ -193,8 +223,9 @@ const InicioSesion = ({ onLogin, onClose }) => {
               Inicio de Sesión
             </h2>
 
-            {/* Formulario */}
             <form onSubmit={handleSubmit}>
+               {/* Mensaje de error */}
+               {error && <p style={{ color: 'red', marginBottom: '15px' }}>{error}</p>}
               <motion.input
                 type="text"
                 placeholder="USUARIO"
@@ -207,8 +238,8 @@ const InicioSesion = ({ onLogin, onClose }) => {
               <motion.input
                 type="password"
                 placeholder="CONTRASEÑA"
-                value={contrasena}
-                onChange={(e) => setContrasena(e.target.value)}
+                value={contrasenia}
+                onChange={(e) => setContrasenia(e.target.value)}
                 variants={inputVariants}
                 whileFocus="focus"
                 style={inputBaseStyle}

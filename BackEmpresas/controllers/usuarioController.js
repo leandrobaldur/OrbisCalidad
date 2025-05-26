@@ -1,3 +1,4 @@
+import logsModel from '../models/logsModel.js';
 import usuarioModel from '../models/usuarioModel.js';
 import bcrypt from 'bcrypt';
 
