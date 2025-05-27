@@ -139,7 +139,7 @@ const obtenerEmpresasPorPremio = async (idPremio) => {
 
 export default {
   insertarEmpresa,
-  obtenerEmpresas,
+ actualizarEmpresa,
   obtenerEmpresasConPropietarios,
   obtenerPremios,
   obtenerEmpresasPorPremio

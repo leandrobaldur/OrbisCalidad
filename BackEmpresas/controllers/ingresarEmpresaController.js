@@ -83,16 +83,19 @@ const actualizarEmpresa = async (req, res) => {
     });
   }
 
-  try {
+ try {
+    // Cambia empresaData por req.body, o arma un objeto con los campos necesarios:
     const empresaActualizada = await ingresarEmpresaModel.actualizarEmpresa(id, req.body);
-    await logsModel.registrarLog({ id_usuario, tabla: 'empresas', tipo_log: 'update' });
+
+    // Registro log, respuesta exitosa
+    await logsModel.registrarLog({ id_usuario: req.body.id_usuario, tabla: 'empresas', tipo_log: 'update' });
 
     res.status(200).json({
       mensaje: 'Empresa actualizada exitosamente',
       empresa: empresaActualizada
     });
   } catch (error) {
-    console.error('Error en actualizarEmpresa:', error);
+    console.error('Error en actualizarEmpresa:', error.stack || error);
     res.status(500).json({ mensaje: 'Error al actualizar la empresa' });
   }
 };
@@ -129,9 +132,9 @@ const filtrarEmpresasPorPremio = async (req, res) => {
 
 export default {
   crearEmpresa,
-  listarEmpresas,
   buscarEmpresas,
   obtenerPremios,
   filtrarEmpresasPorPremio,
+  actualizarEmpresa,   // <--- Agrega esta línea
 };
 

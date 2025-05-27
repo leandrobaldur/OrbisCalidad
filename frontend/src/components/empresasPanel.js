@@ -225,7 +225,6 @@ const handleGuardarCambios = async (empresaEditada) => {
   try {
     setLoading(true);
 
-    // Validaciones para campos obligatorios editables
     if (!empresaEditada.denominacion_social || empresaEditada.denominacion_social.trim() === '') {
       alert("Debe ingresar la denominación social.");
       setLoading(false);
@@ -237,6 +236,13 @@ const handleGuardarCambios = async (empresaEditada) => {
       setLoading(false);
       return;
     }
+
+    if (!empresaEditada.id) {
+      alert("No se encontró el ID de la empresa para actualizar.");
+      setLoading(false);
+      return;
+    }
+
     const payload = {
       id_usuario: loggedInUser.id_usuario || 0,
       denominacion_social: empresaEditada.denominacion_social.trim(),
@@ -248,10 +254,11 @@ const handleGuardarCambios = async (empresaEditada) => {
       descripcion: empresaEditada.descripcion || '',
       url: empresaEditada.url?.trim() || "http://example.com",
       direccion_web: empresaEditada.sitioWeb || '',
-      id_actividad: empresaEditada.id_actividad || 1, // enviar el valor actual
-      id_tamanio: empresaEditada.id_tamanio || 1,       // enviar el valor actual
+      id_actividad: empresaEditada.id_actividad || 1,
+      id_tamanio: empresaEditada.id_tamanio || 1,
     };
 
+    console.log('Actualizando empresa id:', empresaEditada.id, 'con datos:', payload);
 
     await axios.put(`http://localhost:3000/actualizarEmpresa/${empresaEditada.id}`, payload);
 
@@ -266,6 +273,7 @@ const handleGuardarCambios = async (empresaEditada) => {
     setLoading(false);
   }
 };
+
 
   const visitarSitio = () => {
     if (!selectedEmpresa?.sitioWeb) return;

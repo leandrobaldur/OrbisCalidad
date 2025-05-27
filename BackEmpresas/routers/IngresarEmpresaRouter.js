@@ -1,5 +1,6 @@
 import express from 'express';
 import empresaController from '../controllers/ingresarEmpresaController.js';
+import ingresarEmpresaController from '../controllers/ingresarEmpresaController.js';
 
 const router = express.Router();
 
@@ -83,10 +84,11 @@ const router = express.Router();
  */
 
 router.post('/ingresarEmpresa', empresaController.crearEmpresa);
-router.get('/empresas', empresaController.listarEmpresas);
 router.get('/buscarEmpresas', empresaController.buscarEmpresas);
 router.get('/premios', empresaController.obtenerPremios);
 router.get('/empresas/premio/:id_premio', empresaController.filtrarEmpresasPorPremio);
+// ** Agregar esta línea para el PUT **
+router.put('/actualizarEmpresa/:id', ingresarEmpresaController.actualizarEmpresa);
 
 
 export default router;
