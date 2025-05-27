@@ -1,19 +1,19 @@
-// 1. IMPORTS (poner al inicio de EmpresasPanel.js)
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import axios from 'axios';
 import './empresasPanel.css';
 
-// 2. COMPONENTE Y ESTADOS (después de imports)
 const EmpresasPanel = () => {
   // Estados para datos
   const [fullEmpresas, setFullEmpresas] = useState([]);
   const [empresas, setEmpresas] = useState([]);
   const [busqueda, setBusqueda] = useState('');
   const [ordenAntiguedad, setOrdenAntiguedad] = useState('asc');
-  const [filtro, setFiltro] = useState(null); // '50años'|'premio'|'internacional'|'familiar'
+  const [filtroActivo, setFiltroActivo] = useState(null); // '50años'|'premio'|'rubro'|'departamento'
   const [selectedEmpresa, setSelectedEmpresa] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [empresasAgrupadas, setEmpresasAgrupadas] = useState({});
+  const [loading, setLoading] = useState(true);
 
   // Placeholder lateral
   const imagenLateral = 'https://via.placeholder.com/150x150.png?text=Lateral';
@@ -21,106 +21,154 @@ const EmpresasPanel = () => {
   // Base URL para Cloudinary
   const CLOUDINARY_BASE_URL = 'https://res.cloudinary.com/diswqpy8v/image/upload';
 
-  // 3. MAPEAR RESPUESTA DEL API (antes de los useEffect)
+  // Mapear respuesta del API
   const mapEmpresaResumen = e => ({
     id: e.id_empresa,
     nombre: e.nombre_comercial,
     rubro: e.nombre_actividad,
+    descripcion_actividad: e.descripcion_actividad,
     slogan: e.vision,
     descripcion: e.descripcion,
+    fecha_fundacion: e.fecha_fundacion,
     fundacion: new Date(e.fecha_fundacion).getFullYear(),
-    sede: e.sedes?.[0]?.ciudad || '',
-    empleados: `${e.items?.length || 0} items`,  // ajustar según tu campo
+    sede: e.sedes?.[0]?.ciudad,
+    departamento: e.sedes?.[0]?.departamento,
+    empleados: e.nombre_tamanio,
     sitioWeb: e.direccion_web,
-    imagen: e.urlLogo || 'https://via.placeholder.com/300.png?text=Sin+Imagen'
+    imagen: e.urlLogo ? 
+      (e.urlLogo.startsWith('http') ? e.urlLogo : `${CLOUDINARY_BASE_URL}/${e.urlLogo}`) 
+      : 'https://via.placeholder.com/300.png?text=Sin+Imagen',
+    tienePremios: e.premios?.length > 0,
+    rubros: e.rubros || [],
+    operacionesInternacionales: e.operaciones_internacionales || [],
+    familia: e.familia || [],
+    premios: e.premios || []
   });
 
-  // 4. FETCH INICIAL (useEffect para /empresas/resumen)
+  // Fetch inicial
   useEffect(() => {
-    axios.get('http://localhost:3000/empresas/resumen')
-      .then(({ data }) => {
+    const fetchEmpresas = async () => {
+      try {
+        const { data } = await axios.get('http://localhost:3000/empresas/resumen');
         const mapped = data.map(mapEmpresaResumen);
         setFullEmpresas(mapped);
         setEmpresas(mapped);
-      })
-      .catch(console.error);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error al cargar empresas:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchEmpresas();
   }, []);
 
-  // 5. FILTRAR Y ORDENAR (useEffect que depende de fullEmpresas, busqueda, filtro, ordenAntiguedad)
+  // Filtrar y ordenar
   useEffect(() => {
     let lista = [...fullEmpresas];
-    const añoActual = new Date().getFullYear();
     const term = busqueda.trim().toLowerCase();
 
-    // Búsqueda: startsWith
+    // Búsqueda
     if (term) {
       lista = lista.filter(e =>
-        e.nombre.toLowerCase().startsWith(term)
+        e.nombre.toLowerCase().includes(term) || 
+        (e.rubro && e.rubro.toLowerCase().includes(term)) ||
+        (e.departamento && e.departamento.toLowerCase().includes(term))
       );
     }
 
-    // Filtros locales
-    if (filtro === '50años') {
-      lista = lista.filter(e => añoActual - e.fundacion > 50);
-    } else if (filtro === 'internacional') {
-      lista = lista.filter(e => e.operacionesInternacionales?.length > 0);
-    } else if (filtro === 'familiar') {
-      lista = lista.filter(e => e.familia?.length > 0);
-    }
-    // 'premio' se maneja en handler
-
     // Orden por antigüedad
     lista.sort((a, b) => {
-      const ageA = añoActual - a.fundacion;
-      const ageB = añoActual - b.fundacion;
-      return ordenAntiguedad === 'asc' ? ageA - ageB : ageB - ageA;
+      const dateA = new Date(a.fecha_fundacion);
+      const dateB = new Date(b.fecha_fundacion);
+      return ordenAntiguedad === 'asc' ? dateA - dateB : dateB - dateA;
     });
 
     setEmpresas(lista);
-  }, [fullEmpresas, busqueda, filtro, ordenAntiguedad]);
+  }, [fullEmpresas, busqueda, ordenAntiguedad]);
 
-  // 6. HANDLERS
-    // Cambia asc <-> desc
-  const toggleOrdenAntiguedad = () => {
-    setOrdenAntiguedad(prev => prev === 'asc' ? 'desc' : 'asc');
-  };
+  // Manejar filtros
+  const aplicarFiltro = (tipoFiltro) => {
+    if (filtroActivo === tipoFiltro) {
+      // Si el filtro ya está activo, lo desactivamos
+      setEmpresas(fullEmpresas);
+      setEmpresasAgrupadas({});
+      setFiltroActivo(null);
+      return;
+    }
 
-
-  // Click iconos
-  const handleIconClick = type => {
-    if (type === 'premio') {
-      if (filtro === 'premio') {
-        setFiltro(null);
-        setEmpresas(fullEmpresas);
-      } else {
-        axios.get('http://localhost:3000/empresas/premio/1')
-          .then(({ data }) => setEmpresas(data.map(mapEmpresaResumen)))
-          .catch(console.error);
-        setFiltro('premio');
-      }
-    } else {
-      setFiltro(prev => prev === type ? null : type);
+    setFiltroActivo(tipoFiltro);
+    
+    if (tipoFiltro === '50años') {
+      const añoActual = new Date().getFullYear();
+      const empresas50 = fullEmpresas.filter(e => añoActual - e.fundacion > 50);
+      const otrasEmpresas = fullEmpresas.filter(e => añoActual - e.fundacion <= 50);
+      
+      setEmpresasAgrupadas({
+        'Empresas con más de 50 años': empresas50,
+        'Otras empresas': otrasEmpresas
+      });
+    } 
+    else if (tipoFiltro === 'premio') {
+      const conPremios = fullEmpresas.filter(e => e.tienePremios);
+      const sinPremios = fullEmpresas.filter(e => !e.tienePremios);
+      
+      setEmpresasAgrupadas({
+        'Empresas con premios': conPremios,
+        'Empresas sin premios': sinPremios
+      });
+    } 
+    else if (tipoFiltro === 'rubro') {
+      const agrupadasPorRubro = fullEmpresas.reduce((acc, empresa) => {
+        const rubro = empresa.rubro || 'Sin rubro';
+        if (!acc[rubro]) {
+          acc[rubro] = [];
+        }
+        acc[rubro].push(empresa);
+        return acc;
+      }, {});
+      
+      setEmpresasAgrupadas(agrupadasPorRubro);
+    } 
+    else if (tipoFiltro === 'departamento') {
+      const agrupadasPorDepto = fullEmpresas.reduce((acc, empresa) => {
+        const depto = empresa.departamento || 'Sin departamento';
+        if (!acc[depto]) {
+          acc[depto] = [];
+        }
+        acc[depto].push(empresa);
+        return acc;
+      }, {});
+      
+      setEmpresasAgrupadas(agrupadasPorDepto);
     }
   };
 
   // Abrir modal con detalles
-  const openModal = empresa => {
-    axios.get(`http://localhost:3000/empresa/${empresa.id}`)
-      .then(({ data }) => {
-        setSelectedEmpresa({
-          nombre: data.nombre_comercial,
-          slogan: data.vision,
-          descripcion: data.descripcion,
-          rubro: data.descripcion_actividad,
-          fundacion: new Date(data.fecha_fundacion).getFullYear(),
-          sede: data.sedes?.[0]?.ciudad || '',
-          empleados: `${data.items?.length || 0} items`,  
-          sitioWeb: data.direccion_web,
-          imagen: data.urlLogo || 'https://via.placeholder.com/300.png?text=Sin+Imagen'
-        });
-        setShowModal(true);
-      })
-      .catch(console.error);
+  const openModal = async (empresa) => {
+    try {
+      const { data } = await axios.get(`http://localhost:3000/empresa/${empresa.id}`);
+      setSelectedEmpresa({
+        nombre: data.nombre_comercial,
+        slogan: data.vision,
+        descripcion: data.descripcion,
+        rubro: data.nombre_actividad,
+        descripcion_actividad: data.descripcion_actividad,
+        fundacion: new Date(data.fecha_fundacion).getFullYear(),
+        sede: data.sedes?.[0]?.ciudad,
+        departamento: data.sedes?.[0]?.departamento,
+        empleados: data.nombre_tamanio,
+        sitioWeb: data.direccion_web,
+        imagen: data.urlLogo || 'https://via.placeholder.com/300.png?text=Sin+Imagen',
+        premios: data.premios || [],
+        rubros: data.rubros || [],
+        operacionesInternacionales: data.operaciones_internacionales || [],
+        familia: data.familia || []
+      });
+      setShowModal(true);
+    } catch (error) {
+      console.error('Error al cargar detalles de la empresa:', error);
+    }
   };
 
   const closeModal = () => {
@@ -129,6 +177,7 @@ const EmpresasPanel = () => {
   };
 
   const visitarSitio = () => {
+    if (!selectedEmpresa.sitioWeb) return;
     const url = selectedEmpresa.sitioWeb.startsWith('http')
       ? selectedEmpresa.sitioWeb
       : `https://${selectedEmpresa.sitioWeb}`;
@@ -139,14 +188,80 @@ const EmpresasPanel = () => {
     window.location.href = `mailto:info@desconocido.com`;
   };
 
-  // 7. JSX (return): coloca todo este bloque al final de EmpresasPanel
+  // Renderizar empresas agrupadas o normales
+  const renderEmpresas = () => {
+    if (filtroActivo && Object.keys(empresasAgrupadas).length > 0) {
+      return Object.entries(empresasAgrupadas).map(([grupo, empresasGrupo]) => (
+        empresasGrupo.length > 0 && (
+          <React.Fragment key={grupo}>
+            <div className="grupo-separador">
+              <h3>----- {grupo} -----</h3>
+            </div>
+            {empresasGrupo.map((e, i) => (
+              <motion.div
+                key={e.id}
+                className="empresa-card"
+                onClick={() => openModal(e)}
+                whileHover={{ scale: 1.05 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: i * 0.1 }}
+              >
+                <div className="empresa-img-contenedor">
+                  <img src={e.imagen} alt={e.nombre} />
+                  <div className="empresa-nombre-default">{e.nombre}</div>
+                  <div className="empresa-overlay">
+                    <div className="nombre">{e.nombre}</div>
+                    <div className="rubro">{e.rubro}</div>
+                    <div className="slogan">{e.slogan}</div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </React.Fragment>
+        )
+      ));
+    }
+
+    return empresas.map((e, i) => (
+      <motion.div
+        key={e.id}
+        className="empresa-card"
+        onClick={() => openModal(e)}
+        whileHover={{ scale: 1.05 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: i * 0.1 }}
+      >
+        <div className="empresa-img-contenedor">
+          <img src={e.imagen} alt={e.nombre} />
+          <div className="empresa-nombre-default">{e.nombre}</div>
+          <div className="empresa-overlay">
+            <div className="nombre">{e.nombre}</div>
+            <div className="rubro">{e.rubro}</div>
+            <div className="slogan">{e.slogan}</div>
+          </div>
+        </div>
+      </motion.div>
+    ));
+  };
+
+  if (loading) {
+    return <div className="cargando">Cargando empresas...</div>;
+  }
+
   return (
     <motion.div className="empresas-wrapper" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       {/* BARRA SUPERIOR */}
       <div className="barra-superior">
-        <button className="boton-antiguedad" onClick={toggleOrdenAntiguedad}>
-          ANTIGÜEDAD {ordenAntiguedad === 'asc' ? '↑' : '↓'}
+        <button
+          className={`boton-antiguedad ${ordenAntiguedad}`}
+          onClick={() => setOrdenAntiguedad(prev => prev === 'asc' ? 'desc' : 'asc')}
+          title={`Ordenar por antigüedad (${ordenAntiguedad === 'asc' ? 'más antiguas primero' : 'más recientes primero'})`}
+        >
+          {ordenAntiguedad === 'asc' ? 'Más antiguas ↑' : 'Más recientes ↓'}
         </button>
+
         <div className="barra-centro">
           <input
             type="text"
@@ -157,17 +272,37 @@ const EmpresasPanel = () => {
           <span className="icono-busqueda">🔍</span>
         </div>
         <div className="barra-derecha">
-          <button className={`boton-icono ${filtro==='50años'?'activo':''}`} onClick={() => handleIconClick('50años')}>
+          <button 
+            className={`boton-icono ${filtroActivo==='50años'?'activo':''}`} 
+            onClick={() => aplicarFiltro('50años')}
+            title="Filtrar por antigüedad (>50 años)"
+          >
             <img src="media/busqueda/plus.png" alt=">50 años" />
+            <span>+50 años</span>
           </button>
-          <button className={`boton-icono ${filtro==='premio'?'activo':''}`} onClick={() => handleIconClick('premio')}>
+          <button 
+            className={`boton-icono ${filtroActivo==='premio'?'activo':''}`} 
+            onClick={() => aplicarFiltro('premio')}
+            title="Filtrar por premios"
+          >
             <img src="media/busqueda/medalla.png" alt="premio" />
+            <span>Premios</span>
           </button>
-          <button className={`boton-icono ${filtro==='internacional'?'activo':''}`} onClick={() => handleIconClick('internacional')}>
-            <img src="media/busqueda/cerebro.png" alt="internacional" />
+          <button 
+            className={`boton-icono ${filtroActivo==='rubro'?'activo':''}`} 
+            onClick={() => aplicarFiltro('rubro')}
+            title="Filtrar por rubros"
+          >
+            <img src="media/busqueda/cerebro.png" alt="rubro" />
+            <span>Rubros</span>
           </button>
-          <button className={`boton-icono ${filtro==='familiar'?'activo':''}`} onClick={() => handleIconClick('familiar')}>
-            <img src="media/busqueda/mapa.png" alt="familiar" />
+          <button 
+            className={`boton-icono ${filtroActivo==='departamento'?'activo':''}`} 
+            onClick={() => aplicarFiltro('departamento')}
+            title="Filtrar por departamentos"
+          >
+            <img src="media/busqueda/mapa.png" alt="departamento" />
+            <span>Deptos.</span>
           </button>
         </div>
       </div>
@@ -179,27 +314,7 @@ const EmpresasPanel = () => {
         </div>
         <div className="empresas-panel">
           <div className="empresas-grid">
-            {empresas.map((e, i) => (
-              <motion.div
-                key={e.id}
-                className="empresa-card"
-                onClick={() => openModal(e)}
-                whileHover={{ scale: 1.05 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-              >
-                <div className="empresa-img-contenedor">
-                  <img src={e.imagen.startsWith('http') ? e.imagen : `${CLOUDINARY_BASE_URL}/${e.imagen}`} alt={e.nombre} />
-                  <div className="empresa-nombre-default">{e.nombre}</div>
-                  <div className="empresa-overlay">
-                    <div className="nombre">{e.nombre}</div>
-                    <div className="rubro">{e.rubro}</div>
-                    <div className="slogan">{e.slogan}</div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+            {renderEmpresas()}
           </div>
         </div>
       </div>
@@ -222,15 +337,46 @@ const EmpresasPanel = () => {
                   <p className="descripcion">{selectedEmpresa.descripcion}</p>
                   <div className="info-detalle">
                     <p><strong>Rubro:</strong> {selectedEmpresa.rubro}</p>
+                    {selectedEmpresa.descripcion_actividad && <p><strong>Actividad:</strong> {selectedEmpresa.descripcion_actividad}</p>}
                     <p><strong>Fundación:</strong> {selectedEmpresa.fundacion}</p>
-                    <p><strong>Sede:</strong> {selectedEmpresa.sede}</p>
-                    <p><strong>Empleados:</strong> {selectedEmpresa.empleados}</p>
-                    <p><strong>Sitio web:</strong> {selectedEmpresa.sitioWeb}</p>
+                    {selectedEmpresa.sede && <p><strong>Sede:</strong> {selectedEmpresa.sede}</p>}
+                    {selectedEmpresa.departamento && <p><strong>Departamento:</strong> {selectedEmpresa.departamento}</p>}
+                    {selectedEmpresa.empleados && <p><strong>Tamaño:</strong> {selectedEmpresa.empleados}</p>}
+                    {selectedEmpresa.sitioWeb && <p><strong>Sitio web:</strong> {selectedEmpresa.sitioWeb}</p>}
+                    
+                    {selectedEmpresa.rubros?.length > 0 && (
+                      <p><strong>Rubros adicionales:</strong> {selectedEmpresa.rubros.join(', ')}</p>
+                    )}
+                    
+                    {selectedEmpresa.operacionesInternacionales?.length > 0 && (
+                      <p><strong>Operaciones internacionales:</strong> {selectedEmpresa.operacionesInternacionales.join(', ')}</p>
+                    )}
+                    
+                    {selectedEmpresa.familia?.length > 0 && (
+                      <p><strong>Familiar:</strong> Sí ({selectedEmpresa.familia.length} registros)</p>
+                    )}
+                    
+                    {selectedEmpresa.premios?.length > 0 && (
+                      <div className="premios-section">
+                        <strong>Premios:</strong>
+                        <ul>
+                          {selectedEmpresa.premios.map((premio, idx) => (
+                            <li key={idx}>
+                              {premio.entidad_otorgadora} ({premio.anio}) - {premio.descripcion} ({premio.tipo})
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
               <div className="modal-footer">
-                <button className="btn-visitar" onClick={visitarSitio}>Visitar sitio web</button>
+                {selectedEmpresa.sitioWeb && (
+                  <button className="btn-visitar" onClick={visitarSitio}>
+                    Visitar sitio web
+                  </button>
+                )}
                 <button className="btn-contactar" onClick={contactarEmpresa}>Contactar</button>
               </div>
             </motion.div>
