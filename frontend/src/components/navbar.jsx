@@ -18,9 +18,11 @@ const Navbar = ({ loggedInUser, onLogout }) => {
   const baseLinks = [
     { label: "NOSOTROS", path: "/historia" },
     { label: "DASHBOARDS", path: "/dashboards" },
+    { label: "REVISTA", path: "/revistaPage" },
     { label: "INICIO", path: "/" },
     { label: "EMPRESAS", path: "/empresas" },
     { label: "CONTACTO", path: "/contacto" },
+
   ];
 
   let finalLinks = [...baseLinks];

@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import InicioSesion from './inicioSesion';
 import Navbar from './navbar.jsx';
 import Header from './header';
-
+import RevistaPage from '../screens/revistaPage.jsx';
 import HomePage from '../screens/homePage';
 import EmpresasPage from '../screens/empresasPage';
 import ContactoPage from '../screens/contactoPage';
@@ -60,7 +60,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/empresas" element={<EmpresasPage loggedInUser={loggedInUser} />} />
-
+          <Route path="/revistaPage" element={<RevistaPage />} />
           <Route path="/contacto" element={<ContactoPage />} />
           <Route path="/historia" element={<HistoriaPage />} />
 

@@ -57,7 +57,7 @@ const ContactoPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="text-center">
                 <FlipCard
-                  frontImage="/media/contactoPage/mision.png"
+                  frontImage="http://localhost:3001/media/contactoPage/mision.png"
                   alt="Misión"
                   backText="Nuestra misión es formar profesionales con valores humanos y compromiso social."
                 />
