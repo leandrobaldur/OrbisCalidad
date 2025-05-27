@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import Dashboard from './Dashboard';
 import InicioSesion from './inicioSesion';
 import Navbar from './navbar.jsx';
 import Header from './header';
@@ -12,6 +11,19 @@ import ContactoPage from '../screens/contactoPage';
 import HistoriaPage from '../screens/historiaPage';
 import EditorEmpresasPage from '../screens/editorEmpresasPage';
 import PanelEditorUsuarios from './panelEditorUsuarios_temp';
+
+// Componente para abrir el dashboard externo en nueva pestaña
+function RedirectDashboard() {
+  useEffect(() => {
+    window.open('https://dashboard.serverbb.site/', '_blank');
+  }, []);
+
+  return (
+    <div style={{ padding: 50, textAlign: 'center' }}>
+      Abriendo el dashboard externo en una nueva pestaña...
+    </div>
+  );
+}
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState(null);
@@ -28,16 +40,16 @@ function App() {
     }
   }, []);
 
-  const handleLogin = (userData) => {
+  const handleLogin = useCallback((userData) => {
     localStorage.setItem('loggedInUser', JSON.stringify(userData));
     setLoggedInUser(userData);
     setShowLoginModal(false);
-  };
+  }, []);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     localStorage.removeItem('loggedInUser');
     setLoggedInUser(null);
-  };
+  }, []);
 
   return (
     <Router>
@@ -47,17 +59,26 @@ function App() {
 
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/empresas" element={<EmpresasPage />} />
+          <Route path="/empresas" element={<EmpresasPage loggedInUser={loggedInUser} />} />
+
           <Route path="/contacto" element={<ContactoPage />} />
           <Route path="/historia" element={<HistoriaPage />} />
 
+          {/* Ruta dashboards abre URL externa en nueva pestaña si está logueado */}
           <Route
             path="/dashboards"
             element={
               loggedInUser ? (
-                <Dashboard usuario={loggedInUser} onLogout={handleLogout} />
+                <RedirectDashboard />
               ) : (
-                <div style={{ padding: 50, textAlign: 'center', color: '#FF4201', fontWeight: 'bold' }}>
+                <div
+                  style={{
+                    padding: 50,
+                    textAlign: 'center',
+                    color: '#FF4201',
+                    fontWeight: 'bold',
+                  }}
+                >
                   Acceso denegado. Inicia sesión.
                 </div>
               )
@@ -76,7 +97,14 @@ function App() {
               <Route
                 path="/editor-empresas"
                 element={
-                  <div style={{ padding: 50, textAlign: 'center', color: '#FF4201', fontWeight: 'bold' }}>
+                  <div
+                    style={{
+                      padding: 50,
+                      textAlign: 'center',
+                      color: '#FF4201',
+                      fontWeight: 'bold',
+                    }}
+                  >
                     No tienes permisos para acceder a esta página.
                   </div>
                 }
@@ -84,7 +112,14 @@ function App() {
               <Route
                 path="/panel-usuarios"
                 element={
-                  <div style={{ padding: 50, textAlign: 'center', color: '#FF4201', fontWeight: 'bold' }}>
+                  <div
+                    style={{
+                      padding: 50,
+                      textAlign: 'center',
+                      color: '#FF4201',
+                      fontWeight: 'bold',
+                    }}
+                  >
                     No tienes permisos para acceder a esta página.
                   </div>
                 }
@@ -131,10 +166,7 @@ function App() {
         </Routes>
 
         {showLoginModal && !loggedInUser && (
-          <InicioSesion
-            onLogin={handleLogin}
-            onClose={() => setShowLoginModal(false)}
-          />
+          <InicioSesion onLogin={handleLogin} onClose={() => setShowLoginModal(false)} />
         )}
       </div>
     </Router>

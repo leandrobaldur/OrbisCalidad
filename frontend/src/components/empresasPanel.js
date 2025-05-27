@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from 'axios';
 import './empresasPanel.css';
 
-const EmpresasPanel = () => {
+const EmpresasPanel = ({ loggedInUser }) => {
   // Estados para datos
   const [fullEmpresas, setFullEmpresas] = useState([]);
   const [empresas, setEmpresas] = useState([]);
@@ -12,40 +12,48 @@ const EmpresasPanel = () => {
   const [filtroActivo, setFiltroActivo] = useState(null); // '50años'|'premio'|'rubro'|'departamento'
   const [selectedEmpresa, setSelectedEmpresa] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [empresasAgrupadas, setEmpresasAgrupadas] = useState({});
+  const [modalEditable, setModalEditable] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Placeholder lateral
-  const imagenLateral = 'https://via.placeholder.com/150x150.png?text=Lateral';
+  // Lista de rubros para mostrar (solo lectura)
+  const [rubrosDisponibles, setRubrosDisponibles] = useState([]);
 
   // Base URL para Cloudinary
   const CLOUDINARY_BASE_URL = 'https://res.cloudinary.com/diswqpy8v/image/upload';
 
-  // Mapear respuesta del API
+  // Roles para edición
+  const esAdmin = loggedInUser?.id_rol === 1;
+  const esColaborador = loggedInUser?.id_rol === 2;
+  const puedeEditar = esAdmin || esColaborador;
+
+  // Mapear respuesta del API para resumen
   const mapEmpresaResumen = e => ({
     id: e.id_empresa,
     nombre: e.nombre_comercial,
-    rubro: e.nombre_actividad,
-    descripcion_actividad: e.descripcion_actividad,
-    slogan: e.vision,
-    descripcion: e.descripcion,
-    fecha_fundacion: e.fecha_fundacion,
-    fundacion: new Date(e.fecha_fundacion).getFullYear(),
-    sede: e.sedes?.[0]?.ciudad,
-    departamento: e.sedes?.[0]?.departamento,
-    empleados: e.nombre_tamanio,
-    sitioWeb: e.direccion_web,
-    imagen: e.urlLogo ? 
-      (e.urlLogo.startsWith('http') ? e.urlLogo : `${CLOUDINARY_BASE_URL}/${e.urlLogo}`) 
+    rubro: e.nombre_actividad || '',
+    descripcion_actividad: e.descripcion_actividad || '',
+    slogan: e.vision || '',
+    descripcion: e.descripcion || '',
+    fecha_fundacion: e.fecha_fundacion || '',
+    fundacion: e.fecha_fundacion ? new Date(e.fecha_fundacion).getFullYear() : '',
+    sede: e.sedes?.[0]?.ciudad || '',
+    departamento: e.sedes?.[0]?.departamento || '',
+    empleados: e.nombre_tamanio || '',
+    sitioWeb: e.direccion_web || '',
+    imagen: e.urlLogo
+      ? (e.urlLogo.startsWith('http') ? e.urlLogo : `${CLOUDINARY_BASE_URL}/${e.urlLogo}`)
       : 'https://via.placeholder.com/300.png?text=Sin+Imagen',
-    tienePremios: e.premios?.length > 0,
+    tienePremios: e.premios?.length > 0 || false,
     rubros: e.rubros || [],
     operacionesInternacionales: e.operaciones_internacionales || [],
     familia: e.familia || [],
-    premios: e.premios || []
+    premios: e.premios || [],
+    id_actividad: e.id_actividad || 0,   // agrega id_actividad para uso interno
+    id_tamanio: e.id_tamanio || 0
+        // agrega id_tamano para uso interno
   });
 
-  // Fetch inicial
+  // Fetch inicial de empresas y rubros
   useEffect(() => {
     const fetchEmpresas = async () => {
       try {
@@ -53,14 +61,29 @@ const EmpresasPanel = () => {
         const mapped = data.map(mapEmpresaResumen);
         setFullEmpresas(mapped);
         setEmpresas(mapped);
-        setLoading(false);
       } catch (error) {
         console.error('Error al cargar empresas:', error);
+      } finally {
         setLoading(false);
       }
     };
 
+    const fetchRubros = async () => {
+      try {
+        const { data } = await axios.get('http://localhost:3000/rubros'); // Ajusta endpoint si necesario
+        if (Array.isArray(data)) {
+          setRubrosDisponibles(data);
+        } else {
+          setRubrosDisponibles([]);
+        }
+      } catch (error) {
+        console.error('Error al cargar rubros:', error);
+        setRubrosDisponibles([]);
+      }
+    };
+
     fetchEmpresas();
+    fetchRubros();
   }, []);
 
   // Filtrar y ordenar
@@ -68,106 +91,128 @@ const EmpresasPanel = () => {
     let lista = [...fullEmpresas];
     const term = busqueda.trim().toLowerCase();
 
-    // Búsqueda
     if (term) {
       lista = lista.filter(e =>
-        e.nombre.toLowerCase().includes(term) || 
-        (e.rubro && e.rubro.toLowerCase().includes(term)) ||
-        (e.departamento && e.departamento.toLowerCase().includes(term))
+        (e.nombre || '').toLowerCase().includes(term) ||
+        (e.rubro || '').toLowerCase().includes(term) ||
+        (e.departamento || '').toLowerCase().includes(term)
       );
     }
 
-    // Orden por antigüedad
     lista.sort((a, b) => {
-      const dateA = new Date(a.fecha_fundacion);
-      const dateB = new Date(b.fecha_fundacion);
+      const dateA = a.fecha_fundacion ? new Date(a.fecha_fundacion) : new Date(0);
+      const dateB = b.fecha_fundacion ? new Date(b.fecha_fundacion) : new Date(0);
       return ordenAntiguedad === 'asc' ? dateA - dateB : dateB - dateA;
     });
 
     setEmpresas(lista);
   }, [fullEmpresas, busqueda, ordenAntiguedad]);
 
-  // Manejar filtros
+  // Manejar filtros (sin cambios)
   const aplicarFiltro = (tipoFiltro) => {
     if (filtroActivo === tipoFiltro) {
-      // Si el filtro ya está activo, lo desactivamos
       setEmpresas(fullEmpresas);
-      setEmpresasAgrupadas({});
       setFiltroActivo(null);
       return;
     }
 
     setFiltroActivo(tipoFiltro);
-    
+
     if (tipoFiltro === '50años') {
       const añoActual = new Date().getFullYear();
       const empresas50 = fullEmpresas.filter(e => añoActual - e.fundacion > 50);
       const otrasEmpresas = fullEmpresas.filter(e => añoActual - e.fundacion <= 50);
-      
-      setEmpresasAgrupadas({
-        'Empresas con más de 50 años': empresas50,
-        'Otras empresas': otrasEmpresas
-      });
-    } 
+      setEmpresas(empresas50.concat(otrasEmpresas));
+    }
     else if (tipoFiltro === 'premio') {
       const conPremios = fullEmpresas.filter(e => e.tienePremios);
       const sinPremios = fullEmpresas.filter(e => !e.tienePremios);
-      
-      setEmpresasAgrupadas({
-        'Empresas con premios': conPremios,
-        'Empresas sin premios': sinPremios
-      });
-    } 
+      setEmpresas(conPremios.concat(sinPremios));
+    }
     else if (tipoFiltro === 'rubro') {
       const agrupadasPorRubro = fullEmpresas.reduce((acc, empresa) => {
         const rubro = empresa.rubro || 'Sin rubro';
-        if (!acc[rubro]) {
-          acc[rubro] = [];
-        }
+        if (!acc[rubro]) acc[rubro] = [];
         acc[rubro].push(empresa);
         return acc;
       }, {});
-      
-      setEmpresasAgrupadas(agrupadasPorRubro);
-    } 
+      const listaAgrupada = Object.values(agrupadasPorRubro).flat();
+      setEmpresas(listaAgrupada);
+    }
     else if (tipoFiltro === 'departamento') {
       const agrupadasPorDepto = fullEmpresas.reduce((acc, empresa) => {
         const depto = empresa.departamento || 'Sin departamento';
-        if (!acc[depto]) {
-          acc[depto] = [];
-        }
+        if (!acc[depto]) acc[depto] = [];
         acc[depto].push(empresa);
         return acc;
       }, {});
-      
-      setEmpresasAgrupadas(agrupadasPorDepto);
+      const listaAgrupada = Object.values(agrupadasPorDepto).flat();
+      setEmpresas(listaAgrupada);
     }
   };
 
-  // Abrir modal con detalles
+  // Abrir modal detalle solo lectura (sin cambios)
   const openModal = async (empresa) => {
     try {
       const { data } = await axios.get(`http://localhost:3000/empresa/${empresa.id}`);
       setSelectedEmpresa({
-        nombre: data.nombre_comercial,
-        slogan: data.vision,
-        descripcion: data.descripcion,
-        rubro: data.nombre_actividad,
-        descripcion_actividad: data.descripcion_actividad,
-        fundacion: new Date(data.fecha_fundacion).getFullYear(),
-        sede: data.sedes?.[0]?.ciudad,
-        departamento: data.sedes?.[0]?.departamento,
-        empleados: data.nombre_tamanio,
-        sitioWeb: data.direccion_web,
-        imagen: data.urlLogo || 'https://via.placeholder.com/300.png?text=Sin+Imagen',
+        id: data.id_empresa,
+        denominacion_social: data.denominacion_social || '',
+        nombre: data.nombre_comercial || '',
+        slogan: data.vision || '',
+        descripcion: data.descripcion || '',
+        rubro: data.nombre_actividad || '',
+        id_actividad: data.id_actividad || 0,
+        descripcion_actividad: data.descripcion_actividad || '',
+        fundacion: data.fecha_fundacion ? new Date(data.fecha_fundacion).getFullYear() : '',
+        sede: data.sedes?.[0]?.ciudad || '',
+        departamento: data.sedes?.[0]?.departamento || '',
+        empleados: data.nombre_tamanio || '',
+        sitioWeb: data.direccion_web || '',
+        imagen: data.urlLogo ? (data.urlLogo.startsWith('http') ? data.urlLogo : `${CLOUDINARY_BASE_URL}/${data.urlLogo}`) : 'https://via.placeholder.com/300.png?text=Sin+Imagen',
         premios: data.premios || [],
         rubros: data.rubros || [],
         operacionesInternacionales: data.operaciones_internacionales || [],
-        familia: data.familia || []
+        familia: data.familia || [],
+        id_tamano: data.id_tamano || 0
       });
+      setModalEditable(false);
       setShowModal(true);
     } catch (error) {
       console.error('Error al cargar detalles de la empresa:', error);
+    }
+  };
+
+  // Abrir modal editable (sin select para relaciones, solo texto y mantener id oculto)
+  const openModalEditable = async (empresa) => {
+    try {
+      const { data } = await axios.get(`http://localhost:3000/empresa/${empresa.id}`);
+      console.log('Datos empresa para editar:', data); // <-- verificar que id_actividad esté correcto
+      setSelectedEmpresa({
+        id: data.id_empresa,
+        denominacion_social: data.denominacion_social || '',
+        nombre: data.nombre_comercial || '',
+        slogan: data.vision || '',
+        descripcion: data.descripcion || '',
+        rubro: data.nombre_actividad || '',         // texto solo lectura
+        id_actividad: data.id_actividad || 0,       // id oculto, no editable
+        descripcion_actividad: data.descripcion_actividad || '',
+        fundacion: data.fecha_fundacion ? new Date(data.fecha_fundacion).getFullYear() : '',
+        sede: data.sedes?.[0]?.ciudad || '',
+        departamento: data.sedes?.[0]?.departamento || '',
+        empleados: data.nombre_tamanio || '',
+        sitioWeb: data.direccion_web || '',
+        imagen: data.urlLogo ? (data.urlLogo.startsWith('http') ? data.urlLogo : `${CLOUDINARY_BASE_URL}/${data.urlLogo}`) : '',
+        premios: data.premios || [],
+        rubros: data.rubros || [],
+        operacionesInternacionales: data.operaciones_internacionales || [],
+        familia: data.familia || [],
+        id_tamano: data.id_tamano || 0              // id oculto, no editable
+      });
+      setModalEditable(true);
+      setShowModal(true);
+    } catch (error) {
+      console.error('Error al cargar detalles de la empresa para editar:', error);
     }
   };
 
@@ -176,53 +221,386 @@ const EmpresasPanel = () => {
     setSelectedEmpresa(null);
   };
 
+const handleGuardarCambios = async (empresaEditada) => {
+  try {
+    setLoading(true);
+
+    // Validaciones para campos obligatorios editables
+    if (!empresaEditada.denominacion_social || empresaEditada.denominacion_social.trim() === '') {
+      alert("Debe ingresar la denominación social.");
+      setLoading(false);
+      return;
+    }
+
+    if (!empresaEditada.nit || empresaEditada.nit === 0) {
+      alert("Debe ingresar un NIT válido.");
+      setLoading(false);
+      return;
+    }
+    const payload = {
+      id_usuario: loggedInUser.id_usuario || 0,
+      denominacion_social: empresaEditada.denominacion_social.trim(),
+      nombre_comercial: empresaEditada.nombre || '',
+      fecha_fundacion: empresaEditada.fundacion ? new Date(empresaEditada.fundacion, 0, 1).toISOString() : null,
+      nit: empresaEditada.nit,
+      vision: empresaEditada.slogan || '',
+      mision: empresaEditada.mision?.trim() || "No disponible",
+      descripcion: empresaEditada.descripcion || '',
+      url: empresaEditada.url?.trim() || "http://example.com",
+      direccion_web: empresaEditada.sitioWeb || '',
+      id_actividad: empresaEditada.id_actividad || 1, // enviar el valor actual
+      id_tamanio: empresaEditada.id_tamanio || 1,       // enviar el valor actual
+    };
+
+
+    await axios.put(`http://localhost:3000/actualizarEmpresa/${empresaEditada.id}`, payload);
+
+    setFullEmpresas(prev => prev.map(e => e.id === empresaEditada.id ? {...e, ...empresaEditada} : e));
+    setEmpresas(prev => prev.map(e => e.id === empresaEditada.id ? {...e, ...empresaEditada} : e));
+
+    setShowModal(false);
+  } catch (error) {
+    console.error('Error al guardar cambios:', error);
+    alert("Error al guardar los cambios. Intenta nuevamente.");
+  } finally {
+    setLoading(false);
+  }
+};
+
   const visitarSitio = () => {
-    if (!selectedEmpresa.sitioWeb) return;
+    if (!selectedEmpresa?.sitioWeb) return;
     const url = selectedEmpresa.sitioWeb.startsWith('http')
       ? selectedEmpresa.sitioWeb
       : `https://${selectedEmpresa.sitioWeb}`;
     window.open(url, '_blank');
   };
 
-  const contactarEmpresa = () => {
-    window.location.href = `mailto:info@desconocido.com`;
+  // EditableEmpresaModal - relaciones NO editables, solo mostrar como texto + ocultos para id_actividad y id_tamano
+  const EditableEmpresaModal = ({ empresa, onClose, onSave }) => {
+    const [formData, setFormData] = useState({ ...empresa });
+
+    // Actualizar formData si cambia empresa
+    useEffect(() => {
+      setFormData({ ...empresa });
+    }, [empresa]);
+
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        // Ignorar id_actividad y id_tamano si vienen de campos ocultos (no editables)
+        if (name === 'id_actividad' || name === 'id_tamano') return;
+        setFormData(prev => ({
+          ...prev,
+          [name]: value,
+        }));
+      };
+
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      onSave(formData);
+    };
+
+    const labelStyle = { fontWeight: '700', marginBottom: '6px', display: 'block', marginTop: '15px', fontSize: '15px', color: '#222' };
+    const inputStyle = {
+      width: '100%',
+      marginBottom: '14px',
+      padding: '10px 14px',
+      fontSize: '16px',
+      borderRadius: '7px',
+      border: '1.8px solid #ccc',
+      boxSizing: 'border-box',
+      fontFamily: "'Poppins', sans-serif",
+      transition: 'border-color 0.3s ease',
+    };
+    const disabledInputStyle = {
+      ...inputStyle,
+      backgroundColor: '#f2f2f2',
+      color: '#777',
+      cursor: 'not-allowed',
+    };
+    const headingStyle = {
+      marginBottom: '35px',
+      fontWeight: '900',
+      fontSize: '26px',
+      color: '#166D3B',
+      textAlign: 'center',
+      textTransform: 'uppercase',
+      letterSpacing: '2px',
+      userSelect: 'none',
+    };
+    const buttonBaseStyle = {
+      padding: '12px 25px',
+      borderRadius: '8px',
+      fontWeight: '700',
+      fontSize: '15px',
+      cursor: 'pointer',
+      transition: 'background-color 0.3s ease',
+      border: 'none',
+      minWidth: '120px',
+    };
+    const cancelButtonStyle = {
+      ...buttonBaseStyle,
+      backgroundColor: '#bbb',
+      color: '#333',
+    };
+    const saveButtonStyle = {
+      ...buttonBaseStyle,
+      backgroundColor: '#166D3B',
+      color: '#fff',
+    };
+
+    return (
+      <form onSubmit={handleSubmit} style={{ textAlign: 'left', maxWidth: '600px', margin: '0 auto', padding: '1% 20px' }}>
+        <h2 style={headingStyle}>Modo de Edición</h2>
+
+        <label style={labelStyle}>Denominación Social:</label>
+        <input
+          name="denominacion_social"
+          type="text"
+          value={formData.denominacion_social}
+          onChange={handleChange}
+          style={inputStyle}
+          required
+        />
+
+        <label style={labelStyle}>Nombre Comercial:</label>
+        <input
+          name="nombre"
+          type="text"
+          value={formData.nombre}
+          onChange={handleChange}
+          style={inputStyle}
+          required
+        />
+
+        <label style={labelStyle}>Eslogan / Visión:</label>
+        <input
+          name="slogan"
+          type="text"
+          value={formData.slogan}
+          onChange={handleChange}
+          style={inputStyle}
+        />
+
+        <label style={labelStyle}>Descripción:</label>
+        <textarea
+          name="descripcion"
+          value={formData.descripcion}
+          onChange={handleChange}
+          rows={3}
+          style={inputStyle}
+        />
+
+        {/* Rubro solo lectura */}
+
+
+        <label style={labelStyle}>Rubro (actividad):</label>
+        <input
+          type="text"
+          value={formData.rubro || ''}
+          style={disabledInputStyle}
+          disabled
+          title="Campo no editable"
+        />
+{/* Campo oculto para enviar el id_actividad */}
+        <input
+          type="hidden"
+          name="id_actividad"
+          value={formData.id_actividad || 0}
+        />
+
+        <label style={labelStyle}>Tamaño (Empleados):</label>
+        <input
+          type="text"
+          value={formData.empleados || ''}
+          style={disabledInputStyle}
+          disabled
+          title="Campo no editable"
+        />
+        {/* Campo oculto para enviar el id_tamano */}
+        <input
+          type="hidden"
+          name="id_tamano"
+          value={formData.id_tamano || 0}
+        />
+        <label style={labelStyle}>Actividad:</label>
+        <textarea
+          name="descripcion_actividad"
+          value={formData.descripcion_actividad}
+          onChange={handleChange}
+          rows={2}
+          style={inputStyle}
+        />
+
+        <label style={labelStyle}>Año Fundación:</label>
+        <input
+          name="fundacion"
+          type="number"
+          value={formData.fundacion}
+          onChange={handleChange}
+          min="1800"
+          max={new Date().getFullYear()}
+          style={inputStyle}
+        />
+
+        <label style={labelStyle}>Sede (Ciudad):</label>
+        <input
+          name="sede"
+          type="text"
+          value={formData.sede}
+          style={disabledInputStyle}
+          disabled
+          title="Campo no editable"
+          readOnly
+        />
+
+        <label style={labelStyle}>Departamento:</label>
+        <input
+          name="departamento"
+          type="text"
+          value={formData.departamento}
+          style={disabledInputStyle}
+          disabled
+          title="Campo no editable"
+          readOnly
+        />
+
+        {/* Tamaño solo lectura */}
+        <label style={labelStyle}>Tamaño (Empleados):</label>
+        <input
+          type="text"
+          value={formData.empleados || ''}
+          style={disabledInputStyle}
+          disabled
+          title="Campo no editable"
+        />
+
+        {/* ID Tamaño oculto para enviar */}
+        <input
+          type="hidden"
+          name="id_tamano"
+          value={formData.id_tamano || 0}
+        />
+
+        <label style={labelStyle}>Sitio Web:</label>
+        <input
+          name="sitioWeb"
+          type="text"
+          value={formData.sitioWeb}
+          onChange={handleChange}
+          style={inputStyle}
+        />
+
+        <label style={labelStyle}>NIT:</label>
+        <input
+          name="nit"
+          type="number"
+          value={formData.nit || ''}
+          onChange={handleChange}
+          style={inputStyle}
+          required
+        />
+
+        <label style={labelStyle}>URL (opcional):</label>
+        <input
+          name="url"
+          type="text"
+          value={formData.url || ''}
+          onChange={handleChange}
+          style={inputStyle}
+        />
+
+        <label style={labelStyle}>Misión:</label>
+        <textarea
+          name="mision"
+          value={formData.mision || ''}
+          onChange={handleChange}
+          rows={2}
+          style={inputStyle}
+        />
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '28px' }}>
+          <button
+            type="button"
+            onClick={onClose}
+            style={cancelButtonStyle}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#999'}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = '#bbb'}
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            style={saveButtonStyle}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#145a2a'}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = '#166D3B'}
+          >
+            Guardar
+          </button>
+        </div>
+      </form>
+    );
   };
 
-  // Renderizar empresas agrupadas o normales
-  const renderEmpresas = () => {
-    if (filtroActivo && Object.keys(empresasAgrupadas).length > 0) {
-      return Object.entries(empresasAgrupadas).map(([grupo, empresasGrupo]) => (
-        empresasGrupo.length > 0 && (
-          <React.Fragment key={grupo}>
-            <div className="grupo-separador">
-              <h3>----- {grupo} -----</h3>
-            </div>
-            {empresasGrupo.map((e, i) => (
-              <motion.div
-                key={e.id}
-                className="empresa-card"
-                onClick={() => openModal(e)}
-                whileHover={{ scale: 1.05 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-              >
-                <div className="empresa-img-contenedor">
-                  <img src={e.imagen} alt={e.nombre} />
-                  <div className="empresa-nombre-default">{e.nombre}</div>
-                  <div className="empresa-overlay">
-                    <div className="nombre">{e.nombre}</div>
-                    <div className="rubro">{e.rubro}</div>
-                    <div className="slogan">{e.slogan}</div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </React.Fragment>
-        )
-      ));
-    }
+  // Modal solo lectura
+  const DetalleEmpresaModal = ({ empresa, onClose }) => (
+    <>
+      <div className="modal-header">
+        <h2>{empresa.nombre}</h2>
+        <button className="close-modal" onClick={onClose}>×</button>
+      </div>
+      <div className="modal-body" style={{display: 'flex', gap: '15px'}}>
+        <div className="modal-imagen">
+          <img src={empresa.imagen} alt={empresa.nombre} style={{maxWidth: '200px', borderRadius: '10px'}} />
+        </div>
+        <div className="modal-info" style={{flex: 1}}>
+          <h3>{empresa.slogan}</h3>
+          <p className="descripcion">{empresa.descripcion}</p>
+          <div className="info-detalle">
+            <p><strong>Rubro:</strong> {empresa.rubro}</p>
+            {empresa.descripcion_actividad && <p><strong>Actividad:</strong> {empresa.descripcion_actividad}</p>}
+            <p><strong>Fundación:</strong> {empresa.fundacion}</p>
+            {empresa.sede && <p><strong>Sede:</strong> {empresa.sede}</p>}
+            {empresa.departamento && <p><strong>Departamento:</strong> {empresa.departamento}</p>}
+            {empresa.empleados && <p><strong>Tamaño:</strong> {empresa.empleados}</p>}
+            {empresa.sitioWeb && <p><strong>Sitio web:</strong> {empresa.sitioWeb}</p>}
+            {empresa.rubros?.length > 0 && (
+              <p><strong>Rubros adicionales:</strong> {empresa.rubros.join(', ')}</p>
+            )}
+            {empresa.operacionesInternacionales?.length > 0 && (
+              <p><strong>Operaciones internacionales:</strong> {empresa.operacionesInternacionales.join(', ')}</p>
+            )}
+            {empresa.familia?.length > 0 && (
+              <p><strong>Familiar:</strong> Sí ({empresa.familia.length} registros)</p>
+            )}
+            {empresa.premios?.length > 0 && (
+              <div className="premios-section">
+                <strong>Premios:</strong>
+                <ul>
+                  {empresa.premios.map((premio, idx) => (
+                    <li key={idx}>
+                      {premio.entidad_otorgadora} ({premio.anio}) - {premio.descripcion} ({premio.tipo})
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="modal-footer" style={{display: 'flex', justifyContent: 'flex-end', gap: '10px'}}>
+        {empresa.sitioWeb && (
+          <button className="btn-visitar" onClick={visitarSitio}>
+            Visitar sitio web
+          </button>
+        )}
+        <button className="btn-contactar" onClick={() => window.location.href = `mailto:info@desconocido.com`}>Contactar</button>
+      </div>
+    </>
+  );
 
+  // Renderizar empresas con botón editar si puede
+  const renderEmpresas = () => {
     return empresas.map((e, i) => (
       <motion.div
         key={e.id}
@@ -232,6 +610,7 @@ const EmpresasPanel = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: i * 0.1 }}
+        style={{ position: 'relative' }}
       >
         <div className="empresa-img-contenedor">
           <img src={e.imagen} alt={e.nombre} />
@@ -241,6 +620,30 @@ const EmpresasPanel = () => {
             <div className="rubro">{e.rubro}</div>
             <div className="slogan">{e.slogan}</div>
           </div>
+          {puedeEditar && (
+            <button
+              onClick={(ev) => {
+                ev.stopPropagation();
+                openModalEditable(e);
+              }}
+              style={{
+                position: 'absolute',
+                top: '8px',
+                right: '8px',
+                backgroundColor: '#FF4201',
+                border: 'none',
+                borderRadius: '4px',
+                color: 'white',
+                padding: '5px 10px',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                fontSize: '14px',
+              }}
+              title="Editar empresa"
+            >
+              Editar
+            </button>
+          )}
         </div>
       </motion.div>
     ));
@@ -310,7 +713,7 @@ const EmpresasPanel = () => {
       {/* PANEL PRINCIPAL */}
       <div className="empresas-panel-container">
         <div className="imagen-lateral">
-          <img src={imagenLateral} alt="Imagen lateral" />
+          <img src="https://via.placeholder.com/150x150.png?text=Lateral" alt="Imagen lateral" />
         </div>
         <div className="empresas-panel">
           <div className="empresas-grid">
@@ -324,61 +727,18 @@ const EmpresasPanel = () => {
         {showModal && selectedEmpresa && (
           <motion.div className="modal-overlay" onClick={closeModal} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <motion.div className="modal-content" onClick={e => e.stopPropagation()} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }} transition={{ duration: 0.3 }}>
-              <div className="modal-header">
-                <h2>{selectedEmpresa.nombre}</h2>
-                <button className="close-modal" onClick={closeModal}>×</button>
-              </div>
-              <div className="modal-body">
-                <div className="modal-imagen">
-                  <img src={selectedEmpresa.imagen} alt={selectedEmpresa.nombre} />
-                </div>
-                <div className="modal-info">
-                  <h3>{selectedEmpresa.slogan}</h3>
-                  <p className="descripcion">{selectedEmpresa.descripcion}</p>
-                  <div className="info-detalle">
-                    <p><strong>Rubro:</strong> {selectedEmpresa.rubro}</p>
-                    {selectedEmpresa.descripcion_actividad && <p><strong>Actividad:</strong> {selectedEmpresa.descripcion_actividad}</p>}
-                    <p><strong>Fundación:</strong> {selectedEmpresa.fundacion}</p>
-                    {selectedEmpresa.sede && <p><strong>Sede:</strong> {selectedEmpresa.sede}</p>}
-                    {selectedEmpresa.departamento && <p><strong>Departamento:</strong> {selectedEmpresa.departamento}</p>}
-                    {selectedEmpresa.empleados && <p><strong>Tamaño:</strong> {selectedEmpresa.empleados}</p>}
-                    {selectedEmpresa.sitioWeb && <p><strong>Sitio web:</strong> {selectedEmpresa.sitioWeb}</p>}
-                    
-                    {selectedEmpresa.rubros?.length > 0 && (
-                      <p><strong>Rubros adicionales:</strong> {selectedEmpresa.rubros.join(', ')}</p>
-                    )}
-                    
-                    {selectedEmpresa.operacionesInternacionales?.length > 0 && (
-                      <p><strong>Operaciones internacionales:</strong> {selectedEmpresa.operacionesInternacionales.join(', ')}</p>
-                    )}
-                    
-                    {selectedEmpresa.familia?.length > 0 && (
-                      <p><strong>Familiar:</strong> Sí ({selectedEmpresa.familia.length} registros)</p>
-                    )}
-                    
-                    {selectedEmpresa.premios?.length > 0 && (
-                      <div className="premios-section">
-                        <strong>Premios:</strong>
-                        <ul>
-                          {selectedEmpresa.premios.map((premio, idx) => (
-                            <li key={idx}>
-                              {premio.entidad_otorgadora} ({premio.anio}) - {premio.descripcion} ({premio.tipo})
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="modal-footer">
-                {selectedEmpresa.sitioWeb && (
-                  <button className="btn-visitar" onClick={visitarSitio}>
-                    Visitar sitio web
-                  </button>
-                )}
-                <button className="btn-contactar" onClick={contactarEmpresa}>Contactar</button>
-              </div>
+              {modalEditable ? (
+                <EditableEmpresaModal
+                  empresa={selectedEmpresa}
+                  onClose={closeModal}
+                  onSave={handleGuardarCambios}
+                />
+              ) : (
+                <DetalleEmpresaModal
+                  empresa={selectedEmpresa}
+                  onClose={closeModal}
+                />
+              )}
             </motion.div>
           </motion.div>
         )}

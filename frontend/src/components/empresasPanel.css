@@ -15,7 +15,7 @@ body {
 
   margin: 4vh auto;  /* centrado horizontal con margen arriba y abajo */
   box-sizing: border-box;
-  min-height: 80vh; /* opcional para altura mínima */
+  height: 50vh; /* opcional para altura mínima */
 }
 
 /* ====== BARRA SUPERIOR ====== */
@@ -108,8 +108,9 @@ body {
   padding: 2% 2%;
   gap: 2%;
   border-radius: 0 0 10px 10px;
-  border: #052018 0.35vh solid;
+  border: #052018 0.15vh solid;
   max-width: 100%;
+
   margin: 0 auto;
   box-sizing: border-box;
   flex-wrap: wrap; /* para que en pantallas pequeñas se adapten */

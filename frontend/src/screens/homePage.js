@@ -28,26 +28,26 @@ const HomePage = () => {
             items={[
               {
                 icono: "/media/homePage/lightIcon.png",
-                subtitulo: "Primera Selección",
-                imagen: "/media/contenido/contenido1.png",
+                subtitulo: "INNOVACIÓN",
+                imagen: "/media/homePage/c1.webp",
                 texto: "Este es el contenido relacionado al primer ícono.",
               },
               {
                 icono: "/media/homePage/recicleIcon.png",
-                subtitulo: "Segunda Selección",
-                imagen: "/media/contenido/contenido2.png",
+                subtitulo: "SOSTENIBILIDAD",
+                imagen: "/media/homePage/c2.webp",
                 texto: "Información para el s3.5gundo ícono seleccionada.",
               },
               {
                 icono: "/media/homePage/secureIcon.png",
-                subtitulo: "Tercera Selección",
-                imagen: "/media/contenido/contenido3.png",
+                subtitulo: "CONFIANZA",
+                imagen: "/media/homePage/c3.jpg",
                 texto: "Texto descriptivo para el tercer ícono.",
               },
               {
                 icono: "/media/homePage/awardIcon.png",
-                subtitulo: "Tercera Selección",
-                imagen: "/media/contenido/contenido3.png",
+                subtitulo: "EXCELENCIA",
+                imagen: "/media/homePage/c4.jpg",
                 texto: "Texto descriptivo para el tercer ícono.",
               },
             ]}
@@ -76,8 +76,8 @@ const HomePage = () => {
 
 
       <CarruselImagenes
-        altura={800}
-        filas={6}
+        altura={600}
+        filas={4}
         backendUrl="http://localhost:3000"
         modoPrueba={true}
       />
