@@ -2,8 +2,6 @@ import logsModel from '../models/logsModel.js';
 import usuarioModel from '../models/usuarioModel.js';
 import bcrypt from 'bcrypt';
 
-
-
 const loginUsuario = async (req, res) => {
   const { usuario, contrasenia } = req.body;
 
@@ -15,7 +13,6 @@ const loginUsuario = async (req, res) => {
   }
 
   try {
-    // Buscar solo por el nombre de usuario (NO comparar la contraseña aquí)
     const usuarioEncontrado = await usuarioModel.buscarUsuario(usuario);
 
     if (!usuarioEncontrado) {
@@ -25,7 +22,6 @@ const loginUsuario = async (req, res) => {
       });
     }
 
-    // Comparar contraseñas con bcrypt
     const match = await bcrypt.compare(contrasenia, usuarioEncontrado.contrasenia);
 
     if (!match) {
@@ -35,7 +31,6 @@ const loginUsuario = async (req, res) => {
       });
     }
 
-    // Autenticación exitosa
     return res.status(200).json({
       mensaje: 'Usuario autenticado',
       encontrado: 1,
@@ -55,21 +50,17 @@ const createColaborador = async (req, res) => {
   try {
     const { usuario, contrasenia, id_usuario } = req.body;
 
-    // Validar campos requeridos
     if (!usuario || !contrasenia || !id_usuario) {
       return res.status(400).json({ message: 'Usuario, contraseña e ID de usuario son requeridos' });
     }
 
-    // Verificar si el usuario ya existe
     const usuarioExistente = await usuarioModel.buscarUsuario(usuario);
     if (usuarioExistente) {
       return res.status(400).json({ message: 'El nombre de usuario ya está en uso' });
     }
 
-    // Crear nuevo colaborador (rol 2)
     const nuevoUsuario = await usuarioModel.insertUsuario(usuario, contrasenia);
 
-    // Registrar en logs SOLO si el usuario fue creado exitosamente
     await logsModel.registrarLog({
       id_usuario,
       tabla: 'usuarios',
@@ -89,7 +80,21 @@ const createColaborador = async (req, res) => {
   }
 };
 
+// ✅ NUEVA FUNCIÓN GET /usuarios
+const getUsuarios = async (req, res) => {
+  try {
+    const usuarios = await usuarioModel.obtenerTodosLosUsuarios();
+    res.status(200).json(usuarios);
+  } catch (error) {
+    console.error('Error al obtener usuarios:', error);
+    res.status(500).json({
+      mensaje: 'Error interno al obtener usuarios',
+    });
+  }
+};
+
 export default {
   loginUsuario,
   createColaborador,
+  getUsuarios, // <-- añadido aquí
 };
