@@ -24,31 +24,31 @@ const HomePage = () => {
         <div className="mt-[10vh]">
           <ImagenInteractiva
             ancho="30vw"
-            imagenDefault="/media/homePage/defaultImage.png"
+            imagenDefault="/media/homePage/defaultImage.webp"
             items={[
               {
                 icono: "/media/homePage/lightIcon.png",
                 subtitulo: "INNOVACIÓN",
                 imagen: "/media/homePage/c1.webp",
-                texto: "Este es el contenido relacionado al primer ícono.",
+                texto: "Transformamos ideas en soluciones que marcan la diferencia.",
               },
               {
                 icono: "/media/homePage/recicleIcon.png",
                 subtitulo: "SOSTENIBILIDAD",
                 imagen: "/media/homePage/c2.webp",
-                texto: "Información para el s3.5gundo ícono seleccionada.",
+                texto: "Comprometidos con un futuro responsable y respetuoso con el planeta",
               },
               {
                 icono: "/media/homePage/secureIcon.png",
                 subtitulo: "CONFIANZA",
                 imagen: "/media/homePage/c3.jpg",
-                texto: "Texto descriptivo para el tercer ícono.",
+                texto: "Construimos relaciones sólidas basadas en transparencia y compromiso..",
               },
               {
                 icono: "/media/homePage/awardIcon.png",
                 subtitulo: "EXCELENCIA",
                 imagen: "/media/homePage/c4.jpg",
-                texto: "Texto descriptivo para el tercer ícono.",
+                texto: "Reconocidos por superar estándares y alcanzar la perfección.",
               },
             ]}
           />
