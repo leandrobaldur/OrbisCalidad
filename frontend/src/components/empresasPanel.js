@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import axios from 'axios';
 import './empresasPanel.css';
+import RegistroEmpresa from './registroEmpresa'; // Ajusta la ruta según tu estructura
 
 const EmpresasPanel = ({ loggedInUser }) => {
   // Estados para datos
@@ -14,6 +15,7 @@ const EmpresasPanel = ({ loggedInUser }) => {
   const [showModal, setShowModal] = useState(false);
   const [modalEditable, setModalEditable] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showRegistroModal, setShowRegistroModal] = useState(false);
 
   // Lista de rubros para mostrar (solo lectura)
   const [rubrosDisponibles, setRubrosDisponibles] = useState([]);
@@ -25,6 +27,16 @@ const EmpresasPanel = ({ loggedInUser }) => {
   const esAdmin = loggedInUser?.id_rol === 1;
   const esColaborador = loggedInUser?.id_rol === 2;
   const puedeEditar = esAdmin || esColaborador;
+  const recargarEmpresas = async () => {
+    try {
+      const { data } = await axios.get('http://localhost:3000/empresas/resumen');
+      const mapped = data.map(mapEmpresaResumen);
+      setFullEmpresas(mapped);
+      setEmpresas(mapped);
+    } catch (error) {
+      console.error('Error recargando empresas:', error);
+    }
+  };
 
   // Mapear respuesta del API para resumen
   const mapEmpresaResumen = e => ({
@@ -85,6 +97,101 @@ const EmpresasPanel = ({ loggedInUser }) => {
     fetchEmpresas();
     fetchRubros();
   }, []);
+// Dentro del componente EmpresasPanel (después de los hooks y funciones existentes):
+
+const [showCrearModal, setShowCrearModal] = useState(false);
+const [nuevoEmpresaData, setNuevoEmpresaData] = useState({
+  denominacion_social: '',
+  nombre_comercial: '',
+  fecha_fundacion: '',
+  nit: '',
+  vision: '',
+  mision: '',
+  descripcion: '',
+  url: '',
+  direccion_web: '',
+  id_actividad: '',
+  id_tamanio: '',
+});
+
+const [actividades, setActividades] = useState([]);
+const [tamanios, setTamanios] = useState([]);
+
+// Cargar actividades y tamanios para los combos en la creación
+useEffect(() => {
+  const fetchActividades = async () => {
+    try {
+      const { data } = await axios.get('http://localhost:3000/actividades');
+      setActividades(data);
+    } catch (error) {
+      console.error('Error cargando actividades:', error);
+    }
+  };
+  const fetchTamanios = async () => {
+    try {
+      const { data } = await axios.get('http://localhost:3000/tamanios');
+      setTamanios(data);
+    } catch (error) {
+      console.error('Error cargando tamaños:', error);
+    }
+  };
+  fetchActividades();
+  fetchTamanios();
+}, []);
+
+  // Manejar cambios en formulario creación
+  const handleNuevoChange = (e) => {
+    const { name, value } = e.target;
+    setNuevoEmpresaData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleCrearEmpresa = async (e) => {
+    e.preventDefault();
+
+    // Validaciones básicas
+    if (!nuevoEmpresaData.denominacion_social.trim()) {
+      alert('Denominación social es obligatoria');
+      return;
+    }
+    if (!nuevoEmpresaData.nit || isNaN(Number(nuevoEmpresaData.nit))) {
+      alert('NIT válido es obligatorio');
+      return;
+    }
+    if (!nuevoEmpresaData.fecha_fundacion) {
+      alert('Fecha de fundación es obligatoria');
+      return;
+    }
+    if (!nuevoEmpresaData.id_actividad) {
+      alert('Selecciona una actividad');
+      return;
+    }
+    if (!nuevoEmpresaData.id_tamanio) {
+      alert('Selecciona un tamaño');
+      return;
+    }
+
+    try {
+      const payload = {
+        ...nuevoEmpresaData,
+        id_usuario: loggedInUser.id_usuario,
+        fecha_fundacion: new Date(nuevoEmpresaData.fecha_fundacion).toISOString(),
+        nit: Number(nuevoEmpresaData.nit),
+        id_actividad: Number(nuevoEmpresaData.id_actividad),
+        id_tamanio: Number(nuevoEmpresaData.id_tamanio),
+      };
+
+      await axios.post('http://localhost:3000/ingresarEmpresa', payload);
+      setShowCrearModal(false);
+      // Recargar empresas
+      const { data } = await axios.get('http://localhost:3000/empresas/resumen');
+      setFullEmpresas(data.map(mapEmpresaResumen));
+      setEmpresas(data.map(mapEmpresaResumen));
+    } catch (error) {
+      console.error('Error creando empresa:', error);
+      alert('Error al crear empresa. Intenta nuevamente.');
+    }
+  };
+
 
   // Filtrar y ordenar
   useEffect(() => {
@@ -638,7 +745,8 @@ const handleGuardarCambios = async (empresaEditada) => {
                 position: 'absolute',
                 top: '8px',
                 right: '8px',
-                backgroundColor: '#FF4201',
+                backgroundColor: 'rgba(250, 242, 242, 0.3)', // gris claro con 10% opacidad
+
                 border: 'none',
                 borderRadius: '4px',
                 color: 'white',
@@ -662,7 +770,7 @@ const handleGuardarCambios = async (empresaEditada) => {
   }
 
   return (
-    <motion.div className="empresas-wrapper" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+    <motion.div className="empresas-wrapper" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 } }>
       {/* BARRA SUPERIOR */}
       <div className="barra-superior">
         <button
@@ -721,8 +829,70 @@ const handleGuardarCambios = async (empresaEditada) => {
       {/* PANEL PRINCIPAL */}
       <div className="empresas-panel-container">
         <div className="imagen-lateral">
-          <img src="https://via.placeholder.com/150x150.png?text=Lateral" alt="Imagen lateral" />
+          <img 
+            src="/media/empresasPage/bolivia.jpg" 
+            alt="Imagen lateral" 
+            style={{ border: 'none', outline: 'none' }} 
+          />
+        { loggedInUser?.id_rol === 1 && (
+          <>
+            <button
+              className="boton-crear-empresa"
+              onClick={() => setShowRegistroModal(true)}
+              title="Crear nueva empresa"
+              style={{
+                marginTop: '10px',
+                backgroundColor: '#053015',
+                color: 'white',
+                borderRadius: '6px',
+                padding: '10px 20px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                border: 'none',
+              }}
+            >
+              +
+            </button>
+
+            {showRegistroModal && (
+              <div 
+                className="modal-overlay" 
+                onClick={() => setShowRegistroModal(false)}
+                style={{
+                  position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                  display: 'flex', justifyContent: 'center', alignItems: 'center',
+                  zIndex: 9999,
+                }}
+              >
+                <div 
+                  className="modal-content" 
+                  onClick={(e) => e.stopPropagation()}
+                  style={{
+                    backgroundColor: 'white',
+                    borderRadius: '8px',
+                    maxWidth: '600px',
+                    width: '90%',
+                    maxHeight: '90vh',
+                    overflowY: 'auto',
+                    padding: '20px',
+                  }}
+                >
+                  <RegistroEmpresa 
+                    onRegistroExitoso={() => {
+                      setShowRegistroModal(false);
+                      recargarEmpresas();
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+          </>
+        )}
         </div>
+
+
+
         <div className="empresas-panel">
           <div className="empresas-grid">
             {renderEmpresas()}

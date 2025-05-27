@@ -15,7 +15,7 @@ body {
 
   margin: 4vh auto;  /* centrado horizontal con margen arriba y abajo */
   box-sizing: border-box;
-  height: 50vh; /* opcional para altura mínima */
+  height: 65vh; /* opcional para altura mínima */
 }
 
 /* ====== BARRA SUPERIOR ====== */
@@ -109,36 +109,49 @@ body {
   gap: 2%;
   border-radius: 0 0 10px 10px;
   border: #052018 0.15vh solid;
-  max-width: 100%;
-
+  height: 90%;
   margin: 0 auto;
   box-sizing: border-box;
   flex-wrap: wrap; /* para que en pantallas pequeñas se adapten */
+    flex-wrap: nowrap;  /* importante para que no se rompa la fila */
+  overflow: hidden;   /* ocultar scroll innecesario aquí */
 }
 
 .imagen-lateral {
-  flex: 0 0 15%; /* ocupa 15% del ancho */
-  max-width: 140px;
+  flex: 0 0 15%;
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  overflow: visible; /* sin scroll aquí */
+
 }
 
 .imagen-lateral img {
   width: 100%;
   border-radius: 12px;
   border: 2px solid rgba(0, 64, 124, 0.6);
+  margin-bottom:  180px;
+  overflow: visible; /* sin scroll aquí */
+  
 }
 
 .empresas-panel {
   flex: 1 1 80%; /* ocupa resto del espacio, se adapta */
   min-width: 300px; /* evita reducción excesiva */
   box-sizing: border-box;
+    overflow-y: auto;
+  scrollbar-width: thin;               /* Firefox: barra delgada */
+  scrollbar-color: rgba(0,0,0,0.2) transparent; /* Firefox: color thumb y track */
+  
 }
 
 .empresas-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.2rem;
+  
 }
 
 .empresa-card {

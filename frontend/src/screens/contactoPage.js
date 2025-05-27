@@ -15,9 +15,9 @@ const ContactoPage = () => {
   );
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-white p-7">
-      <div className="w-full max-w-screen-xl bg-[rgba(0,0,0,0.7)] rounded-3xl p-9 shadow-2xl">
-        <div className="bg-[rgb(255,255,255)] rounded-2xl p-6 space-y-8 font-sans text-black">
+    <div className="min-h-screen flex justify-center items-center bg-[#F8F0E3] p-7">
+      <div className="w-full max-w-screen-xl bg-[#052018] rounded-3xl p-9 shadow-2xl text-white">
+        <div className="bg-[#F1E3C1] rounded-2xl p-6 space-y-8 font-sans text-black">
           
           {/* Título principal */}
           <h1 className="text-4xl font-bold text-center mb-8">UNIVERSIDAD CATÓLICA BOLIVIANA</h1>
@@ -34,7 +34,7 @@ const ContactoPage = () => {
               {[1, 2, 3].map((qr, idx) => (
                 <div key={idx} className="flex flex-col items-center w-full md:w-1/3 text-center">
                   <img src="/media/contactoPage/qr.png" alt={`QR ${qr}`} className="w-2/3 rounded-xl object-contain" />
-                  <p className="mt-2 font-semibold">QR {qr}</p>
+                  <p className="mt-2 font-semibold text-[#00724A]">QR {qr}</p>
                 </div>
               ))}
             </div>
@@ -47,13 +47,13 @@ const ContactoPage = () => {
               <img src="/media/contactoPage/equipo.jpg" alt="Equipo" className="mx-auto w-full rounded-xl object-contain" />
             </div>
             <p>
-            Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.
+              Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral. Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral. Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral. Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.
             </p>
           </section>
 
           {/* Misión y Visión */}
           <section>
-            <h2 className="text-2xl font-bold text-center mb-4">MISION Y VISION</h2>
+            <h2 className="text-2xl font-bold text-center mb-4">MISIÓN Y VISIÓN</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="text-center">
                 <FlipCard
@@ -61,7 +61,7 @@ const ContactoPage = () => {
                   alt="Misión"
                   backText="Nuestra misión es formar profesionales con valores humanos y compromiso social."
                 />
-                <p className="mt-2 font-semibold text-center text-[rgba(0,0,0,0.1)]">HAZ CLICK en la imagen</p>
+                <p className="mt-2 font-semibold text-center text-[#00724A]">HAZ CLICK en la imagen</p>
               </div>
               <div className="text-center">
                 <FlipCard
@@ -69,7 +69,7 @@ const ContactoPage = () => {
                   alt="Visión"
                   backText="Nuestra visión es ser líderes en educación superior en Bolivia y Latinoamérica."
                 />
-                <p className="mt-2 font-semibold text-center text-[rgba(0,0,0,0.1)]">HAZ CLICK en la imagen</p>
+                <p className="mt-2 font-semibold text-center text-[#00724A]">HAZ CLICK en la imagen</p>
               </div>
             </div>
           </section>
