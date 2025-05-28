@@ -1,5 +1,6 @@
 import express from 'express';
 import empresaController from '../controllers/ingresarEmpresaController.js';
+import ingresarEmpresaController from '../controllers/ingresarEmpresaController.js';
 
 const router = express.Router();
 
@@ -83,45 +84,11 @@ const router = express.Router();
  */
 
 router.post('/ingresarEmpresa', empresaController.crearEmpresa);
-
-/**
- * @swagger
- * /actualizarEmpresa/{id}:
- *   put:
- *     tags:
- *       - Empresas
- *     summary: Actualiza una empresa por su ID
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID de la empresa a actualizar
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/NuevaEmpresa'
- *     responses:
- *       200:
- *         description: Empresa actualizada exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 mensaje:
- *                   type: string
- *                 empresa:
- *                   type: object
- *       400:
- *         description: Faltan campos requeridos
- *       500:
- *         description: Error interno del servidor
- */
-router.put('/actualizarEmpresa/:id', empresaController.actualizarEmpresa);
+router.get('/buscarEmpresas', empresaController.buscarEmpresas);
+router.get('/premios', empresaController.obtenerPremios);
+router.get('/empresas/premio/:id_premio', empresaController.filtrarEmpresasPorPremio);
+// ** Agregar esta línea para el PUT **
+router.put('/actualizarEmpresa/:id', ingresarEmpresaController.actualizarEmpresa);
 
 
 export default router;

@@ -49,9 +49,22 @@ const obtenerTodosLosUsuarios = async () => {
     throw new Error('Error al obtener la lista de usuarios');
   }
 };
+const eliminarUsuarioPorId = async (idUsuario) => {
+  const query = `DELETE FROM USUARIOS WHERE id_usuario = $1`;
+  const values = [idUsuario];
+  try {
+    await pool.query(query, values);
+  } catch (error) {
+    console.error('Error en eliminarUsuarioPorId:', error);
+    throw new Error('Error al eliminar usuario');
+  }
+};
+
+
 
 export default {
   buscarUsuario,
   insertUsuario,
   obtenerTodosLosUsuarios, // ✅ agregado al export
+  eliminarUsuarioPorId, // ✅ agregado al export
 };

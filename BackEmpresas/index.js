@@ -43,7 +43,7 @@ app.use('/logs', logsRouter);
 app.use('/actividades', actividadesRouter);
 app.use('/internacional', internacionalRouter)
 app.use('/hitos', hitosRouter);
-
+app.use('/', ingresarEmpresaRouter);
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);

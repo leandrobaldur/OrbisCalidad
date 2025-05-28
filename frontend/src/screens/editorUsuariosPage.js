@@ -1,6 +1,6 @@
 
 import React from 'react';
-import PanelEditorUsuarios from '../components/panelEditorUsuarios';
+import PanelEditorUsuarios from '../components/panelEditorUsuarios_temp';
 
 const EditorUsuariosPage = () => {
   return (
