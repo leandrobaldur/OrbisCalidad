@@ -1,37 +1,41 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+// --- Importa tu logo aquí ---
+import logo from '../assets/logo.png';// Asegúrate de que la ruta sea correcta
+
 // --- fácilmente AJUSTABLES ---
-const USER_ICON_ACTUAL_SIZE = "50px"; 
-const USER_ICON_CONTAINER_PADDING_VALUE = 13; 
-const TITLE_FONT_SIZE = "27px"; 
-const SMALL_ICON_SVG_SIZE = "20px"; 
+const USER_ICON_ACTUAL_SIZE = "100px"; // Icono del logo más grande
+const TITLE_FONT_SIZE = "40px"; // Título más grande y prominente
+const SMALL_ICON_SVG_SIZE = "26px"; // Iconos de ojo un poco más grandes
+const LABEL_FONT_SIZE = "19px"; // Etiquetas de input más grandes
+const INPUT_FONT_SIZE = "20px"; // Texto dentro del input más grande
+const BUTTON_FONT_SIZE = "24px"; // Texto del botón más grande
+const MESSAGE_FONT_SIZE = "18px"; // Mensajes grandes
+
+// --- AJUSTES ESPECÍFICOS ---
+const MODAL_WIDTH = "530px"; // Ancho del modal reducido (550px - 20px)
+const MODAL_PADDING_VERTICAL = "40px"; // Ajuste para reducir la altura (originalmente 50px)
+const MODAL_PADDING_HORIZONTAL = "40px"; // Ajuste para reducir el ancho (originalmente 50px)
+
+const CLOSE_BUTTON_FONT_SIZE = "40px"; // Tamaño de la "X" aumentado
 // --- FIN DE AJUSTABLES ---
 
+// --- PALETA DE COLORES (sin cambios, ya que se ve bien con la imagen) ---
 const PALETTE = {
-  CLEMENTINA: "#FF4201",
-  SKYNE: "#199ECA",
-  IVRAE: "#F6EEE3",
-  NEGRO: "#000000",
-  VERDE: "#166D3B",
+  BACKGROUND_MODAL: "#F6EEE3", // Beige claro del fondo
+  PRIMARY_ACCENT_BLUE: "#2F4F8B", // Azul oscuro fuerte
+  SECONDARY_ACCENT_GOLD: "#E1B85D", // Dorado (para foco)
+  SUCCESS_GREEN: "#166D3B", // Verde oscuro para mensajes de éxito
+  TEXT_DARK: "#25384F", // Un gris azulado oscuro para el texto principal
+  TEXT_MUTED: "#78909C", // Gris más suave para detalles
+  ERROR_RED: "#E57373", // Rojo estándar para errores
   WHITE: "#FFFFFF",
-  INPUT_BORDER: "#D0D0D0",
-  SHADOW_CONTOUR_COLOR: "rgba(0, 0, 0, 0.4)",
+  CONTOUR_COLOR: "#000000", // Color del contorno negro
+  BUTTON_HOVER_BLUE: "#4A6FA8", // Un azul ligeramente más claro para el hover del botón
 };
 
-const ICON_SVG_SIZE = "40px"; 
-const ICON_CONTAINER_PADDING = `${USER_ICON_CONTAINER_PADDING_VALUE}px`;
-
-
-const UserIcon = ({ color, size = USER_ICON_ACTUAL_SIZE }) => (
-  <svg
-    viewBox="0 0 24 24"
-    style={{ width: size, height: size, fill: color, display: "block" }}
-  >
-    <path d="M12 12c2.76 0 5-2.24 5-5S14.76 2 12 2 7 4.24 7 7s2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z" />
-  </svg>
-);
-
+// Componente del ícono de ojo (mostrar contraseña)
 const EyeIconShow = ({ color, size = SMALL_ICON_SVG_SIZE }) => (
   <svg
     viewBox="0 0 24 24"
@@ -41,6 +45,7 @@ const EyeIconShow = ({ color, size = SMALL_ICON_SVG_SIZE }) => (
   </svg>
 );
 
+// Componente del ícono de ojo (ocultar contraseña)
 const EyeIconHide = ({ color, size = SMALL_ICON_SVG_SIZE }) => (
   <svg
     viewBox="0 0 24 24"
@@ -58,44 +63,52 @@ const InicioSesion = ({ onLogin, onClose }) => {
   const [mensaje, setMensaje] = useState(null);
   const [isVisible, setIsVisible] = useState(true);
 
+  // Variantes de animación para inputs
   const inputVariants = {
     focus: {
-      scale: 1.02,
-      boxShadow: `0 0 0 2px ${PALETTE.CLEMENTINA}`,
-      transition: { duration: 0.3 },
+      scale: 1.01,
+      boxShadow: `0 0 0 2px ${PALETTE.SECONDARY_ACCENT_GOLD}`, // Borde dorado más visible al enfocar
+      transition: { duration: 0.2 },
     },
   };
+  // Variantes de animación para botones
   const buttonVariants = {
-    hover: { scale: 1.05, transition: { duration: 0.2 } },
+    hover: { backgroundColor: PALETTE.BUTTON_HOVER_BLUE, scale: 1.02, transition: { duration: 0.15 } },
+    tap: { scale: 0.98 }, // Efecto al presionar
   };
 
+  // Variantes de animación para el fondo
   const backdropVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.3 } },
-    exit: { opacity: 0, transition: { duration: 0.3 } },
+    visible: { opacity: 1, transition: { duration: 0.2 } },
+    exit: { opacity: 0, transition: { duration: 0.2 } },
   };
+  // Variantes de animación para el modal
   const modalVariants = {
-    hidden: { y: -50, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 120, damping: 20 } },
-    exit: { y: -50, opacity: 0, transition: { duration: 0.3 } },
+    hidden: { scale: 0.95, opacity: 0 },
+    visible: { scale: 1, opacity: 1, transition: { type: "spring", stiffness: 100, damping: 15 } },
+    exit: { scale: 0.95, opacity: 0, transition: { duration: 0.2 } },
   };
+  // Variantes de animación para el icono superior
   const iconVariants = {
-    hidden: { scale: 0 },
-    visible: { scale: 1, transition: { delay: 0.4, type: "spring", stiffness: 150 } },
-    exit: { scale: 0, transition: { duration: 0.2 } },
+    hidden: { y: -20, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { delay: 0.2, type: "spring", stiffness: 120 } },
+    exit: { y: -20, opacity: 0, transition: { duration: 0.1 } },
   };
 
+  // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMensaje(null);
+    setMensaje(null); // Limpia mensajes anteriores
 
     if (!usuario || !contrasenia) {
       setMensaje("Por favor, rellena todos los campos");
       return;
     }
 
-    setLoading(true);
+    setLoading(true); // Activa el estado de carga
     try {
+      // --- LA LLAMADA FETCH PARA EL LOGIN ESTÁ IMPLEMENTADA AQUÍ MISMO ---
       const res = await fetch("http://localhost:3000/usuarios/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -104,98 +117,111 @@ const InicioSesion = ({ onLogin, onClose }) => {
       const data = await res.json();
 
       if (res.ok && data.encontrado === 1) {
-        setMensaje("Iniciaste sesión correctamente");
-        onLogin(data.usuario);
+        setMensaje("¡Sesión iniciada correctamente!");
+        onLogin(data.usuario); // Llama a la función onLogin pasada por props
         setTimeout(() => {
-          setIsVisible(false);
+          setIsVisible(false); // Cierra el modal después de un tiempo
         }, 1500);
       } else {
-        setMensaje(data.mensaje || "Credenciales incorrectas");
+        setMensaje(data.mensaje || "Credenciales incorrectas"); // Muestra mensaje de error
       }
-    } catch {
+    } catch (error) {
+      console.error("Error al conectar con el servidor:", error);
       setMensaje("Error de conexión con el servidor");
     } finally {
-      setLoading(false);
+      setLoading(false); // Desactiva el estado de carga
     }
   };
 
+  // Función para cerrar el modal
   const handleClose = () => {
     setIsVisible(false);
   };
 
+  // Función que se ejecuta cuando la animación de salida termina
   const onExitComplete = () => {
-    if (onClose) onClose();
+    if (onClose) onClose(); // Llama a la función onClose pasada por props
   }
 
+  // Estilos base para las etiquetas de los inputs
+  const labelStyle = {
+    fontSize: LABEL_FONT_SIZE,
+    color: PALETTE.TEXT_DARK,
+    marginBottom: "10px",
+    display: "block",
+    textAlign: "left",
+    fontWeight: 500, // Menos negrita para Playfair Display en etiquetas
+    fontFamily: "'Playfair Display', serif", // APLICANDO PLAYFAIR DISPLAY
+  };
+
+  // Estilos base para los inputs de texto
   const inputBaseStyle = {
     width: "100%",
-    // MODIFICADO: Ajuste de padding para centrar verticalmente el placeholder con la fuente 'Caveat'
-    padding: "13px 15px 11px 15px", // (top:13, right:15, bottom:11, left:15) - Pruebe esto primero
-    // Si todavía se ve un poco alto, puede probar "14px 15px 10px 15px"
-    fontSize: "18px",
-    border: `1px solid ${PALETTE.INPUT_BORDER}`,
-    borderRadius: "8px",
+    padding: "16px 18px",
+    fontSize: INPUT_FONT_SIZE,
+    border: `1px solid ${PALETTE.TEXT_MUTED}`,
+    borderRadius: "10px",
     backgroundColor: PALETTE.WHITE,
-    textAlign: "center",
-    color: PALETTE.NEGRO,
-    fontFamily: "'Caveat', cursive",
+    color: PALETTE.TEXT_DARK,
+    fontFamily: "'Playfair Display', serif", // APLICANDO PLAYFAIR DISPLAY (para placeholder y texto)
     boxSizing: "border-box",
-    lineHeight: "18px", 
+    marginBottom: "30px",
   };
 
+  // Estilos específicos para el input de contraseña
   const passwordInputStyle = {
     ...inputBaseStyle,
-    paddingRight: "45px", 
-    marginBottom: 0, 
+    paddingRight: "60px", // Espacio adicional para el icono del ojo
+    marginBottom: "0",
   };
-  
-  const iconContainerDiameter = parseInt(USER_ICON_ACTUAL_SIZE.replace('px','')) + 2 * USER_ICON_CONTAINER_PADDING_VALUE;
 
+  // Estilos del contenedor del icono de usuario (ahora el logo)
   const iconContainerStyle = {
-    position: "absolute",
-    top: `-${iconContainerDiameter / 2}px`, 
-    left: "44%", 
-    transform: "translateX(-50%)",
-    backgroundColor: PALETTE.IVRAE,
-    borderRadius: "50%",
-    padding: ICON_CONTAINER_PADDING,
-    boxShadow: "0px -3px 6px rgba(0, 0, 0, 0.1)",
-    zIndex: 1,
-    display: 'flex', 
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: "40px",
+    // Asegurarse que el logo se ajuste al tamaño definido por USER_ICON_ACTUAL_SIZE
+    width: USER_ICON_ACTUAL_SIZE,
+    height: USER_ICON_ACTUAL_SIZE,
+    margin: '0 auto 40px auto', // Centrar el contenedor del logo
   };
 
+  // Estilos del modal principal
   const modalStyle = {
-    position: "relative",
-    backgroundColor: PALETTE.IVRAE,
-    borderRadius: "27px",
-    width: "500px",
-    padding: "45px 30px 30px", 
+    backgroundColor: PALETTE.BACKGROUND_MODAL,
+    borderRadius: "20px",
+    width: MODAL_WIDTH, // ANCHO DEL MODAL REDUCIDO AQUÍ
+    padding: `${MODAL_PADDING_VERTICAL} ${MODAL_PADDING_HORIZONTAL}`, // ALTURA DEL MODAL REDUCIDA AQUÍ
     textAlign: "center",
-    fontFamily: "'Poppins', sans-serif", 
-    boxShadow: `0 0 0 10px ${PALETTE.SHADOW_CONTOUR_COLOR}`,
+    fontFamily: "'Playfair Display', serif", // APLICANDO PLAYFAIR DISPLAY
+    boxShadow: `0 10px 30px ${PALETTE.CONTOUR_COLOR}40`, // Sombra más grande
+    border: `2px solid ${PALETTE.CONTOUR_COLOR}`, // Contorno negro más grueso
+    position: "relative",
   };
 
+  // Estilos para los mensajes (éxito/error)
   const mensajeStyle = {
-    marginBottom: "15px", 
+    marginBottom: "30px",
     fontWeight: "bold",
-    color: mensaje === "Iniciaste sesión correctamente" ? PALETTE.VERDE : PALETTE.CLEMENTINA,
-    fontFamily: "'Poppins', sans-serif",
-    fontSize: "15px",
-    minHeight: "22px", 
+    color: mensaje === "¡Sesión iniciada correctamente!" ? PALETTE.SUCCESS_GREEN : PALETTE.ERROR_RED,
+    fontFamily: "'Playfair Display', serif", // APLICANDO PLAYFAIR DISPLAY
+    fontSize: MESSAGE_FONT_SIZE,
+    minHeight: "30px", // Asegura un espacio constante para el mensaje
   };
 
+  // Estilos para el contenedor del input de contraseña
   const passwordInputContainerStyle = {
     position: "relative",
     width: "100%",
-    marginBottom: "18px",
+    marginBottom: "30px",
   };
 
+  // Estilos para el botón de mostrar/ocultar contraseña
   const passwordToggleButtonStyle = {
     position: "absolute",
     top: "50%",
-    right: "15px", 
+    right: "20px",
     transform: "translateY(-50%)",
     background: "none",
     border: "none",
@@ -204,10 +230,54 @@ const InicioSesion = ({ onLogin, onClose }) => {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color: PALETTE.NEGRO,
-    lineHeight: 1, 
+    color: PALETTE.TEXT_MUTED,
+    lineHeight: 1,
   };
 
+  // Estilos para el título "Inicio de Sesión"
+  const titleStyle = {
+    fontSize: TITLE_FONT_SIZE,
+    fontWeight: 700, // Extra negrita para Playfair Display
+    color: PALETTE.TEXT_DARK,
+    marginBottom: "45px",
+    textTransform: "uppercase", // Mantenemos uppercase para impacto
+    letterSpacing: "3px", // Espaciado entre letras para el título (más prominente)
+    fontFamily: "'Playfair Display', serif", // APLICANDO PLAYFAIR DISPLAY
+  };
+
+  // Estilos para el botón de cerrar (la "X")
+  const closeButtonStyle = {
+    position: "absolute",
+    top: "18px",
+    right: "22px",
+    background: "none",
+    border: "none",
+    fontSize: CLOSE_BUTTON_FONT_SIZE, // ¡TAMAÑO DE LA "X" AUMENTADO AQUÍ!
+    cursor: "pointer",
+    color: PALETTE.TEXT_MUTED,
+    lineHeight: 1,
+    padding: "5px",
+    outline: "none",
+    transition: "transform 0.2s ease-in-out",
+  };
+
+  // Estilos para el botón de enviar
+  const submitButtonStyle = {
+    width: "100%",
+    padding: "18px",
+    fontSize: BUTTON_FONT_SIZE,
+    fontWeight: 700, // Extra negrita para Playfair Display
+    border: "none",
+    borderRadius: "10px",
+    backgroundColor: PALETTE.PRIMARY_ACCENT_BLUE,
+    color: PALETTE.WHITE,
+    cursor: loading ? "not-allowed" : "pointer",
+    textTransform: "uppercase", // Mantenemos uppercase
+    opacity: loading ? 0.8 : 1,
+    fontFamily: "'Playfair Display', serif", // APLICANDO PLAYFAIR DISPLAY
+    marginTop: "25px",
+    transition: "background-color 0.15s ease-in-out",
+  };
 
   return (
     <AnimatePresence onExitComplete={onExitComplete}>
@@ -239,106 +309,97 @@ const InicioSesion = ({ onLogin, onClose }) => {
             exit="exit"
             style={modalStyle}
           >
-            <motion.div
-              variants={iconVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              style={iconContainerStyle}
-            >
-              <UserIcon color={PALETTE.NEGRO} size={USER_ICON_ACTUAL_SIZE} />
-            </motion.div>
-
+            {/* Botón de cerrar (la X) */}
             <motion.button
               onClick={handleClose}
-              whileHover={{ scale: 1.2 }}
-              style={{
-                position: "absolute",
-                top: "10px", 
-                right: "15px", 
-                background: "none",
-                border: "none",
-                fontSize: "35px", 
-                cursor: "pointer",
-                color: PALETTE.NEGRO,
-                lineHeight: 1,
-                padding: "5px", 
-              }}
+              whileHover={{ scale: 1.2, color: PALETTE.ERROR_RED }}
+              style={closeButtonStyle}
             >
               &times;
             </motion.button>
 
-            <h2
-              style={{
-                marginTop: `${iconContainerDiameter / 2 - 10}px`, 
-                marginBottom: "20px", 
-                fontSize: TITLE_FONT_SIZE,
-                fontWeight: 600, 
-                color: PALETTE.NEGRO,
-                textTransform: "uppercase",
-                letterSpacing: "1px",
-                fontFamily: "'Caveat', cursive", 
-              }}
-            >
-              Inicio de Sesión
-            </h2>
+            {/* Contenedor del ícono de usuario (ahora el logo) */}
+            <div style={iconContainerStyle}>
+              <motion.img
+                src={logo} // Usamos tu logo importado aquí
+                alt="Logo de la aplicación"
+                style={{
+                  width: '100%', // El logo ocupará el 100% del contenedor
+                  height: '100%', // El logo ocupará el 100% del contenedor
+                  objectFit: 'contain', // Asegura que el logo se vea completo
+                  display: 'block'
+                }}
+                variants={iconVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              />
+            </div>
 
+            {/* Título del modal */}
+            <h2 style={titleStyle}>Inicio de Sesión</h2>
+
+            {/* Mensajes de feedback (éxito/error) */}
             {mensaje && <p style={mensajeStyle}>{mensaje}</p>}
 
-            <form onSubmit={handleSubmit}>
+            {/* Formulario de inicio de sesión */}
+            <form onSubmit={handleSubmit} style={{ textAlign: "left" }}>
+              {/* Campo de Usuario */}
+              <label htmlFor="usuario" style={labelStyle}>
+                Usuario
+              </label>
               <motion.input
                 type="text"
-                placeholder="USUARIO"
+                id="usuario"
+                placeholder="Escribe tu usuario"
                 value={usuario}
                 onChange={(e) => setUsuario(e.target.value)}
                 variants={inputVariants}
                 whileFocus="focus"
-                style={{...inputBaseStyle, marginBottom: "18px"}} 
+                style={inputBaseStyle}
               />
+
+              {/* Campo de Contraseña */}
+              <label htmlFor="contrasenia" style={labelStyle}>
+                Contraseña
+              </label>
               <div style={passwordInputContainerStyle}>
                 <motion.input
                   type={showPassword ? "text" : "password"}
-                  placeholder="CONTRASEÑA"
+                  id="contrasenia"
+                  placeholder="Introduce tu contraseña"
                   value={contrasenia}
                   onChange={(e) => setContrasenia(e.target.value)}
                   variants={inputVariants}
                   whileFocus="focus"
                   style={passwordInputStyle}
                 />
+                {/* Botón para mostrar/ocultar contraseña */}
                 <motion.button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   style={passwordToggleButtonStyle}
-                  whileHover={{ opacity: 0.6 }} 
+                  whileHover={{ opacity: 0.7, scale: 1.1 }}
                   title={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                 >
-                  {showPassword ? 
-                    <EyeIconHide color={PALETTE.NEGRO} size={SMALL_ICON_SVG_SIZE} /> : 
-                    <EyeIconShow color={PALETTE.NEGRO} size={SMALL_ICON_SVG_SIZE} />}
+                  {showPassword ? (
+                    <EyeIconHide color={PALETTE.TEXT_MUTED} size={SMALL_ICON_SVG_SIZE} />
+                  ) : (
+                    <EyeIconShow color={PALETTE.TEXT_MUTED} size={SMALL_ICON_SVG_SIZE} />
+                  )}
                 </motion.button>
               </div>
+
+              {/* Botón de Enviar */}
               <motion.button
                 type="submit"
                 disabled={loading}
                 variants={buttonVariants}
                 whileHover="hover"
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  fontSize: "15px",
-                  fontWeight: 500,
-                  border: "none",
-                  borderRadius: "8px",
-                  backgroundColor: "rgba(22, 109, 59, 0.75)",
-                  color: PALETTE.WHITE,
-                  cursor: loading ? "not-allowed" : "pointer",
-                  textTransform: "uppercase",
-                  opacity: loading ? 0.75 : 1,
-                  fontFamily: "'Poppins', sans-serif",
-                  marginTop: "10px", 
-                }}
+                whileTap="tap"
+                style={submitButtonStyle}
               >
-                {loading ? "Iniciando..." : "ENVIAR"}
+                {loading ? "Accediendo..." : "ACCEDER"}
               </motion.button>
             </form>
           </motion.div>
