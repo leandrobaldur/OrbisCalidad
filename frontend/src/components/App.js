@@ -53,117 +53,127 @@ function App() {
 
   return (
     <Router>
+      {/* Este div principal encapsula toda la aplicación */}
       <div style={{ fontFamily: "'Poppins', sans-serif" }}>
+        {/* Header y Navbar se renderizan fuera de las rutas */}
         <Header loggedInUser={loggedInUser} onLogout={handleLogout} onLogin={handleLogin} />
         <Navbar loggedInUser={loggedInUser} onLogout={handleLogout} />
 
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/empresas" element={<EmpresasPage loggedInUser={loggedInUser} />} />
-          <Route path="/revistaPage" element={<RevistaPage />} />
-          <Route path="/contacto" element={<ContactoPage />} />
-          <Route path="/historia" element={<HistoriaPage />} />
+        {/* Este es el div que contiene todas tus páginas.
+          Le añadimos la clase 'pt-[140px]' para que el contenido empiece debajo
+          de tu Header (80px) y tu Navbar (aprox 60px).
+        */}
+        <div className="pt-[140px]"> {/* <--- AÑADIDO AQUÍ */}
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/empresas" element={<EmpresasPage loggedInUser={loggedInUser} />} />
+            <Route path="/revistaPage" element={<RevistaPage />} />
+            <Route path="/contacto" element={<ContactoPage />} />
+            <Route path="/historia" element={<HistoriaPage />} />
 
-          {/* Ruta dashboards abre URL externa en nueva pestaña si está logueado */}
-          <Route
-            path="/dashboards"
-            element={
-              loggedInUser ? (
-                <RedirectDashboard />
-              ) : (
-                <div
-                  style={{
-                    padding: 50,
-                    textAlign: 'center',
-                    color: '#FF4201',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  Acceso denegado. Inicia sesión.
-                </div>
-              )
-            }
-          />
-
-          {loggedInUser && loggedInUser.id_rol === 1 && (
-            <>
-              <Route path="/editor-empresas" element={<EditorEmpresasPage />} />
-              <Route path="/panel-usuarios" element={<PanelEditorUsuarios />} />
-            </>
-          )}
-
-          {loggedInUser && loggedInUser.id_rol !== 1 && (
-            <>
-              <Route
-                path="/editor-empresas"
-                element={
-                  <div
-                    style={{
-                      padding: 50,
-                      textAlign: 'center',
-                      color: '#FF4201',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    No tienes permisos para acceder a esta página.
-                  </div>
-                }
-              />
-              <Route
-                path="/panel-usuarios"
-                element={
-                  <div
-                    style={{
-                      padding: 50,
-                      textAlign: 'center',
-                      color: '#FF4201',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    No tienes permisos para acceder a esta página.
-                  </div>
-                }
-              />
-            </>
-          )}
-
-          {!loggedInUser && (
+            {/* Ruta dashboards */}
             <Route
-              path="*"
+              path="/dashboards"
               element={
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: 'calc(100vh - 120px)',
-                    textAlign: 'center',
-                  }}
-                >
-                  <h1>Plataforma de Empresas</h1>
-                  <p>Por favor, inicie sesión para acceder al sistema.</p>
-                  <button
+                loggedInUser ? (
+                  <RedirectDashboard />
+                ) : (
+                  <div
                     style={{
-                      padding: '12px 24px',
-                      fontSize: '16px',
-                      fontWeight: '600',
-                      backgroundColor: '#166D3B',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                      textTransform: 'uppercase',
+                      padding: 50,
+                      textAlign: 'center',
+                      color: '#FF4201',
+                      fontWeight: 'bold',
                     }}
-                    onClick={() => setShowLoginModal(true)}
                   >
-                    Iniciar Sesión
-                  </button>
-                </div>
+                    Acceso denegado. Inicia sesión.
+                  </div>
+                )
               }
             />
-          )}
-        </Routes>
+
+            {/* Rutas de administrador */}
+            {loggedInUser && loggedInUser.id_rol === 1 && (
+              <>
+                <Route path="/editor-empresas" element={<EditorEmpresasPage />} />
+                <Route path="/panel-usuarios" element={<PanelEditorUsuarios />} />
+              </>
+            )}
+
+            {loggedInUser && loggedInUser.id_rol !== 1 && (
+              <>
+                <Route
+                  path="/editor-empresas"
+                  element={
+                    <div
+                      style={{
+                        padding: 50,
+                        textAlign: 'center',
+                        color: '#FF4201',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      No tienes permisos para acceder a esta página.
+                    </div>
+                  }
+                />
+                <Route
+                  path="/panel-usuarios"
+                  element={
+                    <div
+                      style={{
+                        padding: 50,
+                        textAlign: 'center',
+                        color: '#FF4201',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      No tienes permisos para acceder a esta página.
+                    </div>
+                  }
+                />
+              </>
+            )}
+
+            {/* Ruta de fallback si no está logueado y no hay otras rutas */}
+            {!loggedInUser && (
+              <Route
+                path="*"
+                element={
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: 'calc(100vh - 120px)', // Esto también podría necesitar ajuste de padding-top
+                      textAlign: 'center',
+                    }}
+                  >
+                    <h1>Plataforma de Empresas</h1>
+                    <p>Por favor, inicie sesión para acceder al sistema.</p>
+                    <button
+                      style={{
+                        padding: '12px 24px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        backgroundColor: '#166D3B',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        textTransform: 'uppercase',
+                      }}
+                      onClick={() => setShowLoginModal(true)}
+                    >
+                      Iniciar Sesión
+                    </button>
+                  </div>
+                }
+              />
+            )}
+          </Routes>
+        </div>
 
         {showLoginModal && !loggedInUser && (
           <InicioSesion onLogin={handleLogin} onClose={() => setShowLoginModal(false)} />
