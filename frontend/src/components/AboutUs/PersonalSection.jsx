@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import TestimonialCard from "./TestimonialCard";
 import { motion } from "framer-motion";
+import jessicaImg from '../../assets/jessica.jpg';
+import OvandoImg from '../../assets/ovando.jpg';
+import GuidoImg from '../../assets/guido.jpg';
 
 const cardsData = [
   {
     title: "Frontend",
-    text: "Estamos dando unos retoques visuales estamos dando unos retoques visuales",
-    role: "Desarrollador",
+    text: "Equipo encargado de dar vida a la página web, transformando código en experiencias llenas de pasión y alegría.",
+    role: "Desarrolladores",
     backType: "list",
     backContent: [
       "Octavio Luna",
@@ -25,15 +28,16 @@ const cardsData = [
     role: "Desarrollador",
     backType: "list",
     backContent: [
-      "Octavio Luna",
-      "Leonardo Ibarra",
-      "Leandro Colque",
-      "Rodny Siles",
-      "Kevin Sancalli",
-      "Einar Guillen",
-      "Huascar Duran",
-      "Alejandro Zamorano",
+      "Adriana Rocha",
+      "Luís Paredes",
+      "Carlos Pinell",
+      "Tania Pérez",
+      "Dilan Mamani",
+      "Ignacio Retamozo",
+      "Ramiro Quenta",
+      "Ivonne Colque",
     ],
+
   },
   {
     title: "Base de datos",
@@ -53,43 +57,43 @@ const cardsData = [
   },
   {
     title: "Dashboard",
-    text: "Estamos dando unos retoques visuales estamos dando unos retoques visuales",
+    text: "Equipo encargado de dar vida a los datos de las grandes empresas bolivianas, transformando cifras históricas en un dashboard que honra su legado y proyecta su futuro con claridad y visión.",
     role: "Desarrollador",
     backType: "list",
     backContent: [
-      "Octavio Luna",
-      "Leonardo Ibarra",
-      "Leandro Colque",
-      "Rodny Siles",
-      "Kevin Sancalli",
-      "Einar Guillen",
-      "Huascar Duran",
-      "Alejandro Zamorano",
+      "Adriana Rocha",
+      "Luís Paredes",
+      "Carlos Pinell",
+      "Tania Pérez",
+      "Dilan Mamani",
+      "Ignacio Retamozo",
+      "Ramiro Quenta",
+      "Ivonne Colque",
     ],
+
   },
   {
     title: "Daniela Carolina Ovando Santander",
     text: "Estamos dando unos retoques visuales estamos dando unos retoques visuales",
-    role: "Desarrollador",
+    role: "Ingeniera que hizo posible todo esto",
     backType: "image",
-    backContent: "/ruta/a/la/imagen1.jpg",
+    backContent: OvandoImg,
   },
   {
-    title: "Jessica",
+    title: "Jessica Doris Lanza Butrón",
+    text: "Directora Administración de Empresas e Innovación Empresarial. Universidad Católica Boliviana San Pablo. Sede La Paz",
+    role: "Cliente",
+    backType: "image",
+    backContent: jessicaImg,
+  },
+  {
+    title: "Guido Jinés Dávila",
     text: "Estamos dando unos retoques visuales estamos dando unos retoques visuales",
     role: "Desarrollador",
     backType: "image",
-    backContent: "/ruta/a/la/imagen2.jpg",
-  },
-  {
-    title: "Guido",
-    text: "Estamos dando unos retoques visuales estamos dando unos retoques visuales",
-    role: "Desarrollador",
-    backType: "image",
-    backContent: "/ruta/a/la/imagen3.jpg",
+    backContent: GuidoImg,
   },
 ];
-
 const PersonalSection = () => {
   const [index, setIndex] = useState(0);
 
@@ -110,10 +114,11 @@ const PersonalSection = () => {
     <section style={{ textAlign: "center", padding: "1rem" }}>
       <h2
         style={{
-          fontSize: "1.3rem",
+          fontSize: "2rem",          // más grande
           fontWeight: "700",
-          color: "#e4d0a9",
+          color: "#000000",          // negro
           marginBottom: "2rem",
+          userSelect: "none",
         }}
       >
         LAS PERSONAS Y EQUIPOS QUE HICIERON POSIBLE

@@ -1,107 +1,135 @@
 import React, { useState } from "react";
 
-const CardFlip = ({ data }) => {
+const CardFlip = ({ card }) => {
   const [flipped, setFlipped] = useState(false);
 
-  const handleClick = () => setFlipped(!flipped);
+  const toggleFlip = () => setFlipped(!flipped);
 
-  const cardStyle = {
-    width: "380px",
-    height: "380px",
-    perspective: "1000px",
+  const containerStyle = {
+    width: 360,
+    height: 400,
+    perspective: 1000,
     cursor: "pointer",
-    margin: "0 0.5rem",
+    margin: "1rem auto", // margen vertical reducido
   };
 
   const innerStyle = {
     position: "relative",
     width: "100%",
     height: "100%",
-    textAlign: "center",
-    color: "#e4d0a9",
-    transition: "transform 0.5s",
+    borderRadius: 16,
+    transition: "transform 0.5s ease",
     transformStyle: "preserve-3d",
-    borderRadius: "16px",
-    boxShadow: "0 2px 5px rgba(0,0,0,0.15)",
-    transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
     backgroundColor: "#154734",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    padding: "1rem",
+    color: "#e4d0a9",
+    transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+    userSelect: "none",
   };
 
-  const frontBackCommon = {
+  const faceStyle = {
     position: "absolute",
     width: "100%",
     height: "100%",
+    borderRadius: 16,
     backfaceVisibility: "hidden",
-    borderRadius: "16px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    padding: "1.5rem",
+    padding: "2rem 1.5rem 1rem 1.5rem", // reduce margen abajo para la lista
+    boxSizing: "border-box",
+    textAlign: "center",
   };
 
-  const frontStyle = {
-    ...frontBackCommon,
+  const frontStyle = { ...faceStyle };
+
+  const backStyle = {
+    ...faceStyle,
+    transform: "rotateY(180deg)",
+    overflowY: "hidden", // quita scroll visible
+    paddingLeft: "1.5rem",
+    paddingRight: "1.5rem",
   };
 
   const titleStyle = {
-    fontSize: "1.6rem",
-    fontWeight: "600",
-    marginBottom: "1rem",
+    fontSize: "1.8rem",
+    fontWeight: "700",
+    marginBottom: "1.2rem",
+    color: "#e4d0a9",
+    textTransform: "uppercase",
+    letterSpacing: "1.2px",
+    userSelect: "none",
   };
 
   const textStyle = {
     fontSize: "1rem",
-    lineHeight: "1.5",
-    marginBottom: "1rem",
-    maxHeight: "140px",
-    overflow: "auto",
-    userSelect: "none",
+    lineHeight: 1.6,
+    marginBottom: "1.8rem",
+    wordBreak: "break-word",
   };
 
   const roleStyle = {
-    fontWeight: "700",
-    fontSize: "1.2rem",
-    marginTop: "auto",
+    fontWeight: "bold",
+    fontSize: "1.3rem",
     userSelect: "none",
   };
 
-  const backStyle = {
-    ...frontBackCommon,
-    transform: "rotateY(180deg)",
-    overflowY: data.backType === "list" ? "auto" : "hidden",
+  const backListStyle = {
+    listStyle: "none",
+    padding: 0,
+    margin: 0,
+    width: "fit-content",
+    color: "#e4d0a9",
+    textAlign: "center",
+    userSelect: "none",
+  };
+
+  const backListItemStyle = {
+    fontSize: "1.15rem",
+    margin: "0.25rem 0", // margen vertical reducido para que no ocupe mucho
+  };
+
+  const backImageStyle = {
+    maxWidth: "100%",
+    maxHeight: "100%",
+    borderRadius: "12px",
+    objectFit: "contain",
+    userSelect: "none",
   };
 
   return (
-    <div style={cardStyle} onClick={handleClick} role="button" tabIndex={0} onKeyPress={(e) => e.key === "Enter" && handleClick()}>
+    <div
+      style={containerStyle}
+      onClick={toggleFlip}
+      role="button"
+      tabIndex={0}
+      onKeyPress={(e) => e.key === "Enter" && toggleFlip()}
+      aria-label={`Card de ${card.title}, click para girar`}
+    >
       <div style={innerStyle}>
-        {/* Front */}
+        {/* Frente */}
         <div style={frontStyle}>
-          <h2 style={titleStyle}>{data.title}</h2>
-          <p style={textStyle}>{data.text.repeat(2)}</p>
-          <div style={roleStyle}>{data.role}</div>
+          <h3 style={titleStyle}>{card.title}</h3>
+          <p style={textStyle}>{card.text.repeat(2)}</p>
+          <div style={roleStyle}>{card.role}</div>
         </div>
 
-        {/* Back */}
+        {/* Reverso */}
         <div style={backStyle}>
-          {data.backType === "list" && (
-            <ul style={{ listStyleType: "none", paddingLeft: 0, margin: 0, width: "100%", color: "#e4d0a9", userSelect: "none" }}>
-              {data.backContent.map((item, i) => (
-                <li key={i} style={{ marginBottom: "0.4rem" }}>
+          {card.backType === "list" ? (
+            <ul style={backListStyle}>
+              {card.backContent.map((item, i) => (
+                <li key={i} style={backListItemStyle}>
                   {item}
                 </li>
               ))}
             </ul>
-          )}
-          {data.backType === "image" && (
+          ) : (
             <img
-              src={data.backContent}
-              alt={`Imagen de ${data.title}`}
-              style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", borderRadius: "12px" }}
+              src={card.backContent}
+              alt={`Imagen de ${card.title}`}
+              style={backImageStyle}
               draggable={false}
             />
           )}

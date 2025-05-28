@@ -3,7 +3,7 @@ import NosotrosSection from "./NosotrosSection";
 import ImageSection from "./ImageSection";
 import ObjetivoSection from "./ObjetivoSection";
 import MisionSection from "./MisionSection";
-import PersonalSection from "./PersonalSection"; // Importa el nuevo componente
+import PersonalSection from "./PersonalSection"; // Importa el componente del carrusel
 
 const AboutUsContainer = () => {
   return (
@@ -11,7 +11,7 @@ const AboutUsContainer = () => {
       <NosotrosSection />
       <ObjetivoSection />
       <MisionSection />
-      <PersonalSection />
+      <PersonalSection /> {/* Aquí se muestra el carrusel con las cards */}
     </main>
   );
 };
