@@ -4,6 +4,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Añade estas líneas al principio de tu archivo CSS principal */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+/* Opcional: Para aplicar Playfair Display como fuente por defecto a tu body,
+   aunque el componente lo aplica directamente. */
+body {
+  font-family: 'Playfair Display', serif;
+}
+
+/* El resto de tus estilos CSS */
+
+/* Añade estas líneas al principio de tu archivo CSS principal */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+/* Opcional: Para aplicar Montserrat como fuente por defecto a todo tu body */
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* El resto de tus estilos CSS */
 
 body {
   font-family: Arial, sans-serif;

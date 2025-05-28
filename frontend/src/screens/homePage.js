@@ -4,7 +4,7 @@ import BarraHorizontal from "../components/barraHorizontal";
 import ContenedorLateral from "../components/contenedorLateral";
 import ImagenInteractiva from "../components/imagenInteractiva";
 import CarruselImagenes from "../components/carruselImagenes";
-import FooterBar from "../components/footerBar";
+
 
 const HomePage = () => {
   return (
@@ -86,7 +86,7 @@ const HomePage = () => {
       {/* Se agrega el componente de Inicio de Sesión */}
 
       {/* Se agrega el FooterBar al final de la página */}
-      <FooterBar />
+      
     </div>
   );
 };
