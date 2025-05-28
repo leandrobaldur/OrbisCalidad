@@ -11,6 +11,18 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
   const handleUserClick = () => setMenuOpen((prev) => !prev);
   const handleCloseLogin = () => setShowLogin(false);
 
+  // Función para obtener el nombre del rol
+  const getRoleName = (id_rol) => {
+    switch (id_rol) {
+      case 1:
+        return "Administrador";
+      case 2:
+        return "Colaborador";
+      default:
+        return "Usuario";
+    }
+  };
+
   const styles = {
     header: {
       width: "100%",
@@ -57,15 +69,33 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
       borderRadius: "8px",
       boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
       zIndex: 99,
+      minWidth: "200px",
+      padding: "0", // Importante para controlar el espacio interno directamente en los ítems
     },
     dropdownItem: {
       padding: "10px 16px",
-      width: "200px",
       textAlign: "left",
       cursor: "pointer",
       backgroundColor: "white",
       borderBottom: "1px solid #eee",
+      color: "#333", // Color de texto predeterminado para ítems
     },
+    dropdownItemHover: {
+      backgroundColor: '#f5f5f5',
+    },
+    logoutButton: {
+        backgroundColor: "white",
+        border: "none", // Eliminar borde para que parezca un ítem más
+        color: "red",
+        padding: "10px 16px",
+        borderRadius: "0 0 8px 8px", // Bordes redondeados solo abajo
+        fontWeight: "bold",
+        cursor: "pointer",
+        width: "100%",
+        textAlign: "left",
+        fontSize: "inherit",
+        transition: "background-color 0.3s ease",
+    }
   };
 
   return (
@@ -95,53 +125,49 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
         </div>
 
         <img
-          src="/media/header/login.png"
-          alt={loggedInUser ? "Panel de administrador" : "Iniciar sesión"}
+          src="/media/header/login.png" // Este es el ícono que abre el menú
+          alt={loggedInUser ? "Panel de usuario" : "Iniciar sesión"}
           style={styles.iconImg}
           onClick={loggedInUser ? handleUserClick : handleLoginClick}
           draggable={false}
-          title={loggedInUser ? "Panel de administrador" : "Iniciar sesión"}
+          title={loggedInUser ? "Panel de usuario" : "Iniciar sesión"}
         />
 
         {loggedInUser && menuOpen && (
           <div style={styles.dropdown}>
+            {/* Información del usuario y rol */}
             <div
               style={styles.dropdownItem}
-              onClick={() => {
-                navigate("/editor-empresas");
-                setMenuOpen(false);
-              }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = styles.dropdownItemHover.backgroundColor)}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = styles.dropdownItem.backgroundColor)}
             >
-              Admin.Empresas
+              {loggedInUser.usuario} ({getRoleName(loggedInUser.id_rol)})
             </div>
-            <div
-              style={styles.dropdownItem}
-              onClick={() => {
-                navigate("/editor-usuarios");
-                setMenuOpen(false);
-              }}
-            >
-              Admin.Usuarios
-            </div>
-            <div
-              style={{ ...styles.dropdownItem, color: "red", borderBottom: "none" }}
+            {/* Botón de Cerrar Sesión */}
+            <button
+              style={{...styles.logoutButton, borderBottom: "none"}} // Asegurar que no tenga borde inferior
               onClick={() => {
                 onLogout();
                 setMenuOpen(false);
               }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#fcebeb')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'white')}
             >
               Cerrar Sesión
-            </div>
+            </button>
           </div>
         )}
       </header>
 
       {showLogin && (
-        <InicioSesion onLogin={(user) => {
-          onLogout(); // Limpia antes por seguridad si hubiera sesión previa
-          onLogin(user);
-          setShowLogin(false);
-        }} onClose={handleCloseLogin} />
+        <InicioSesion
+          onLogin={(user) => {
+            onLogout(); // Limpia antes por seguridad si hubiera sesión previa
+            onLogin(user);
+            setShowLogin(false);
+          }}
+          onClose={handleCloseLogin}
+        />
       )}
     </>
   );

@@ -4,18 +4,9 @@ import { motion } from "framer-motion";
 
 const ROL_ADMIN = 1;
 
-const getRoleName = (id_rol) => {
-  switch (id_rol) {
-    case 1:
-      return "Administrador";
-    case 2:
-      return "Colaborador";
-    default:
-      return "Usuario";
-  }
-};
+// getRoleName ya no es necesario aquí, ya que la información del rol se muestra en el Header.
 
-const Navbar = ({ loggedInUser, onLogout }) => {
+const Navbar = ({ loggedInUser }) => { // onLogout ya no se necesita aquí
   const location = useLocation();
 
   const baseLinks = [
@@ -65,28 +56,7 @@ const Navbar = ({ loggedInUser, onLogout }) => {
       fontWeight: "100",
       userSelect: "none",
     },
-    userInfo: {
-      marginLeft: "2rem",
-      fontFamily: "Century Gothic",
-      fontSize: "1rem",
-      color: "#1f2937",
-      display: "flex",
-      alignItems: "center",
-      gap: "0.5rem",
-    },
-    logoutButton: {
-      backgroundColor: "#b91c1c",
-      border: "none",
-      color: "white",
-      padding: "0.3rem 0.8rem",
-      borderRadius: "4px",
-      fontWeight: "600",
-      cursor: "pointer",
-      fontFamily: "Century Gothic",
-      fontSize: "0.9rem",
-      userSelect: "none",
-      transition: "background-color 0.3s ease",
-    },
+    // userInfo y logoutButton ya no son necesarios aquí
   };
 
   return (
@@ -98,12 +68,13 @@ const Navbar = ({ loggedInUser, onLogout }) => {
     >
       {finalLinks.map((item, index) => {
         const isActive = location.pathname === item.path;
-        const isInicio = item.label === "INICIO";
+        // const isInicio = item.label === "INICIO"; // isInicio no se está usando en el estilo actual del link
 
         return (
           <React.Fragment key={index}>
             <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
-              <Link to={item.path} style={styles.link(isInicio, isActive)}>
+              {/* Se eliminó isInicio del estilo del link */}
+              <Link to={item.path} style={styles.link(false, isActive)}>
                 {item.label}
                 {isActive && (
                   <motion.div
@@ -136,21 +107,7 @@ const Navbar = ({ loggedInUser, onLogout }) => {
         );
       })}
 
-      {loggedInUser && (
-        <div style={styles.userInfo}>
-          <span>
-            {loggedInUser.usuario} ({getRoleName(loggedInUser.id_rol)})
-          </span>
-          <button
-            style={styles.logoutButton}
-            onClick={onLogout}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#7f1212")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#b91c1c")}
-          >
-            Cerrar Sesión
-          </button>
-        </div>
-      )}
+      {/* Eliminada la sección de loggedInUser y logoutButton de aquí */}
     </motion.nav>
   );
 };
