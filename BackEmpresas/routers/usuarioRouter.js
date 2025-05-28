@@ -218,6 +218,12 @@ const router = express.Router();
  */
 router.get('/', usuarioController.getUsuarios);
 
+router.delete('/:id', (req, res, next) => {
+  console.log('DELETE /usuarios/:id', req.params.id);
+  next();
+}, usuarioController.eliminarUsuario);
+
+
 router.post('/login', usuarioController.loginUsuario);
 router.post('/registro', usuarioController.createColaborador);
 

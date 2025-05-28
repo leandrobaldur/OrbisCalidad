@@ -45,6 +45,20 @@ const loginUsuario = async (req, res) => {
     });
   }
 };
+const eliminarUsuario = async (req, res) => {
+  const idUsuario = req.params.id;
+
+  try {
+
+    await usuarioModel.eliminarUsuarioPorId(idUsuario);
+
+    res.status(200).json({ message: 'Usuario eliminado exitosamente' });
+  } catch (error) {
+    console.error('Error en eliminarUsuario:', error);
+    res.status(500).json({ message: 'Error al eliminar usuario' });
+  }
+};
+
 
 const createColaborador = async (req, res) => {
   try {
@@ -97,4 +111,5 @@ export default {
   loginUsuario,
   createColaborador,
   getUsuarios, // <-- añadido aquí
+  eliminarUsuario
 };
