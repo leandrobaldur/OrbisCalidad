@@ -15,15 +15,15 @@ const obtenerPremios = async () => {
   }
 };
 
-const registrarPremioEmpresa = async ({ id_premio, id_empresa, fecha_p }) => {
+const registrarPremioEmpresa = async ({ id_premio, id_empresa, anio }) => {
   const query = `
-    INSERT INTO PREMIOS_EMPRESAS (id_premio, id_empresa, fecha_p)
+    INSERT INTO PREMIOS_EMPRESAS (id_premio, id_empresa, anio)
     VALUES ($1, $2, $3)
     RETURNING *;
   `;
 
   try {
-    const { rows } = await pool.query(query, [id_premio, id_empresa, fecha_p]);
+    const { rows } = await pool.query(query, [id_premio, id_empresa, anio]);
     return rows[0];
   } catch (error) {
     console.error('Error en registrarPremioEmpresa:', error);

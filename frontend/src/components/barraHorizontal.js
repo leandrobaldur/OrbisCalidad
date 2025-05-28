@@ -19,7 +19,7 @@ const BarraHorizontal = ({
     backgroundRepeat: "repeat-x",
     backgroundPosition: "center",
     backgroundSize: "auto 100%",
-    height: "80%",
+    height: "60%",
     width: margenHorizontal,
     flexShrink: 0,
     margin: 0,  // Sin separación
@@ -27,18 +27,20 @@ const BarraHorizontal = ({
   };
 
   const textoStyle = {
+    color: "#001E15", // ← Color de texto actualizado
     flexGrow: 1,
     height: "100%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "calc(0.3rem + 1vw)",
+    fontSize: "1.146 rem",
     fontWeight: "bold",
-    fontFamily: "sans-serif", // o alguna que no tenga tanto padding interno
+    fontFamily: "Century Gothic",
     margin: 0,
     padding: 0,
     lineHeight: "normal",
     transform: "translateY(-2%)", // Ajuste fino
+    letterSpacing: "0.35em", // ← Espacio entre letras aumentado
   };
   
 

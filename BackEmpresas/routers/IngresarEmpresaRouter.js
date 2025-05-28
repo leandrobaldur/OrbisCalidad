@@ -1,71 +1,69 @@
 import express from 'express';
 import empresaController from '../controllers/ingresarEmpresaController.js';
-import {
-    getEmpresaDetalle,
-    getTodasEmpresasResumen
-  } from '../controllers/empresaController.js';
-  
+
 const router = express.Router();
 
 /**
  * @swagger
  * components:
- *   definitions:
+ *   schemas:
  *     NuevaEmpresa:
  *       type: object
  *       required:
+ *         - id_usuario
  *         - denominacion_social
  *         - nombre_comercial
  *         - fecha_fundacion
  *         - nit
- *         - eslogan
+ *         - vision
+ *         - mision
  *         - descripcion
  *         - url
+ *         - direccion_web
+ *         - id_actividad
+ *         - id_tamanio
  *       properties:
+ *         id_usuario:
+ *           type: integer
  *         denominacion_social:
  *           type: string
- *           example: "Empresa S.A."
  *         nombre_comercial:
  *           type: string
- *           example: "La mejor empresa"
  *         fecha_fundacion:
  *           type: string
  *           format: date
- *           example: "2020-01-01"
- *         fecha_cierre:
- *           type: string
- *           format: date
- *           nullable: true
- *           example: "2020-01-01 (mandar cadena vacia en caso de que sea null)"
  *         nit:
  *           type: integer
- *           example: 123456789
- *         eslogan:
+ *         vision:
  *           type: string
- *           example: "Haciendo lo imposible"
+ *         mision:
+ *           type: string
  *         descripcion:
  *           type: string
- *           example: "Descripción detallada de la empresa"
  *         url:
  *           type: string
- *           example: "https://empresa.com"
- * 
+ *         direccion_web:
+ *           type: string
+ *         id_actividad:
+ *           type: integer
+ *         id_tamanio:
+ *           type: integer
+ *
  * tags:
  *   - name: Empresas
  *     description: Operaciones con empresas
- * 
+ *
  * /ingresarEmpresa:
  *   post:
  *     tags:
  *       - Empresas
  *     summary: Crea una nueva empresa
- *     description: Registra una nueva empresa en la base de datos
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/definitions/NuevaEmpresa'
+ *             $ref: '#/components/schemas/NuevaEmpresa'
  *     responses:
  *       201:
  *         description: Empresa creada exitosamente
@@ -85,10 +83,45 @@ const router = express.Router();
  */
 
 router.post('/ingresarEmpresa', empresaController.crearEmpresa);
-// Rutas internas:
-router.get('/', getTodasEmpresasResumen); // será: GET /empresas/
-router.get('/:id', getEmpresaDetalle);    // será: GET /empresas/1
 
-router.get('/empresas', empresaController.listarEmpresas);
+/**
+ * @swagger
+ * /actualizarEmpresa/{id}:
+ *   put:
+ *     tags:
+ *       - Empresas
+ *     summary: Actualiza una empresa por su ID
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la empresa a actualizar
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/NuevaEmpresa'
+ *     responses:
+ *       200:
+ *         description: Empresa actualizada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *                 empresa:
+ *                   type: object
+ *       400:
+ *         description: Faltan campos requeridos
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.put('/actualizarEmpresa/:id', empresaController.actualizarEmpresa);
+
 
 export default router;

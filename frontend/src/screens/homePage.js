@@ -8,13 +8,13 @@ import FooterBar from "../components/footerBar";
 
 const HomePage = () => {
   return (
-    <div className="w-full min-h-screen flex flex-col gap-8">
+    <div className="w-full min-h-screen flex flex-col gap-8 mt-5">
       <VideoPanel height="60vh">
         <video src="/media/homePage/video.webm" autoPlay muted loop />
       </VideoPanel>
 
       <BarraHorizontal
-        texto="¡Bienvenidos a nuestra página!"
+        texto="EMPRESAS QUE FORJARON EL PAIS"
         height="3vh"
         margenHorizontal="30vw"
         imagen="/media/homePage/barra.png"
@@ -36,7 +36,7 @@ const HomePage = () => {
                 icono: "/media/homePage/recicleIcon.png",
                 subtitulo: "Segunda Selección",
                 imagen: "/media/contenido/contenido2.png",
-                texto: "Información para el segundo ícono seleccionada.",
+                texto: "Información para el s3.5gundo ícono seleccionada.",
               },
               {
                 icono: "/media/homePage/secureIcon.png",
@@ -58,8 +58,8 @@ const HomePage = () => {
           subtitulo="SEMANA DE ACTIVIDADES"
           texto="Explorá las últimas noticias, actualizaciones y promociones disponibles en nuestra plataforma."
           imagen="/media/homePage/lateral.png"
-          ancho="70vw"
-          alto="80vh"
+          ancho="70vw"  
+          alto="43.5vw"
           ovaloRedondez="20px"
           cuadroRedondez="10px"
         />
@@ -67,7 +67,7 @@ const HomePage = () => {
 
       
       <BarraHorizontal
-        texto="EMPRESAS CON RECORRIDO DE +500 AÑOS"
+        texto="RECORRIDOS DE +100 AÑOS"
         height="3vh"
         margenHorizontal="30vw"
         imagen="/media/homePage/barra.png"
