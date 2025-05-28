@@ -1,82 +1,193 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const ContactoPage = () => {
-  const FlipCard = ({ frontImage, alt, backText }) => (
-    <div className="flip-card">
-      <div className="flip-card-inner">
-        <div className="flip-card-front">
-          <img src={frontImage} alt={alt} className="rounded-xl w-full h-64 object-cover" />
-        </div>
-        <div className="flip-card-back">
-          <p className="text-center font-semibold p-4">{backText}</p>
-        </div>
-      </div>
-    </div>
-  );
+  const items = [
+    {
+      src: '/media/contactoPage/LP.png',
+      alt: 'Universidad Católica Boliviana La Paz',
+      text: 'Universidad Católica Boliviana\nLA PAZ',
+      link: 'https://www.ucb.edu.bo/',
+      hoverImg: '/media/contactoPage/UCB.png', // Imagen extra para hover
+    },
+    {
+      src: '/media/contactoPage/SIS - H.png',
+      alt: 'Carrera de Ingeniería de Sistemas',
+      text: 'Carrera de Ingeniería\nde Sistemas',
+      link: 'https://lpz.ucb.edu.bo/pregrado/ingenieria-de-sistemas/',
+      hoverImg: '/media/contactoPage/SIS-QR.png',
+    },
+    {
+      src: '/media/contactoPage/IIE - H.png',
+      alt: 'Carrera de Ingeniería Innovación Empresarial',
+      text: 'Carrera de Ingeniería\nInnovación empresarial',
+      link: 'https://lpz.ucb.edu.bo/pregrado/ingenieria-innovacion-empresarial/',
+      hoverImg: '/media/contactoPage/IIE-QR.png',
+    },
+  ];
+
+  const [hoverIndex, setHoverIndex] = useState(null);
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-white p-7">
-      <div className="w-full max-w-screen-xl bg-[rgba(0,0,0,0.7)] rounded-3xl p-9 shadow-2xl">
-        <div className="bg-[rgb(255,255,255)] rounded-2xl p-6 space-y-8 font-sans text-black">
-          
-          {/* Título principal */}
-          <h1 className="text-4xl font-bold text-center mb-8">UNIVERSIDAD CATÓLICA BOLIVIANA</h1>
+    <main style={styles.page}>
+      <header style={styles.header}>
+        <div style={styles.line} />
+        <h2 style={styles.subtitle}>EMPRESAS QUE FORJARON EL PAIS</h2>
+        <div style={styles.line} />
+      </header>
 
-          {/* Encabezado con imágenes */}
-          <div className="flex flex-col md:flex-row justify-center items-center gap-4">
-            <img src="/media/contactoPage/entradaUcb.webp" alt="Imagen izquierda" className="w-full md:w-1/2 rounded-xl object-cover" />
-            <img src="/media/contactoPage/logoUcb.jpg" alt="Imagen derecha" className="w-full md:w-1/2 rounded-xl object-cover" />
-          </div>
+      <section style={styles.contentBox}>
+        <h1 style={styles.title}>DEPARTAMENTOS ANHIDADOS</h1>
+        <p style={styles.description}>
+          Explora las últimas noticias, actualizaciones y promociones disponibles en nuestra plataforma.
+        </p>
 
-          {/* QRs */}
-          <section>
-            <div className="flex flex-col md:flex-row justify-center items-center gap-8">
-              {[1, 2, 3].map((qr, idx) => (
-                <div key={idx} className="flex flex-col items-center w-full md:w-1/3 text-center">
-                  <img src="/media/contactoPage/qr.png" alt={`QR ${qr}`} className="w-2/3 rounded-xl object-contain" />
-                  <p className="mt-2 font-semibold">QR {qr}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Nuestro equipo */}
-          <section>
-            <h2 className="text-2xl font-bold text-center mb-4">NUESTRO EQUIPO</h2>
-            <div className="grid grid-cols-1 gap-6 items-center">
-              <img src="/media/contactoPage/equipo.jpg" alt="Equipo" className="mx-auto w-full rounded-xl object-contain" />
-            </div>
-            <p>
-            Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.Somos jóvenes estudiantes de la universidad católica boliviana en busca de conocimiento y oportunidades para un futuro mejor y poder desempeñarnos en nuestra área laboral.
-            </p>
-          </section>
-
-          {/* Misión y Visión */}
-          <section>
-            <h2 className="text-2xl font-bold text-center mb-4">MISION Y VISION</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="text-center">
-                <FlipCard
-                  frontImage="/media/contactoPage/mision.png"
-                  alt="Misión"
-                  backText="Nuestra misión es formar profesionales con valores humanos y compromiso social."
-                />
-                <p className="mt-2 font-semibold text-center text-[rgba(0,0,0,0.1)]">HAZ CLICK en la imagen</p>
+        <div style={styles.grid}>
+          {items.map(({ src, alt, text, link, hoverImg }, idx) => (
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              key={idx}
+              style={styles.card}
+              onMouseEnter={() => setHoverIndex(idx)}
+              onMouseLeave={() => setHoverIndex(null)}
+            >
+              <div style={{ position: 'relative' }}>
+                <img src={src} alt={alt} style={styles.image} />
+                {hoverIndex === idx && (
+                  <div style={styles.hoverCard}>
+                    <img src={hoverImg} alt={`Detalle de ${alt}`} style={styles.hoverImage} />
+                  </div>
+                )}
               </div>
-              <div className="text-center">
-                <FlipCard
-                  frontImage="/media/contactoPage/vision.png"
-                  alt="Visión"
-                  backText="Nuestra visión es ser líderes en educación superior en Bolivia y Latinoamérica."
-                />
-                <p className="mt-2 font-semibold text-center text-[rgba(0,0,0,0.1)]">HAZ CLICK en la imagen</p>
-              </div>
-            </div>
-          </section>
+              <p style={styles.cardText}>
+                {text.split('\n').map((line, i) => (
+                  <React.Fragment key={i}>
+                    {line}
+                    <br />
+                  </React.Fragment>
+                ))}
+              </p>
+            </a>
+          ))}
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
+};
+
+const styles = {
+  page: {
+    backgroundColor: '#F5EEE2',
+    minHeight: '100vh',
+    padding: '8rem 6rem',
+    fontFamily: "'Montserrat', sans-serif",
+    color: '#032F27',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '2rem',
+    marginBottom: '4rem',
+    width: '100%',
+    maxWidth: 1400,
+    justifyContent: 'center',
+  },
+  line: {
+    flex: 1,
+    height: 5,
+    backgroundImage:
+      'repeating-linear-gradient(90deg, #032F27, #032F27 20px, transparent 20px, transparent 40px)',
+    borderRadius: 3,
+  },
+  subtitle: {
+    fontSize: '1.5rem',
+    fontWeight: '700',
+    letterSpacing: '0.5em',
+    textTransform: 'uppercase',
+    color: '#032F27',
+    whiteSpace: 'nowrap',
+  },
+  contentBox: {
+    backgroundColor: '#FDF8F0',
+    padding: '6rem 8rem',
+    borderRadius: '40px',
+    boxShadow: '0 18px 36px rgba(3,47,39,0.2)',
+    maxWidth: 1400,
+    textAlign: 'center',
+  },
+  title: {
+    fontSize: '4rem',
+    fontWeight: '900',
+    marginBottom: '3rem',
+  },
+  description: {
+    fontSize: '2rem',
+    lineHeight: 2,
+    maxWidth: 900,
+    margin: '0 auto 5rem',
+    color: '#032F27',
+  },
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+    gap: '4rem',
+    justifyContent: 'center',
+  },
+  card: {
+    backgroundColor: '#F5EEE2',
+    borderRadius: '28px',
+    padding: '4rem',
+    boxShadow: '0 10px 40px rgba(3,47,39,0.25)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    textDecoration: 'none',
+    cursor: 'pointer',
+    userSelect: 'none',
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+    color: '#032F27',
+    minHeight: 360,
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  image: {
+    width: '180px',
+    height: '180px',
+    objectFit: 'contain',
+    marginBottom: '2rem',
+  },
+  cardText: {
+    fontSize: '1.5rem',
+    fontWeight: '800',
+    color: '#032F27',
+    whiteSpace: 'pre-line',
+    textAlign: 'center',
+  },
+  hoverCard: {
+    position: 'absolute',
+    top: '50%',
+    left: '110%',
+    transform: 'translateY(-50%)',
+    backgroundColor: '#FDF8F0',
+    padding: '1rem',
+    borderRadius: '20px',
+    boxShadow: '0 6px 20px rgba(3,47,39,0.2)',
+    zIndex: 10,
+    width: '220px',
+    height: '220px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  hoverImage: {
+    maxWidth: '100%',
+    maxHeight: '100%',
+    objectFit: 'contain',
+  },
 };
 
 export default ContactoPage;

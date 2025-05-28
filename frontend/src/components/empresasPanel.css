@@ -1,0 +1,442 @@
+﻿/* ====== IMPORTAR TIPOGRAFÍAS ====== */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;700&family=Poppins:wght@400;600;700&display=swap');
+
+/* ====== RESET GENERAL ====== */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: rgba(248, 240, 230, 0.8);
+  font-family: 'Poppins', sans-serif;
+  color: #000000;
+}
+
+.empresas-wrapper {
+  width: 80%;
+
+  margin: 4vh auto;  /* centrado horizontal con margen arriba y abajo */
+  box-sizing: border-box;
+  height: 65vh; /* opcional para altura mínima */
+}
+
+/* ====== BARRA SUPERIOR ====== */
+.barra-superior {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #052018;
+  padding: 0.5% 3%;
+  border-radius: 10px 10px 0 0;
+  margin: 0 auto 0px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.barra-izquierda {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(248, 240, 230, 0.8);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.boton-antiguedad {
+  background-color: rgba(151, 149, 147, 0.4);
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: rgb(208, 211, 218);
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.boton-antiguedad:hover {
+  background-color: rgba(52, 57, 63, 0.9);
+  color: rgba(182, 180, 176, 0.9);
+}
+
+.barra-centro {
+  position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.barra-centro input {
+  width: 80%;
+  padding: 1.5% 3%;
+  border-radius: 5vh;
+  border: 0.1vh solid rgb(208, 211, 218);
+  outline: none;
+  font-size: 0.9rem;
+  height: 100%;
+  font-family: 'Poppins', sans-serif;
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.icono-busqueda {
+  position: absolute;
+  right: 3%;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 250%;
+  color: rgba(0, 114, 76, 0.7);
+}
+
+.barra-derecha {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.barra-derecha img {
+  width: 60%;
+  height: 100%;
+  filter: brightness(0) invert(1);
+}
+
+/* ====== PANEL PRINCIPAL ====== */
+.empresas-panel-container {
+  display: flex;
+  background-color: rgba(231, 231, 218, 0.6);
+  padding: 2% 2%;
+  gap: 2%;
+  border-radius: 0 0 10px 10px;
+  border: #052018 0.15vh solid;
+  height: 90%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  flex-wrap: wrap; /* para que en pantallas pequeñas se adapten */
+    flex-wrap: nowrap;  /* importante para que no se rompa la fila */
+  overflow: hidden;   /* ocultar scroll innecesario aquí */
+}
+
+.imagen-lateral {
+  flex: 0 0 15%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  overflow: visible; /* sin scroll aquí */
+
+}
+
+.imagen-lateral img {
+  width: 100%;
+  border-radius: 12px;
+  border: 2px solid rgba(0, 64, 124, 0.6);
+  margin-bottom:  180px;
+  overflow: visible; /* sin scroll aquí */
+  
+}
+
+.empresas-panel {
+  flex: 1 1 80%; /* ocupa resto del espacio, se adapta */
+  min-width: 300px; /* evita reducción excesiva */
+  box-sizing: border-box;
+    overflow-y: auto;
+  scrollbar-width: thin;               /* Firefox: barra delgada */
+  scrollbar-color: rgba(0,0,0,0.2) transparent; /* Firefox: color thumb y track */
+  
+}
+
+.empresas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.2rem;
+  
+}
+
+.empresa-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  height: 150px;
+  background-color: #0D0605;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.empresa-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.empresa-img-contenedor {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.empresa-img-contenedor img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.empresa-nombre-default {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #000000;
+  text-align: center;
+  z-index: 1;
+  padding: 5px 10px;
+  background-color: rgba(248, 240, 230, 0.7);
+  border-radius: 5px;
+  width: fit-content;
+  min-width: 60%;
+  transition: opacity 0.3s ease;
+}
+
+.empresa-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+.empresa-card:hover .empresa-overlay {
+  opacity: 1;
+}
+.empresa-card:hover .empresa-nombre-default {
+  opacity: 0;
+}
+
+.empresa-overlay-content {
+  background-color: rgba(248, 240, 230, 0.7);
+  color: #000000;
+  padding: 10px 15px;
+  border-radius: 6px;
+  width: fit-content;
+  max-width: 90%;
+  text-align: center;
+}
+
+.empresa-overlay .nombre,
+.empresa-overlay .rubro,
+.empresa-overlay .slogan {
+  font-family: 'Poppins', sans-serif;
+  color: #000000;
+}
+
+.empresa-overlay .nombre {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.empresa-overlay .rubro {
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+.empresa-overlay .slogan {
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* ====== MODAL ====== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: rgba(248, 240, 230, 0.95);
+  border-radius: 8px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-header {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.6);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  color: rgba(0, 64, 124, 0.8);
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #000000;
+}
+.close-modal:hover {
+  color: rgba(0, 114, 76, 0.8);
+}
+
+.modal-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-imagen {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.modal-imagen img {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+}
+
+.modal-info h3 {
+  margin-top: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-style: italic;
+  color: rgba(0, 114, 76, 0.8);
+}
+
+.descripcion {
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.info-detalle p {
+  margin: 8px 0;
+}
+
+.modal-footer {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.6);
+}
+
+.btn-visitar,
+.btn-contactar {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+}
+
+.btn-visitar {
+  background-color: rgba(0, 114, 76, 0.7);
+  color: rgba(248, 240, 230, 0.95);
+}
+.btn-visitar:hover {
+  background-color: rgba(0, 64, 124, 0.7);
+}
+
+.btn-contactar {
+  background-color: rgba(0, 64, 124, 0.7);
+  color: rgba(248, 240, 230, 0.95);
+}
+.btn-contactar:hover {
+  background-color: rgba(229, 199, 133, 0.7);
+}
+
+/* ANIMACIÓN */
+@keyframes fadeIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ====== ESTILOS RESPONSIVOS ====== */
+@media (max-width: 768px) {
+  .empresas-panel-container {
+    flex-direction: column;
+    padding: 20px 15px;
+  }
+  .imagen-lateral {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .imagen-lateral img {
+    max-width: 140px;
+    margin: 0 auto;
+  }
+  .barra-superior {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+  }
+  .barra-centro {
+    width: 100%;
+    margin: 10px 0;
+  }
+  .barra-centro input {
+    width: 100%;
+  }
+  .icono-busqueda {
+    right: 15px;
+  }
+  .empresas-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .empresas-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+  .empresa-nombre-default {
+    font-size: 1.2rem;
+  }
+  .empresa-overlay .nombre {
+    font-size: 1rem;
+  }
+  .empresa-overlay .rubro {
+    font-size: 0.9rem;
+  }
+  .empresa-overlay .slogan {
+    font-size: 0.8rem;
+  }
+  .modal-content {
+    width: 95%;
+  }
+}
