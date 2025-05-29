@@ -12,7 +12,7 @@ const ObjetivoSection = () => (
   >
     <div style={{ flex: 1, minWidth: "320px" }}>
       <img
-        src={require("../../assets/mineros.jpg")}
+        src={require("../../assets/vita.jpg")}
         alt="Hydrant drink lineup"
         style={{ width: "100%", borderRadius: "1rem", boxShadow: "0 0 15px rgba(0,0,0,0.15)" }}
       />
