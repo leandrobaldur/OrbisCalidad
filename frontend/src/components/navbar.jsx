@@ -50,20 +50,17 @@ const Navbar = ({ loggedInUser, onLogout }) => {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      {/* Espacio para la izquierda (antes era "BICENTENARIO UCB", ahora vacío o para otro elemento) */}
-      <div className="flex-1 min-w-[50px] md:min-w-[unset]">
-        {/* Podrías poner aquí un logo pequeño si lo deseas */}
-      </div>
+      {/* Espacio izquierda */}
+      <div className="flex-1 min-w-[50px] md:min-w-[unset]"></div>
 
-      {/* Botón de Hamburguesa para Móvil */}
+      {/* Botón hamburguesa móvil */}
       <div className="md:hidden">
         <button onClick={toggleMobileMenu} className="text-[#052018] focus:outline-none text-2xl">
           ☰
         </button>
       </div>
 
-      {/* Contenedor de Enlaces y Usuario (Escritorio) */}
-      {/* Usamos flex-nowrap para evitar saltos de línea y justify-center para centrar los enlaces */}
+      {/* Enlaces escritorio */}
       <div className="hidden md:flex flex-nowrap justify-center items-center gap-x-6 lg:gap-x-8">
         {finalLinks.map((item, index) => {
           const isActive = location.pathname === item.path;
@@ -72,8 +69,10 @@ const Navbar = ({ loggedInUser, onLogout }) => {
               <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   to={item.path}
-                  className="font-['Century Gothic'] text-[1.146rem] tracking-widest font-light relative pb-1 cursor-pointer select-none inline-block text-[#333333] hover:text-[#052018] transition-colors duration-200 whitespace-nowrap"
-                  onClick={() => setIsMobileMenuOpen(false)} // Asegura que se cierre el menú si se hace clic en desktop
+                  className={`font-['Century Gothic'] text-[1.146rem] tracking-widest font-light relative pb-1 cursor-pointer select-none inline-block ${
+                    isActive ? "text-[#052018]" : "text-[#333333]"
+                  } hover:text-[#052018] transition-colors duration-200 whitespace-nowrap`}
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.label}
                   {isActive && (
@@ -84,7 +83,6 @@ const Navbar = ({ loggedInUser, onLogout }) => {
                   )}
                 </Link>
               </motion.div>
-              {/* Separador, oculto si es el último enlace */}
               {index < finalLinks.length - 1 && (
                 <motion.span
                   className="text-gray-300 font-extralight select-none text-[1.146rem]"
@@ -99,9 +97,9 @@ const Navbar = ({ loggedInUser, onLogout }) => {
           );
         })}
 
-        {/* Información del Usuario y Botón de Cerrar Sesión (Escritorio, dentro del mismo flex-nowrap) */}
+        {/* Info usuario y logout */}
         {loggedInUser && (
-          <div className="flex items-center gap-2 ml-8"> {/* ml-8 para un espaciado claro */}
+          <div className="flex items-center gap-2 ml-8">
             <span className="font-['Century Gothic'] text-base text-gray-700 whitespace-nowrap">
               {loggedInUser.usuario} ({getRoleName(loggedInUser.id_rol)})
             </span>
@@ -115,7 +113,7 @@ const Navbar = ({ loggedInUser, onLogout }) => {
         )}
       </div>
 
-      {/* Menú Móvil (Hamburguesa) */}
+      {/* Menú móvil */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -135,7 +133,9 @@ const Navbar = ({ loggedInUser, onLogout }) => {
                 <motion.div key={index} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                   <Link
                     to={item.path}
-                    className={`font-['Century Gothic'] text-2xl tracking-widest font-light relative pb-1 cursor-pointer select-none inline-block ${isActive ? 'text-[#052018]' : 'text-[#333333]'} hover:text-[#052018]`}
+                    className={`font-['Century Gothic'] text-2xl tracking-widest font-light relative pb-1 cursor-pointer select-none inline-block ${
+                      isActive ? "text-[#052018]" : "text-[#333333]"
+                    } hover:text-[#052018]`}
                     onClick={toggleMobileMenu}
                   >
                     {item.label}
