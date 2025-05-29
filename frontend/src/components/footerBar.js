@@ -1,80 +1,105 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { motion } from "framer-motion"; // Importamos motion para animaciones
 
-// Componente para los íconos de redes sociales
-const SocialIcons = () => {
-    return (
-        <div className="flex justify-center gap-5"> {/* Aumentado el gap para los iconos más grandes */}
-            {/* Rutas de las imágenes: public/media/footer/ */}
-            {/* Asegúrate de que estos archivos PNG existan en public/media/footer/ */}
-            <a href="https://www.facebook.com/TuPaginaDeFacebook" target="_blank" rel="noopener noreferrer" className="opacity-90 hover:opacity-100 hover:scale-110 transition-all duration-200">
-                <img src="/media/footer/facebook_icon.png" alt="Facebook" className="w-8 h-8" /> {/* Iconos más grandes: w-8 h-8 */}
-            </a>
-            <a href="https://www.instagram.com/TuCuentaDeInstagram" target="_blank" rel="noopener noreferrer" className="opacity-90 hover:opacity-100 hover:scale-110 transition-all duration-200">
-                <img src="/media/footer/instagram_icon.png" alt="Instagram" className="w-8 h-8" /> {/* Iconos más grandes: w-8 h-8 */}
-            </a>
-            <a href="https://www.tiktok.com/@TuCuentaDeTikTok" target="_blank" rel="noopener noreferrer" className="opacity-90 hover:opacity-100 hover:scale-110 transition-all duration-200">
-                <img src="/media/footer/tik_tok_icon.png" alt="TikTok" className="w-8 h-8" /> {/* Iconos más grandes: w-8 h-8 */}
-            </a>
-        </div>
-    );
+// --- PALETA DE COLORES (tomada de tus imágenes y modal de login) ---
+const PALETTE = {
+  BACKGROUND_PRIMARY: "#F6EEE3", // Beige claro del fondo de Legado Boliviano y modal
+  PRIMARY_ACCENT_BLUE: "#2F4F8B", // Azul oscuro fuerte (del botón de login)
+  SECONDARY_ACCENT_GOLD: "#E1B85D", // Dorado (para foco, del login)
+  TEXT_DARK: "#25384F", // Un gris azulado oscuro para el texto principal (del login)
+  TEXT_MUTED: "#78909C", // Gris más suave para detalles
+  CONTOUR_COLOR: "#000000", // Color del contorno negro (siempre se ve bien para marcos)
 };
 
-function Footer() {
-    const currentYear = new Date().getFullYear();
+const FooterBar = () => {
+  const estilosFooterBar = {
+    contenedor: {
+      backgroundColor: PALETTE.BACKGROUND_PRIMARY, // Fondo beige claro
+      padding: "25px 0", // Reducimos el padding para hacerlo más compacto (antes 35px)
+      textAlign: "center",
+      borderTop: `1px solid ${PALETTE.TEXT_MUTED}40`, // Contorno superior más sutil
+      boxShadow: `0 -2px 8px rgba(0,0,0,0.08)`, // Sombra más sutil hacia arriba
+      fontFamily: "'Playfair Display', serif", // Fuente profesional
+      marginTop: "50px", // Espacio para separar el footer del contenido principal
+    },
+    inner: {
+      maxWidth: "1200px",
+      margin: "0 auto",
+      padding: "0 20px",
+    },
+    tutor: {
+      fontSize: "16px", // Texto más pequeño (antes 18px)
+      color: PALETTE.TEXT_DARK, // Color oscuro del texto
+      margin: "0 0 10px 0", // Espacio inferior reducido
+      fontWeight: 500,
+      letterSpacing: "0.3px", // Espaciado entre letras más sutil
+    },
+    enlaces: {
+      marginTop: "8px", // Espacio reducido
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      gap: "25px", // Espacio entre enlaces reducido
+      listStyle: "none",
+      padding: 0,
+      margin: 0,
+    },
+    enlace: {
+      textDecoration: "none",
+      color: PALETTE.PRIMARY_ACCENT_BLUE, // Azul de acento
+      fontSize: "15px", // Tamaño de fuente ligeramente más pequeño (antes 17px)
+      fontWeight: 600,
+      transition: "color 0.3s ease, transform 0.2s ease",
+      letterSpacing: "0.3px",
+    },
+    // Estilos para el hover de los enlaces
+    enlaceHover: {
+      color: PALETTE.SECONDARY_ACCENT_GOLD, // Dorado al pasar el ratón
+      transform: "translateY(-1px)", // Pequeño levantamiento más sutil
+    }
+  };
 
-    return (
-        <footer className="relative bg-yellow-50 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 py-3 mt-auto shadow-inner transition-colors duration-300 font-sans overflow-hidden"> {/* py-3 para reducir la altura total */}
-            {/* Imagen de fondo del footer */}
-            {/* Ruta: public/media/footer/footer2.png */}
-            <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30 dark:opacity-20 z-0"
-                style={{ backgroundImage: "url('/media/footer/footer2.png')" }}
-            ></div>
+  return (
+    <footer style={estilosFooterBar.contenedor}>
+      <div style={estilosFooterBar.inner}>
+        <p style={estilosFooterBar.tutor}>
+          Tutorizado por: Alberto Navarro
+        </p>
+        <ul style={estilosFooterBar.enlaces}>
+          <li>
+            <motion.a
+              style={estilosFooterBar.enlace}
+              href="/contacto"
+              whileHover={estilosFooterBar.enlaceHover}
+              whileTap={{ scale: 0.98 }} // Animación de tap más suave
+            >
+              Contacto
+            </motion.a>
+          </li>
+          <li>
+            <motion.a
+              style={estilosFooterBar.enlace}
+              href="/acerca-de"
+              whileHover={estilosFooterBar.enlaceHover}
+              whileTap={{ scale: 0.98 }}
+            >
+              Acerca de
+            </motion.a>
+          </li>
+          <li>
+            <motion.a
+              style={estilosFooterBar.enlace}
+              href="/privacidad"
+              whileHover={estilosFooterBar.enlaceHover}
+              whileTap={{ scale: 0.98 }}
+            >
+              Privacidad
+            </motion.a>
+          </li>
+        </ul>
+      </div>
+    </footer>
+  );
+};
 
-            <div className="relative z-10 max-w-lg mx-auto px-4 text-lg font-medium tracking-wide"> {/* text-lg para un texto base más grande */}
-
-                {/* Copyright */}
-                <p className="text-neutral-700 dark:text-neutral-300 text-center mb-4 leading-snug text-base"> {/* text-base para copyright */}
-                    © {currentYear} Repositorio Bicentenario de Bolivia. Todos los derechos reservados.
-                </p>
-
-                <div className="flex flex-col sm:flex-row justify-center items-start sm:items-center gap-12 sm:gap-24 mb-4"> {/* Ajustado gap y mb para distribución */}
-
-                    {/* Columna Izquierda: Navegación */}
-                    <div className="text-center">
-                        <h3 className="text-neutral-800 dark:text-neutral-100 font-semibold mb-3 text-lg uppercase"> {/* text-lg para título */}
-                            Navegación
-                        </h3>
-                        <ul className="space-y-3 text-base"> {/* text-base y space-y para enlaces */}
-                            <li><Link to="/acerca-de" className="text-neutral-600 dark:text-neutral-300 hover:text-yellow-600 dark:hover:text-yellow-400 transition">Acerca de</Link></li>
-                            <li><Link to="/mas-de-nosotros" className="text-neutral-600 dark:text-neutral-300 hover:text-yellow-600 dark:hover:text-yellow-400 transition">Más de Nosotros</Link></li>
-                            <li><Link to="/contacto" className="text-neutral-600 dark:text-neutral-300 hover:text-yellow-600 dark:hover:text-yellow-400 transition">Contacto</Link></li>
-                        </ul>
-                    </div>
-
-                    {/* Columna Derecha: Solo Íconos de Redes Sociales */}
-                    <div className="flex flex-col items-center justify-center pt-3"> {/* pt-3 para alinear verticalmente */}
-                        <SocialIcons />
-                    </div>
-
-                </div>
-
-                {/* Línea divisoria */}
-                <div className="w-2/3 mx-auto border-t border-neutral-300 dark:border-neutral-600 my-3"></div> {/* my-3 para compactar */}
-
-                {/* Cita final */}
-                <p className="text-center text-base text-neutral-500 dark:text-neutral-500 tracking-wide italic mb-1"> {/* text-base para la cita */}
-                    “Conocer nuestra historia es entender nuestro presente.”
-                </p>
-
-                {/* Crédito de Alberto Navarro */}
-                <p className="text-center text-sm text-neutral-500 dark:text-neutral-500 tracking-wide"> {/* text-sm para el crédito, discreto pero más grande */}
-                    Titulizado por Alberto Navarro
-                </p>
-            </div>
-        </footer>
-    );
-}
-
-export default Footer;
+export default FooterBar;
