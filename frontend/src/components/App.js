@@ -13,7 +13,6 @@ import EditorEmpresasPage from '../screens/editorEmpresasPage';
 import PanelEditorUsuarios from './panelEditorUsuarios_temp';
 import FooterBar from './footerBar.js'; // ¡Importa tu nuevo FooterBar!
 
-// Componente para abrir el dashboard externo en nueva pestaña
 function RedirectDashboard() {
   useEffect(() => {
     window.open('https://dashboard.serverbb.site/', '_blank');
@@ -54,14 +53,13 @@ function App() {
 
   return (
     <Router>
-      {/* Contenedor principal con flexbox para empujar el footer hacia abajo */}
+      {/* Contenedor principal con flexbox para empujar el footer al final */}
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', fontFamily: "'Poppins', sans-serif" }}>
-        {/* Header y Navbar van antes que el contenido de las rutas */}
         <Header loggedInUser={loggedInUser} onLogout={handleLogout} onLogin={handleLogin} />
         <Navbar loggedInUser={loggedInUser} onLogout={handleLogout} />
 
-        {/* Contenido principal de las rutas, que crecerá para empujar el footer */}
-        <main style={{ flexGrow: 1 }}>
+        {/* Contenido principal */}
+        <main style={{ flexGrow: 1, paddingTop: '140px' }}>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/empresas" element={<EmpresasPage loggedInUser={loggedInUser} />} />
@@ -69,7 +67,7 @@ function App() {
             <Route path="/contacto" element={<ContactoPage />} />
             <Route path="/historia" element={<HistoriaPage />} />
 
-            {/* Ruta dashboards abre URL externa en nueva pestaña si está logueado */}
+            {/* Ruta dashboards */}
             <Route
               path="/dashboards"
               element={
@@ -90,6 +88,7 @@ function App() {
               }
             />
 
+            {/* Rutas administrador */}
             {loggedInUser && loggedInUser.id_rol === 1 && (
               <>
                 <Route path="/editor-empresas" element={<EditorEmpresasPage />} />
@@ -97,6 +96,7 @@ function App() {
               </>
             )}
 
+            {/* Rutas sin permiso */}
             {loggedInUser && loggedInUser.id_rol !== 1 && (
               <>
                 <Route
@@ -132,8 +132,7 @@ function App() {
               </>
             )}
 
-            {/* Esta ruta comodín para no logueados se mantiene, pero es importante que cualquier contenido de UNA PÁGINA */}
-            {/* no incluya ya el Footer. Si lo hace, debes eliminarlo de esa página específica. */}
+            {/* Ruta fallback no logueado */}
             {!loggedInUser && (
               <Route
                 path="*"
@@ -144,7 +143,7 @@ function App() {
                       flexDirection: 'column',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      height: 'calc(100vh - 120px)', // Ajusta esta altura si tu Header/Navbar cambian de tamaño
+                      height: 'calc(100vh - 120px)',
                       textAlign: 'center',
                     }}
                   >
@@ -173,12 +172,12 @@ function App() {
           </Routes>
         </main>
 
-        {/* El modal de login se renderiza por encima de todo, no afecta al flujo normal del layout */}
+        {/* Modal login */}
         {showLoginModal && !loggedInUser && (
           <InicioSesion onLogin={handleLogin} onClose={() => setShowLoginModal(false)} />
         )}
 
-        {/* ¡EL FOOTERBAR SE RENDERIZA AQUÍ, UNA SOLA VEZ AL FINAL DEL CONTENEDOR PRINCIPAL! */}
+        {/* Footer fijo abajo */}
         <FooterBar />
       </div>
     </Router>

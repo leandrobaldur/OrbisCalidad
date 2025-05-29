@@ -11,102 +11,65 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
   const handleUserClick = () => setMenuOpen((prev) => !prev);
   const handleCloseLogin = () => setShowLogin(false);
 
-  const styles = {
-    header: {
-      width: "100%",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      padding: "1rem 2.5rem 0.5rem 2.5rem",
-      backgroundColor: "#f3efe8",
-      position: "relative",
-      zIndex: 50,
-    },
-    iconImg: {
-      height: "4.5vh",
-      width: "4.5vh",
-      cursor: "pointer",
-      objectFit: "contain",
-      userSelect: "none",
-      opacity: 0.8,
-    },
-    logoSmall: {
-      height: "40px",
-      objectFit: "contain",
-      opacity: 0.7,
-      cursor: "default",
-    },
-    centerContainer: {
-      display: "flex",
-      alignItems: "center",
-      gap: "1rem",
-      userSelect: "none",
-    },
-    title: {
-      fontFamily: "'Trajan Pro', serif",
-      fontSize: "clamp(20px, 4vw, 60px)",
-      color: "black",
-      whiteSpace: "nowrap",
-    },
-    dropdown: {
-      position: "absolute",
-      top: "80px",
-      right: "40px",
-      backgroundColor: "white",
-      border: "1px solid #e2e2e2",
-      borderRadius: "8px",
-      boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-      zIndex: 99,
-    },
-    dropdownItem: {
-      padding: "10px 16px",
-      width: "200px",
-      textAlign: "left",
-      cursor: "pointer",
-      backgroundColor: "white",
-      borderBottom: "1px solid #eee",
-    },
-  };
-
   return (
     <>
-      <header style={styles.header}>
-        <img
-          src="/media/header/translate.png"
-          alt="Icono Diálogo"
-          style={styles.iconImg}
-          draggable={false}
-        />
+      <header
+        className="w-full fixed top-0 h-20 flex justify-between items-center px-4 md:px-10 bg-[#f3efe8] z-40"
+      >
+        {/* Izquierda: Imagen "bolivia.png" con altura ajustada */}
+        <div className="flex-1 text-left flex items-center"> {/* Centrado vertical de la imagen */}
+          <img
+            src="/media/header/bolivia.png"
+            alt="Logo Bicentenario Bolivia"
+            className="h-12 md:h-14 object-contain select-none cursor-pointer"
+            draggable={false}
+            onClick={() => navigate('/')}
+          />
+        </div>
 
-        <div style={styles.centerContainer}>
+        {/* Centro: Logos y Título "LEGADO BOLIVIANO" */}
+        <div className="flex items-center gap-2 sm:gap-4 select-none">
+          {/* Primer Logo Bicentenario (siempre visible) */}
           <img
             src="/media/header/logo.png"
             alt="Logo Bicentenario"
-            style={styles.logoSmall}
+            className="h-8 md:h-10 object-contain opacity-70 cursor-default flex-shrink-0"
             draggable={false}
           />
-          <h1 style={styles.title}>LEGADO BOLIVIANO</h1>
+          {/* Título Principal */}
+          <h1
+            className="font-['Trajan_Pro'] text-xl sm:text-3xl md:text-4xl lg:text-5xl text-black whitespace-nowrap"
+          >
+            LEGADO BOLIVIANO
+          </h1>
+          {/* Segundo Logo Bicentenario (oculto en móviles pequeños, visible en sm y superiores) */}
           <img
             src="/media/header/logo.png"
             alt="Logo Bicentenario"
-            style={styles.logoSmall}
+            className="h-8 md:h-10 object-contain opacity-70 cursor-default hidden sm:block flex-shrink-0"
             draggable={false}
           />
         </div>
 
-        <img
-          src="/media/header/login.png"
-          alt={loggedInUser ? "Panel de administrador" : "Iniciar sesión"}
-          style={styles.iconImg}
-          onClick={loggedInUser ? handleUserClick : handleLoginClick}
-          draggable={false}
-          title={loggedInUser ? "Panel de administrador" : "Iniciar sesión"}
-        />
+        {/* Derecha: Icono de Login/Usuario */}
+        <div className="flex-1 flex justify-end items-center"> {/* Centrado vertical del icono */}
+          <img
+            src="/media/header/login.png"
+            alt={loggedInUser ? "Panel de administrador" : "Iniciar sesión"}
+            className="h-[4.5vh] w-[4.5vh] cursor-pointer object-contain opacity-80 select-none"
+            onClick={loggedInUser ? handleUserClick : handleLoginClick}
+            draggable={false}
+            title={loggedInUser ? "Panel de administrador" : "Iniciar sesión"}
+          />
+        </div>
 
+        {/* Menú Dropdown del Usuario */}
         {loggedInUser && menuOpen && (
-          <div style={styles.dropdown}>
+          <div
+            className="absolute top-full right-4 md:right-10 bg-white border border-gray-200 rounded-lg shadow-lg z-[99] min-w-[180px] md:min-w-[200px] py-1"
+          >
             <div
-              style={styles.dropdownItem}
+              className="px-4 py-2 text-left cursor-pointer bg-white border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150"
               onClick={() => {
                 navigate("/editor-empresas");
                 setMenuOpen(false);
@@ -115,7 +78,7 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
               Admin.Empresas
             </div>
             <div
-              style={styles.dropdownItem}
+              className="px-4 py-2 text-left cursor-pointer bg-white border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150"
               onClick={() => {
                 navigate("/editor-usuarios");
                 setMenuOpen(false);
@@ -124,7 +87,7 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
               Admin.Usuarios
             </div>
             <div
-              style={{ ...styles.dropdownItem, color: "red", borderBottom: "none" }}
+              className="px-4 py-2 text-left cursor-pointer bg-white text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors duration-150 rounded-b-lg"
               onClick={() => {
                 onLogout();
                 setMenuOpen(false);
@@ -136,9 +99,10 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
         )}
       </header>
 
+      {/* Modal de Inicio de Sesión */}
       {showLogin && (
         <InicioSesion onLogin={(user) => {
-          onLogout(); // Limpia antes por seguridad si hubiera sesión previa
+          onLogout();
           onLogin(user);
           setShowLogin(false);
         }} onClose={handleCloseLogin} />
