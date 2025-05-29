@@ -4,14 +4,13 @@ import InicioSesion from "./inicioSesion";
 
 const Header = ({ loggedInUser, onLogout, onLogin }) => {
   const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
+  // Quitamos menuOpen y setMenuOpen
   const [showLogin, setShowLogin] = useState(false);
 
   const handleLoginClick = () => setShowLogin(true);
-  const handleUserClick = () => setMenuOpen((prev) => !prev);
+  // Quitamos handleUserClick porque no lo usaremos más
   const handleCloseLogin = () => setShowLogin(false);
 
-  // Función para obtener nombre del rol
   const getRoleName = (id_rol) => {
     switch (id_rol) {
       case 1:
@@ -61,50 +60,13 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
             src="/media/header/login.png"
             alt={loggedInUser ? "Panel de administrador" : "Iniciar sesión"}
             className="h-[4.5vh] w-[4.5vh] cursor-pointer object-contain opacity-80 select-none"
-            onClick={loggedInUser ? handleUserClick : handleLoginClick}
+            onClick={loggedInUser ? undefined : handleLoginClick} // No abrir menú, solo abrir modal si no está logueado
             draggable={false}
             title={loggedInUser ? "Panel de administrador" : "Iniciar sesión"}
           />
         </div>
 
-        {/* Dropdown usuario */}
-        {loggedInUser && menuOpen && (
-          <div className="absolute top-full right-4 md:right-10 bg-white border border-gray-200 rounded-lg shadow-lg z-[99] min-w-[180px] md:min-w-[200px] py-1">
-            <div
-              className="px-4 py-2 text-left cursor-default bg-white border-b border-gray-100"
-              title={`${loggedInUser.usuario} (${getRoleName(loggedInUser.id_rol)})`}
-            >
-              {loggedInUser.usuario} ({getRoleName(loggedInUser.id_rol)})
-            </div>
-            <div
-              className="px-4 py-2 text-left cursor-pointer bg-white border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150"
-              onClick={() => {
-                navigate("/editor-empresas");
-                setMenuOpen(false);
-              }}
-            >
-              Admin. Empresas
-            </div>
-            <div
-              className="px-4 py-2 text-left cursor-pointer bg-white border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150"
-              onClick={() => {
-                navigate("/panel-usuarios");
-                setMenuOpen(false);
-              }}
-            >
-              Admin. Usuarios
-            </div>
-            <div
-              className="px-4 py-2 text-left cursor-pointer bg-white text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors duration-150 rounded-b-lg"
-              onClick={() => {
-                onLogout();
-                setMenuOpen(false);
-              }}
-            >
-              Cerrar Sesión
-            </div>
-          </div>
-        )}
+        {/* Eliminar menú desplegable: no renderizamos nada aquí */}
       </header>
 
       {/* Modal Login */}

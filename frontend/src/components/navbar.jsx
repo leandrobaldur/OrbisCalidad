@@ -45,20 +45,13 @@ const Navbar = ({ loggedInUser, onLogout }) => {
 
   return (
     <motion.nav
-      className="w-full fixed top-20 z-50 flex items-center justify-between bg-[#F6F0E0] border-b border-gray-200 shadow-sm py-4 px-6 md:px-10 lg:px-20"
+      className="w-full fixed top-20 z-50 flex items-center justify-center bg-[#F6F0E0] border-b border-gray-200 shadow-sm py-4 px-6 md:px-10 lg:px-20"
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      {/* Espacio izquierda */}
+      {/* Espacio flexible a la izquierda */}
       <div className="flex-1 min-w-[50px] md:min-w-[unset]"></div>
-
-      {/* Botón hamburguesa móvil */}
-      <div className="md:hidden">
-        <button onClick={toggleMobileMenu} className="text-[#052018] focus:outline-none text-2xl">
-          ☰
-        </button>
-      </div>
 
       {/* Enlaces escritorio */}
       <div className="hidden md:flex flex-nowrap justify-center items-center gap-x-6 lg:gap-x-8">
@@ -111,6 +104,16 @@ const Navbar = ({ loggedInUser, onLogout }) => {
             </button>
           </div>
         )}
+      </div>
+
+      {/* Espacio flexible a la derecha */}
+      <div className="flex-1 min-w-[50px] md:min-w-[unset]"></div>
+
+      {/* Botón hamburguesa móvil */}
+      <div className="md:hidden">
+        <button onClick={toggleMobileMenu} className="text-[#052018] focus:outline-none text-2xl">
+          ☰
+        </button>
       </div>
 
       {/* Menú móvil */}
