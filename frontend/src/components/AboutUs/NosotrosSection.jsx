@@ -13,7 +13,7 @@ const NosotrosSection = () => (
     </div>
     <div style={{ flex: 1, minWidth: "320px", textAlign: "center" }}>
       <img
-        src={require("../../assets/quien-contra-nosotros.jpg")}
+        src={require("../../assets/bolivia.jpg")}
         alt="Cargando..."
         style={{ maxWidth: "100%", borderRadius: "1rem", boxShadow: "0 0 15px rgba(0,0,0,0.15)" }}
       />
