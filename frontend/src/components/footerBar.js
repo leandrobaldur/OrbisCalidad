@@ -63,7 +63,7 @@ const FooterBar = () => {
     <footer style={estilosFooterBar.contenedor}>
       <div style={estilosFooterBar.inner}>
         <p style={estilosFooterBar.tutor}>
-          Tutorizado por: Alberto Navarro
+          Tutorizado por: Daniela Carolina Ovando Santander
         </p>
         <ul style={estilosFooterBar.enlaces}>
           <li>
@@ -79,21 +79,11 @@ const FooterBar = () => {
           <li>
             <motion.a
               style={estilosFooterBar.enlace}
-              href="/acerca-de"
+              href="/historia"
               whileHover={estilosFooterBar.enlaceHover}
               whileTap={{ scale: 0.98 }}
             >
-              Acerca de
-            </motion.a>
-          </li>
-          <li>
-            <motion.a
-              style={estilosFooterBar.enlace}
-              href="/privacidad"
-              whileHover={estilosFooterBar.enlaceHover}
-              whileTap={{ scale: 0.98 }}
-            >
-              Privacidad
+              Nosotros
             </motion.a>
           </li>
         </ul>
