@@ -20,7 +20,7 @@ Las empresas bolivianas con más de 40 años no son solo testigos silenciosos de
     </div>
     <div style={{ flex: 1, minWidth: "320px" }}>
       <img
-        src={require("../../assets/quien-contra-nosotros.jpg")}
+        src={require("../../assets/futbol.jpg")}
         alt="Founders of Hydrant"
         style={{ width: "100%", borderRadius: "1rem", boxShadow: "0 0 15px rgba(0,0,0,0.15)" }}
       />
