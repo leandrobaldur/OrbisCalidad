@@ -50,7 +50,10 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "60vw" }) => {
       >
         {seleccionado ? (
           <>
-            <h2 className="text-[1.2vw] font-bold text-center">{seleccionado.subtitulo}</h2>
+      <h2 className="text-[1.2vw] font-bold text-center text-[#003366]">
+        {seleccionado.subtitulo}
+      </h2>
+
             <img
               src={seleccionado.imagen}
               alt="contenido"
