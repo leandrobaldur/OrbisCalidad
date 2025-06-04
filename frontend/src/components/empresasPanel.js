@@ -665,9 +665,6 @@ const handleGuardarCambios = async (empresaEditada) => {
         <button className="close-modal" onClick={onClose}>×</button>
       </div>
       <div className="modal-body" style={{display: 'flex', gap: '15px'}}>
-        <div className="modal-imagen">
-          <img src={empresa.imagen} alt={empresa.nombre} style={{maxWidth: '200px', borderRadius: '10px'}} />
-        </div>
         <div className="modal-info" style={{flex: 1}}>
           <h3>{empresa.slogan}</h3>
           <p className="descripcion">{empresa.descripcion}</p>
@@ -728,7 +725,7 @@ const handleGuardarCambios = async (empresaEditada) => {
         style={{ position: 'relative' }}
       >
         <div className="empresa-img-contenedor">
-          <img src={e.imagen} alt={e.nombre} />
+          
           <div className="empresa-nombre-default">{e.nombre}</div>
           <div className="empresa-overlay">
             <div className="nombre">{e.nombre}</div>
@@ -773,13 +770,7 @@ const handleGuardarCambios = async (empresaEditada) => {
     <motion.div className="empresas-wrapper" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 } }>
       {/* BARRA SUPERIOR */}
       <div className="barra-superior">
-        <button
-          className={`boton-antiguedad ${ordenAntiguedad}`}
-          onClick={() => setOrdenAntiguedad(prev => prev === 'asc' ? 'desc' : 'asc')}
-          title={`Ordenar por antigüedad (${ordenAntiguedad === 'asc' ? 'más antiguas primero' : 'más recientes primero'})`}
-        >
-          {ordenAntiguedad === 'asc' ? 'Más antiguas ↑' : 'Más recientes ↓'}
-        </button>
+
 
         <div className="barra-centro">
           <input

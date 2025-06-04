@@ -68,10 +68,20 @@ const ContenedorLateral = ({
           </p>
 
           <div className="flex justify-center">
+            
             <img
               src={imagen}
               alt="contenido dinámico"
               className="rounded-lg object-contain max-w-[90%] max-h-[30vh]"
+              style={{
+                width: "70%",         // Ocupa más del 70% del ancho (ajusta según te guste)
+                maxHeight: "70vh",    // Limita la altura para que no crezca demasiado
+                height: "auto",
+                objectFit: "contain", // Para que no se recorte ni deforme
+                borderRadius: ovaloRedondez,
+                display: "block",
+                margin: "0 auto",     // Centrar horizontalmente
+              }}
             />
           </div>
         </div>

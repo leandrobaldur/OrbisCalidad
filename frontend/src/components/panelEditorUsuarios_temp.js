@@ -132,14 +132,26 @@ const PanelEditorUsuarios = () => {
 
       const data = await response.json();
 
-      if (!response.ok) {
-        setMensaje(data.message || "Error al registrar");
-        return;
-      }
+if (!response.ok) {
+  // Si el error es solo por "Error al registrar el log", ignóralo y continúa
+  if (data.message && data.message.includes("Error al registrar el log")) {
+    console.warn("Ignorando error de log en backend, usuario creado.");
+  } else {
+    // Error real, por ejemplo usuario duplicado
+    setMensaje(data.message || "Error al registrar");
+    return;
+  }
+}
 
+      // Registro exitoso: mostrar alerta y cerrar modal
       setMensajeExito("El usuario ha sido creado exitosamente.");
       setMostrarAlertaExito(true);
+      setMostrarModal(false);
+      setNuevoUsuario("");
+      setNuevaContrasenia("");
+      cargarUsuarios();
 
+    
     } catch (error) {
       console.error("Error:", error);
       setMensaje("Error al conectar con el servidor. Intente de nuevo.");
