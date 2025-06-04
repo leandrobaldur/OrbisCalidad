@@ -56,10 +56,9 @@ const HomePage = () => {
 
         <ContenedorLateral
           subtitulo="SEMANA DE ACTIVIDADES"
-          texto="Explorá las últimas noticias, actualizaciones y promociones disponibles en nuestra plataforma."
           imagen="/media/homePage/work.jpeg"
           ancho="70vw"
-          alto="43.5vw"
+          alto="50.5vw"
           ovaloRedondez="20px"
           cuadroRedondez="10px"
         />
@@ -74,7 +73,7 @@ const HomePage = () => {
       />
 
 
-{/* Se agrega el componente de Inicio de Sesión
+
       <CarruselImagenes
         altura={600}
         filas={4}
@@ -82,10 +81,6 @@ const HomePage = () => {
         modoPrueba={true}
       />
 
- */}
-      {/* Se agrega el componente de Inicio de Sesión */}
-
-      {/* Se agrega el FooterBar al final de la página */}
       
     </div>
   );

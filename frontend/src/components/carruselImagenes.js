@@ -14,22 +14,36 @@ const CarruselImagenes = ({ altura, filas, backendUrl }) => {
   const [imagenesDistribuidas, setImagenesDistribuidas] = useState([]);
   const contenedorRef = useRef(null);
 
+  // Convierte el enlace de Google Drive en una URL accesible para la imagen
+  const convertirUrlDrive = (url) => {
+    if (url && url.includes("drive.google.com")) {
+      const id = url.split("/d/")[1]?.split("/")[0]; // Extrae el ID del archivo
+      if (id) {
+        return `https://drive.google.com/uc?export=view&id=${id}`; // URL de imagen directa
+      }
+    }
+    return url; // Devolver la URL tal cual está si es válida
+  };
+
   const obtenerImagenesDesdeBackend = async () => {
     try {
-      // Paso 1: Obtener resumen de empresas (solo ID)
       const resumen = await axios.get(`${backendUrl}/empresas/resumen`);
       const ids = resumen.data.map((e) => e.id_empresa);
 
-      // Paso 2: Obtener detalles por ID para extraer las URLs
       const respuestas = await Promise.all(
         ids.map((id) => axios.get(`${backendUrl}/empresa/${id}`))
       );
 
-      const urls = respuestas
-        .map((res) => res.data.url)
-        .filter((url) => url && typeof url === 'string');
+      const imagenes = respuestas.map((res) => {
+        const url = convertirUrlDrive(res.data.url); // Convierte la URL si es válida
+        console.log('Imagen URL:', url); // Verifica la URL convertida
+        return {
+          id_empresa: res.data.id_empresa,
+          imagen: url || "", // Si la URL no es válida, asigna un string vacío
+        };
+      });
 
-      const imagenesBarajadas = shuffleArray(urls);
+      const imagenesBarajadas = shuffleArray(imagenes);
       const distribuidas = distribuirEquitativamente(imagenesBarajadas, filas);
       setImagenesDistribuidas(distribuidas);
     } catch (error) {
@@ -53,7 +67,7 @@ const CarruselImagenes = ({ altura, filas, backendUrl }) => {
     <div
       ref={contenedorRef}
       className="w-full overflow-hidden relative"
-      style={{ height: `${altura}px` }}
+      style={{ height: `${altura}px`, position: 'relative' }}
     >
       {imagenesDistribuidas.map((fila, i) => (
         <div
@@ -65,18 +79,38 @@ const CarruselImagenes = ({ altura, filas, backendUrl }) => {
             animation: `${i % 2 === 0 ? 'moverIzquierda' : 'moverDerecha'} 30s linear infinite`
           }}
         >
-          {fila.concat(fila).map((img, idx) => (
-            <img
+          {fila.concat(fila).map((empresa, idx) => (
+            <div
               key={`${i}-${idx}`}
-              src={img}
-              alt={`Logo empresa ${idx}`}
-              loading="lazy"
-              className="object-cover"
               style={{
                 height: '100%',
-                width: `${100 / fila.length}%`
+                width: `${100 / fila.length}%`,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                overflow: 'hidden',
               }}
-            />
+            >
+              {empresa.imagen ? (
+                <img
+                  src={empresa.imagen || '/path/to/default-image.jpg'}  // Usar imagen predeterminada si no hay imagen
+                  alt={`Logo empresa ${empresa.id_empresa}`}
+                  loading="lazy"
+                  className="object-contain"
+                  style={{
+                    height: '100%',
+                    width: '100%',
+                    objectFit: 'contain',
+                    display: 'block',
+                    margin: '0 auto',
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                  <span>No Image</span> {/* En caso de no tener imagen, muestra un texto de marcador */}
+                </div>
+              )}
+            </div>
           ))}
         </div>
       ))}
