@@ -791,7 +791,38 @@ const handleGuardarCambios = async (empresaEditada) => {
           <span className="icono-busqueda">🔍</span>
         </div>
         <div className="barra-derecha">
-          
+          <button 
+            className={`boton-icono ${filtroActivo==='50años'?'activo':''}`} 
+            onClick={() => aplicarFiltro('50años')}
+            title="Filtrar por antigüedad (>50 años)"
+          >
+            <img src="media/busqueda/plus.png" alt=">50 años" />
+            <span>+50 años</span>
+          </button>
+          <button 
+            className={`boton-icono ${filtroActivo==='premio'?'activo':''}`} 
+            onClick={() => aplicarFiltro('premio')}
+            title="Filtrar por premios"
+          >
+            <img src="media/busqueda/medalla.png" alt="premio" />
+            <span>Premios</span>
+          </button>
+          <button 
+            className={`boton-icono ${filtroActivo==='rubro'?'activo':''}`} 
+            onClick={() => aplicarFiltro('rubro')}
+            title="Filtrar por rubros"
+          >
+            <img src="media/busqueda/cerebro.png" alt="rubro" />
+            <span>Rubros</span>
+          </button>
+          <button 
+            className={`boton-icono ${filtroActivo==='departamento'?'activo':''}`} 
+            onClick={() => aplicarFiltro('departamento')}
+            title="Filtrar por departamentos"
+          >
+            <img src="media/busqueda/mapa.png" alt="departamento" />
+            <span>Deptos.</span>
+          </button>
         </div>
       </div>
 
