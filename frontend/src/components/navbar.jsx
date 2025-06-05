@@ -4,18 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const ROL_ADMIN = 1;
 
-const getRoleName = (id_rol) => {
-  switch (id_rol) {
-    case 1:
-      return "Administrador";
-    case 2:
-      return "Colaborador";
-    default:
-      return "Usuario";
-  }
-};
-
-const Navbar = ({ loggedInUser, onLogout }) => {
+const Navbar = ({ loggedInUser }) => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -50,7 +39,6 @@ const Navbar = ({ loggedInUser, onLogout }) => {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      {/* Espacio flexible a la izquierda */}
       <div className="flex-1 min-w-[50px] md:min-w-[unset]"></div>
 
       {/* Enlaces escritorio */}
@@ -89,24 +77,8 @@ const Navbar = ({ loggedInUser, onLogout }) => {
             </React.Fragment>
           );
         })}
-
-        {/* Info usuario y logout */}
-        {loggedInUser && (
-          <div className="flex items-center gap-2 ml-8">
-            <span className="font-['Century Gothic'] text-base text-gray-700 whitespace-nowrap">
-              {loggedInUser.usuario} ({getRoleName(loggedInUser.id_rol)})
-            </span>
-            <button
-              onClick={onLogout}
-              className="bg-red-700 hover:bg-red-800 border-none text-white px-3 py-1.5 rounded-md font-semibold cursor-pointer font-['Century Gothic'] text-sm transition-colors duration-300 whitespace-nowrap"
-            >
-              Cerrar Sesión
-            </button>
-          </div>
-        )}
       </div>
 
-      {/* Espacio flexible a la derecha */}
       <div className="flex-1 min-w-[50px] md:min-w-[unset]"></div>
 
       {/* Botón hamburguesa móvil */}
@@ -152,23 +124,6 @@ const Navbar = ({ loggedInUser, onLogout }) => {
                 </motion.div>
               );
             })}
-
-            {loggedInUser && (
-              <div className="flex flex-col items-center gap-4 mt-6">
-                <span className="font-['Century Gothic'] text-lg text-gray-700">
-                  {loggedInUser.usuario} ({getRoleName(loggedInUser.id_rol)})
-                </span>
-                <button
-                  onClick={() => {
-                    onLogout();
-                    toggleMobileMenu();
-                  }}
-                  className="bg-red-700 hover:bg-red-800 text-white px-5 py-2 rounded-md font-semibold font-['Century Gothic'] text-base transition-colors duration-300"
-                >
-                  Cerrar Sesión
-                </button>
-              </div>
-            )}
           </motion.div>
         )}
       </AnimatePresence>
