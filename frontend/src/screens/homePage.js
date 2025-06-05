@@ -24,7 +24,7 @@ const HomePage = () => {
         <div className="mt-[10vh]">
           <ImagenInteractiva
             ancho="30vw"
-            imagenDefault="/media/homePage/defaultImage.webp"
+            imagenDefault="/media/homePage/defaultImage.png"
             items={[
               {
                 icono: "/media/homePage/lightIcon.png",
@@ -74,12 +74,6 @@ const HomePage = () => {
 
 
 
-      <CarruselImagenes
-        altura={600}
-        filas={4}
-        backendUrl="http://localhost:3000"
-        modoPrueba={true}
-      />
 
       
     </div>
