@@ -657,36 +657,103 @@ const handleGuardarCambios = async (empresaEditada) => {
     );
   };
 
-  // Modal solo lectura
-  const DetalleEmpresaModal = ({ empresa, onClose }) => (
+
+// Modal solo lectura
+const DetalleEmpresaModal = ({ empresa, onClose }) => {
+  const visitarSitio = () => {
+    const url = empresa.sitioWeb.startsWith('http') ? empresa.sitioWeb : `https://${empresa.sitioWeb}`;
+    window.open(url, '_blank');
+  };
+
+  const fadeIn = {
+    initial: { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.3 }
+  };
+
+  return (
     <>
       <div className="modal-header">
-        <h2>{empresa.nombre}</h2>
-        <button className="close-modal" onClick={onClose}>×</button>
+        <motion.h2 whileHover={{ scale: 1.03 }}>{empresa.nombre}</motion.h2>
+        <motion.button
+          className="close-modal"
+          onClick={onClose}
+          whileHover={{ scale: 1.2 }}
+          style={{ cursor: 'pointer' }}
+        >
+          ×
+        </motion.button>
       </div>
-      <div className="modal-body" style={{display: 'flex', gap: '15px'}}>
-        <div className="modal-info" style={{flex: 1}}>
-          <h3>{empresa.slogan}</h3>
-          <p className="descripcion">{empresa.descripcion}</p>
+
+      <div className="modal-body" style={{ display: 'flex', gap: '15px' }}>
+        <div className="modal-info" style={{ flex: 1 }}>
+          <motion.h3 whileHover={{ scale: 1.03 }} {...fadeIn}>
+            {empresa.slogan}
+          </motion.h3>
+
+          <motion.p className="descripcion" {...fadeIn}>
+            {empresa.descripcion}
+          </motion.p>
+
           <div className="info-detalle">
-            <p><strong>Rubro:</strong> {empresa.rubro}</p>
-            {empresa.descripcion_actividad && <p><strong>Actividad:</strong> {empresa.descripcion_actividad}</p>}
-            <p><strong>Fundación:</strong> {empresa.fundacion}</p>
-            {empresa.sede && <p><strong>Sede:</strong> {empresa.sede}</p>}
-            {empresa.departamento && <p><strong>Departamento:</strong> {empresa.departamento}</p>}
-            {empresa.empleados && <p><strong>Tamaño:</strong> {empresa.empleados}</p>}
-            {empresa.sitioWeb && <p><strong>Sitio web:</strong> {empresa.sitioWeb}</p>}
+            <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
+              <strong>Rubro:</strong> {empresa.rubro}
+            </motion.p>
+
+            {empresa.descripcion_actividad && (
+              <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
+                <strong>Actividad:</strong> {empresa.descripcion_actividad}
+              </motion.p>
+            )}
+
+            <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
+              <strong>Fundación:</strong> {empresa.fundacion}
+            </motion.p>
+
+            {empresa.sede && (
+              <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
+                <strong>Sede:</strong> {empresa.sede}
+              </motion.p>
+            )}
+
+            {empresa.departamento && (
+              <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
+                <strong>Departamento:</strong> {empresa.departamento}
+              </motion.p>
+            )}
+
+            {empresa.empleados && (
+              <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
+                <strong>Tamaño:</strong> {empresa.empleados}
+              </motion.p>
+            )}
+
+            {empresa.sitioWeb && (
+              <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
+                <strong>Sitio web:</strong> {empresa.sitioWeb}
+              </motion.p>
+            )}
+
             {empresa.rubros?.length > 0 && (
-              <p><strong>Rubros adicionales:</strong> {empresa.rubros.join(', ')}</p>
+              <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
+                <strong>Rubros adicionales:</strong> {empresa.rubros.join(', ')}
+              </motion.p>
             )}
+
             {empresa.operacionesInternacionales?.length > 0 && (
-              <p><strong>Operaciones internacionales:</strong> {empresa.operacionesInternacionales.join(', ')}</p>
+              <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
+                <strong>Operaciones internacionales:</strong> {empresa.operacionesInternacionales.join(', ')}
+              </motion.p>
             )}
+
             {empresa.familia?.length > 0 && (
-              <p><strong>Familiar:</strong> Sí ({empresa.familia.length} registros)</p>
+              <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
+                <strong>Familiar:</strong> Sí ({empresa.familia.length} registros)
+              </motion.p>
             )}
+
             {empresa.premios?.length > 0 && (
-              <div className="premios-section">
+              <motion.div className="premios-section" {...fadeIn} whileHover={{ scale: 1.02 }}>
                 <strong>Premios:</strong>
                 <ul>
                   {empresa.premios.map((premio, idx) => (
@@ -695,21 +762,33 @@ const handleGuardarCambios = async (empresaEditada) => {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </motion.div>
             )}
           </div>
         </div>
       </div>
-      <div className="modal-footer" style={{display: 'flex', justifyContent: 'flex-end', gap: '10px'}}>
+
+      <div className="modal-footer" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
         {empresa.sitioWeb && (
-          <button className="btn-visitar" onClick={visitarSitio}>
+          <motion.button
+            className="btn-visitar"
+            onClick={visitarSitio}
+            whileHover={{ scale: 1.1 }}
+          >
             Visitar sitio web
-          </button>
+          </motion.button>
         )}
-        <button className="btn-contactar" onClick={() => window.location.href = `mailto:info@desconocido.com`}>Contactar</button>
+        <motion.button
+          className="btn-contactar"
+          onClick={() => window.location.href = `mailto:info@desconocido.com`}
+          whileHover={{ scale: 1.1 }}
+        >
+          Contactar
+        </motion.button>
       </div>
     </>
   );
+};
 
   // Renderizar empresas con botón editar si puede
   const renderEmpresas = () => {
@@ -782,114 +861,81 @@ const handleGuardarCambios = async (empresaEditada) => {
           <span className="icono-busqueda">🔍</span>
         </div>
         <div className="barra-derecha">
-          <button 
-            className={`boton-icono ${filtroActivo==='50años'?'activo':''}`} 
-            onClick={() => aplicarFiltro('50años')}
-            title="Filtrar por antigüedad (>50 años)"
-          >
-            <img src="media/busqueda/plus.png" alt=">50 años" />
-            <span>+50 años</span>
-          </button>
-          <button 
-            className={`boton-icono ${filtroActivo==='premio'?'activo':''}`} 
-            onClick={() => aplicarFiltro('premio')}
-            title="Filtrar por premios"
-          >
-            <img src="media/busqueda/medalla.png" alt="premio" />
-            <span>Premios</span>
-          </button>
-          <button 
-            className={`boton-icono ${filtroActivo==='rubro'?'activo':''}`} 
-            onClick={() => aplicarFiltro('rubro')}
-            title="Filtrar por rubros"
-          >
-            <img src="media/busqueda/cerebro.png" alt="rubro" />
-            <span>Rubros</span>
-          </button>
-          <button 
-            className={`boton-icono ${filtroActivo==='departamento'?'activo':''}`} 
-            onClick={() => aplicarFiltro('departamento')}
-            title="Filtrar por departamentos"
-          >
-            <img src="media/busqueda/mapa.png" alt="departamento" />
-            <span>Deptos.</span>
-          </button>
+          
         </div>
       </div>
 
       {/* PANEL PRINCIPAL */}
-      <div className="empresas-panel-container">
-        <div className="imagen-lateral">
-          <img 
-            src="/media/empresasPage/bolivia.jpg" 
-            alt="Imagen lateral" 
-            style={{ border: 'none', outline: 'none' }} 
-          />
-        { loggedInUser?.id_rol === 1 && (
-          <>
-            <button
-              className="boton-crear-empresa"
-              onClick={() => setShowRegistroModal(true)}
-              title="Crear nueva empresa"
+<div className="empresas-panel-container">
+  <div className="imagen-lateral">
+    <img 
+      src="/media/empresasPage/bolivia.jpg" 
+      alt="Imagen lateral" 
+      style={{ border: 'none', outline: 'none' }} 
+    />
+    { loggedInUser?.id_rol === 1 && (
+      <>
+        <button
+          className="boton-crear-empresa"
+          onClick={() => setShowRegistroModal(true)}
+          title="Crear nueva empresa"
+          style={{
+            marginTop: '10px',
+            backgroundColor: '#053015',
+            color: 'white',
+            borderRadius: '6px',
+            padding: '10px 20px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            border: 'none',
+          }}
+        >
+          Añadir empresa
+        </button>
+
+        {showRegistroModal && (
+          <div 
+            className="modal-overlay" 
+            onClick={() => setShowRegistroModal(false)}
+            style={{
+              position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              display: 'flex', justifyContent: 'center', alignItems: 'center',
+              zIndex: 9999,
+            }}
+          >
+            <div 
+              className="modal-content" 
+              onClick={(e) => e.stopPropagation()}
               style={{
-                marginTop: '10px',
-                backgroundColor: '#053015',
-                color: 'white',
-                borderRadius: '6px',
-                padding: '10px 20px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                border: 'none',
+                backgroundColor: 'white',
+                borderRadius: '8px',
+                maxWidth: '600px',
+                width: '90%',
+                maxHeight: '90vh',
+                overflowY: 'auto',
+                padding: '20px',
               }}
             >
-              +
-            </button>
-
-            {showRegistroModal && (
-              <div 
-                className="modal-overlay" 
-                onClick={() => setShowRegistroModal(false)}
-                style={{
-                  position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-                  backgroundColor: 'rgba(0,0,0,0.5)',
-                  display: 'flex', justifyContent: 'center', alignItems: 'center',
-                  zIndex: 9999,
+              <RegistroEmpresa 
+                onRegistroExitoso={() => {
+                  setShowRegistroModal(false);
+                  recargarEmpresas();
                 }}
-              >
-                <div 
-                  className="modal-content" 
-                  onClick={(e) => e.stopPropagation()}
-                  style={{
-                    backgroundColor: 'white',
-                    borderRadius: '8px',
-                    maxWidth: '600px',
-                    width: '90%',
-                    maxHeight: '90vh',
-                    overflowY: 'auto',
-                    padding: '20px',
-                  }}
-                >
-                  <RegistroEmpresa 
-                    onRegistroExitoso={() => {
-                      setShowRegistroModal(false);
-                      recargarEmpresas();
-                    }}
-                  />
-                </div>
-              </div>
-            )}
-          </>
-        )}
-        </div>
-
-
-
-        <div className="empresas-panel">
-          <div className="empresas-grid">
-            {renderEmpresas()}
+              />
+            </div>
           </div>
-        </div>
-      </div>
+        )}
+      </>
+    )}
+  </div>
+
+  <div className="empresas-panel">
+    <div className="empresas-grid">
+      {renderEmpresas()}
+    </div>
+  </div>
+</div>
 
       {/* MODAL */}
       <AnimatePresence>
@@ -917,3 +963,4 @@ const handleGuardarCambios = async (empresaEditada) => {
 };
 
 export default EmpresasPanel;
+

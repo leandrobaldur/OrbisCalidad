@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import InicioSesion from "./inicioSesion";
 
 const Header = ({ loggedInUser, onLogout, onLogin }) => {
   const navigate = useNavigate();
-  // Quitamos menuOpen y setMenuOpen
   const [showLogin, setShowLogin] = useState(false);
 
   const handleLoginClick = () => setShowLogin(true);
-  // Quitamos handleUserClick porque no lo usaremos más
   const handleCloseLogin = () => setShowLogin(false);
 
   const getRoleName = (id_rol) => {
@@ -26,7 +25,10 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
     <>
       <header className="w-full fixed top-0 h-20 flex justify-between items-center px-4 md:px-10 bg-[#f3efe8] z-40">
         {/* Izquierda: Logo Bolivia */}
-        <div className="flex-1 flex items-center cursor-pointer" onClick={() => navigate("/")}>
+        <div
+          className="flex-1 flex items-center cursor-pointer"
+          onClick={() => navigate("/")}
+        >
           <img
             src="/media/header/bolivia.png"
             alt="Logo Bicentenario Bolivia"
@@ -54,26 +56,47 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
           />
         </div>
 
-        {/* Derecha: Icono Login / Usuario */}
-        <div className="flex-1 flex justify-end items-center">
-          <img
+        {/* Derecha: Icono Login siempre visible, y usuario + logout si está logueado */}
+        <div className="flex-1 flex justify-end items-center gap-4">
+          <motion.img
             src="/media/header/login.png"
-            alt={loggedInUser ? "Panel de administrador" : "Iniciar sesión"}
+            alt="Iniciar sesión"
             className="h-[4.5vh] w-[4.5vh] cursor-pointer object-contain opacity-80 select-none"
-            onClick={loggedInUser ? undefined : handleLoginClick} // No abrir menú, solo abrir modal si no está logueado
+            onClick={handleLoginClick}
             draggable={false}
-            title={loggedInUser ? "Panel de administrador" : "Iniciar sesión"}
+            title="Iniciar sesión"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
           />
-        </div>
 
-        {/* Eliminar menú desplegable: no renderizamos nada aquí */}
+          {loggedInUser && (
+            <>
+              <motion.span
+                className="font-['Century Gothic'] text-base text-gray-700 select-none"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                {loggedInUser.usuario} ({getRoleName(loggedInUser.id_rol)})
+              </motion.span>
+              <motion.button
+                onClick={onLogout}
+                className="bg-red-700 hover:bg-red-800 border-none text-white px-3 py-1.5 rounded-md font-semibold cursor-pointer font-['Century Gothic'] text-sm transition-colors duration-300 whitespace-nowrap"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                title="Cerrar sesión"
+              >
+                Cerrar Sesión
+              </motion.button>
+            </>
+          )}
+        </div>
       </header>
 
       {/* Modal Login */}
       {showLogin && (
         <InicioSesion
           onLogin={(user) => {
-            onLogout();
             onLogin(user);
             setShowLogin(false);
           }}
@@ -85,3 +108,4 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
 };
 
 export default Header;
+
