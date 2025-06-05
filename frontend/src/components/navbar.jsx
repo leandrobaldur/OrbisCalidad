@@ -21,7 +21,6 @@ const Navbar = ({ loggedInUser, onLogout }) => {
 
   const baseLinks = [
     { label: "NOSOTROS", path: "/historia" },
-    { label: "DASHBOARDS", path: "/dashboards" },
     { label: "REVISTA", path: "/revistaPage" },
     { label: "INICIO", path: "/" },
     { label: "EMPRESAS", path: "/empresas" },
@@ -31,6 +30,7 @@ const Navbar = ({ loggedInUser, onLogout }) => {
   let finalLinks = [...baseLinks];
   if (loggedInUser && loggedInUser.id_rol === ROL_ADMIN) {
     finalLinks.push({ label: "ADMIN USUARIOS", path: "/panel-usuarios" });
+    finalLinks.push({ label: "DASHBOARDS", path: "/dashboards" });
   }
 
   const toggleMobileMenu = () => {
