@@ -11,7 +11,7 @@ import ContactoPage from '../screens/contactoPage';
 import HistoriaPage from '../screens/historiaPage';
 import EditorEmpresasPage from '../screens/editorEmpresasPage';
 import PanelEditorUsuarios from './panelEditorUsuarios_temp';
-import FooterBar from './footerBar.js'; // ¡Importa tu nuevo FooterBar!
+import FooterBar from './footerBar.js';
 
 function RedirectDashboard() {
   useEffect(() => {
@@ -19,7 +19,7 @@ function RedirectDashboard() {
   }, []);
 
   return (
-    <div style={{ padding: 50, textAlign: 'center' }}>
+    <div className="p-12 text-center">
       Abriendo el dashboard externo en una nueva pestaña...
     </div>
   );
@@ -53,13 +53,13 @@ function App() {
 
   return (
     <Router>
-      {/* Contenedor principal con flexbox para empujar el footer al final */}
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', fontFamily: "'Poppins', sans-serif" }}>
+      <div className="flex flex-col min-h-screen">
+        {/* Volvemos a activar el Header y el Navbar */}
         <Header loggedInUser={loggedInUser} onLogout={handleLogout} onLogin={handleLogin} />
         <Navbar loggedInUser={loggedInUser} onLogout={handleLogout} />
 
-        {/* Contenido principal */}
-        <main style={{ flexGrow: 1, paddingTop: '140px' }}>
+        {/* El padding-top debe coincidir con la altura combinada de Header y Navbar */}
+        <main className="flex-grow pt-[140px]">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/empresas" element={<EmpresasPage loggedInUser={loggedInUser} />} />
@@ -67,28 +67,19 @@ function App() {
             <Route path="/contacto" element={<ContactoPage />} />
             <Route path="/historia" element={<HistoriaPage />} />
 
-            {/* Ruta dashboards */}
             <Route
               path="/dashboards"
               element={
                 loggedInUser ? (
                   <RedirectDashboard />
                 ) : (
-                  <div
-                    style={{
-                      padding: 50,
-                      textAlign: 'center',
-                      color: '#FF4201',
-                      fontWeight: 'bold',
-                    }}
-                  >
+                  <div className="p-12 text-center text-accent font-bold">
                     Acceso denegado. Inicia sesión.
                   </div>
                 )
               }
             />
 
-            {/* Rutas administrador */}
             {loggedInUser && loggedInUser.id_rol === 1 && (
               <>
                 <Route path="/editor-empresas" element={<EditorEmpresasPage />} />
@@ -96,20 +87,12 @@ function App() {
               </>
             )}
 
-            {/* Rutas sin permiso */}
             {loggedInUser && loggedInUser.id_rol !== 1 && (
               <>
                 <Route
                   path="/editor-empresas"
                   element={
-                    <div
-                      style={{
-                        padding: 50,
-                        textAlign: 'center',
-                        color: '#FF4201',
-                        fontWeight: 'bold',
-                      }}
-                    >
+                    <div className="p-12 text-center text-accent font-bold">
                       No tienes permisos para acceder a esta página.
                     </div>
                   }
@@ -117,14 +100,7 @@ function App() {
                 <Route
                   path="/panel-usuarios"
                   element={
-                    <div
-                      style={{
-                        padding: 50,
-                        textAlign: 'center',
-                        color: '#FF4201',
-                        fontWeight: 'bold',
-                      }}
-                    >
+                    <div className="p-12 text-center text-accent font-bold">
                       No tienes permisos para acceder a esta página.
                     </div>
                   }
@@ -132,37 +108,14 @@ function App() {
               </>
             )}
 
-            {/* Ruta fallback no logueado */}
             {!loggedInUser && (
               <Route
                 path="*"
                 element={
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      height: 'calc(100vh - 120px)',
-                      textAlign: 'center',
-                    }}
-                  >
-                    <h1>Plataforma de Empresas</h1>
-                    <p>Por favor, inicie sesión para acceder al sistema.</p>
-                    <button
-                      style={{
-                        padding: '12px 24px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        backgroundColor: '#166D3B',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        textTransform: 'uppercase',
-                      }}
-                      onClick={() => setShowLoginModal(true)}
-                    >
+                  <div className="flex flex-col justify-center items-center h-[calc(100vh-200px)] text-center">
+                    <h1 className="text-4xl mb-4">Plataforma de Empresas</h1>
+                    <p className="mb-6">Por favor, inicie sesión para acceder al sistema.</p>
+                    <button onClick={() => setShowLoginModal(true)}>
                       Iniciar Sesión
                     </button>
                   </div>
@@ -172,12 +125,10 @@ function App() {
           </Routes>
         </main>
 
-        {/* Modal login */}
         {showLoginModal && !loggedInUser && (
           <InicioSesion onLogin={handleLogin} onClose={() => setShowLoginModal(false)} />
         )}
 
-        {/* Footer fijo abajo */}
         <FooterBar />
       </div>
     </Router>
@@ -185,3 +136,4 @@ function App() {
 }
 
 export default App;
+

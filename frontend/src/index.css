@@ -1,88 +1,76 @@
-
-
+/* Importaciones base de Tailwind CSS */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Añade estas líneas al principio de tu archivo CSS principal */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
+/* ====================================================================
+  1. DECLARACIÓN DE FUENTES LOCALES (DESDE LA CARPETA 'SRC')
+  ====================================================================
+*/
 
-/* Opcional: Para aplicar Playfair Display como fuente por defecto a tu body,
-   aunque el componente lo aplica directamente. */
-body {
-  font-family: 'Playfair Display', serif;
+/* Fuente para TÍTULOS */
+@font-face {
+  font-family: 'Bodoni';
+  src: url('./fonts/BodoniStd.otf') format('opentype'); 
+  font-weight: normal;
+  font-style: normal;
 }
 
-/* El resto de tus estilos CSS */
-
-/* Añade estas líneas al principio de tu archivo CSS principal */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
-
-/* Opcional: Para aplicar Montserrat como fuente por defecto a todo tu body */
-body {
-  font-family: 'Montserrat', sans-serif;
-}
-
-/* El resto de tus estilos CSS */
-
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden; /* Evita el desplazamiento horizontal */
-}
-
-#root {
-  display: block; /* Cambiamos esto para evitar que se centre el contenido */
-  height: 100%; /* Asegura que el contenido ocupe todo el alto */
-  background-color: #f3efe8;
+/* Fuente para TEXTO */
+@font-face {
+  font-family: 'Miles Light';
+  src: url('./fonts/RNSMiles-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
 }
 
 
-nav ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 60px;
+/* ====================================================================
+  2. ESTILOS GLOBALES BASE CON @layer
+  ====================================================================
+*/
+
+@layer base {
+  body {
+    /* Aplicamos los colores con @apply */
+    @apply bg-background text-text-main;
+    
+    /* CORRECCIÓN: Usamos la propiedad CSS estándar para la fuente base. 
+       Esto evita el error de compilación con @apply. */
+    font-family: 'Miles Light', sans-serif;
+    
+    overflow-x: hidden; /* Evita el desplazamiento horizontal */
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    /* Aplicamos el color con @apply */
+    @apply text-primary;
+    
+    /* CORRECCIÓN: Usamos la propiedad CSS estándar para la fuente de los títulos. */
+    font-family: 'Bodoni', serif;
+  }
+
+  button {
+    /* Aplicamos todos los estilos de utilidad excepto la fuente con @apply */
+    @apply bg-accent text-primary px-4 py-2 rounded-lg transition-transform duration-200 ease-in-out hover:scale-105 disabled:opacity-50;
+    
+    /* CORRECCIÓN: Usamos la propiedad CSS estándar para la fuente de los botones. */
+    font-family: 'Bodoni', serif;
+  }
+
+  a {
+    /* Estilo base para los enlaces */
+    @apply text-accent hover:underline;
+  }
 }
 
-nav ul li a {
-  color:  #E6DFD4;
-  text-decoration: none;
-}
 
+/* ====================================================================
+  3. CLASES PERSONALIZADAS (Opcional)
+  ====================================================================
+*/
 
 .flip-card {
   perspective: 1000px;
 }
 
-.flip-card-inner {
-  position: relative;
-  width: 100%;
-  height: 16rem; /* h-64 */
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
-}
-
-.flip-card:hover .flip-card-inner {
-  transform: rotateY(180deg);
-  cursor: pointer;
-}
-
-.flip-card-front, .flip-card-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 0.75rem; /* rounded-xl */
-  backface-visibility: hidden;
-}
-
-.flip-card-back {
-  background-color: rgb(245, 245, 245);
-  transform: rotateY(180deg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}

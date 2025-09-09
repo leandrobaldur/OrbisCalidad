@@ -10,7 +10,7 @@ const HomePage = () => {
   return (
     <div className="w-full min-h-screen flex flex-col gap-8 mt-5">
       <VideoPanel height="60vh">
-        <video src="/media/homePage/video.webm" autoPlay muted loop />
+        <video className="w-full h-full object-cover" src="/media/homePage/video.webm" autoPlay muted loop />
       </VideoPanel>
 
       <BarraHorizontal
@@ -52,7 +52,7 @@ const HomePage = () => {
               },
             ]}
           />
-      </div>
+        </div>
 
         <ContenedorLateral
           subtitulo="SEMANA DE ACTIVIDADES"
@@ -63,7 +63,6 @@ const HomePage = () => {
           cuadroRedondez="10px"
         />
       </div>
-
       
       <BarraHorizontal
         texto="RECORRIDOS DE +40 AÑOS"
@@ -71,13 +70,9 @@ const HomePage = () => {
         margenHorizontal="30vw"
         imagen="/media/homePage/barra.png"
       />
-
-
-
-
-      
     </div>
   );
 };
 
 export default HomePage;
+

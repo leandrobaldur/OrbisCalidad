@@ -1,37 +1,29 @@
 import React from "react";
 
 const VideoPanel = ({ children, height = "50vh" }) => {
+  // La altura es una prop dinámica, por lo que la manejamos con un objeto de estilo.
+  // Es la forma más limpia cuando el valor no es fijo.
+  const panelStyle = {
+    height: height,
+  };
+
   return (
     <div
-    
-      style={{
-        width: "100%",
-        height: height,
-        position: "relative",
-        overflow: "hidden",
-        borderTop: "0.7vh solid #03213B",    // borde superior actualizado
-        borderBottom: "0.7vh solid #03213B", // borde inferior actualizado
-      }}
+      style={panelStyle}
+      // REFACTORIZACIÓN A TAILWIND:
+      // 1. Reemplazamos los estilos en línea por clases de utilidad.
+      // 2. Usamos `border-primary` de tu paleta de colores personalizada.
+      // 3. El grosor del borde (0.7vh) se aplica con la sintaxis de valores arbitrarios de Tailwind.
+      className="w-full relative overflow-hidden border-t-[0.7vh] border-b-[0.7vh] border-primary"
     >
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        {/* Clonamos el children agregando los estilos necesarios directamente si es un <video> */}
+      <div className="absolute inset-0 w-full h-full">
+        {/* Clonamos el `children` para aplicarle clases en lugar de estilos en línea. */}
         {React.Children.map(children, (child) =>
           React.isValidElement(child)
             ? React.cloneElement(child, {
-                style: {
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  objectPosition: "center", // <-- centrado vertical y horizontal
-                },
+                // Estas clases aseguran que el video (o cualquier otro elemento)
+                // llene el panel y se mantenga centrado.
+                className: "w-full h-full object-cover object-center",
               })
             : child
         )}

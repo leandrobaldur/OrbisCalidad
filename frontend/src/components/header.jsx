@@ -23,7 +23,7 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
 
   return (
     <>
-      <header className="w-full fixed top-0 h-20 flex justify-between items-center px-4 md:px-10 bg-[#f3efe8] z-40">
+      <header className="w-full fixed top-0 h-20 flex justify-between items-center px-4 md:px-10 bg-background z-40">
         {/* Izquierda: Logo Bolivia */}
         <div
           className="flex-1 flex items-center cursor-pointer"
@@ -45,8 +45,9 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
             className="h-8 md:h-10 object-contain opacity-70 cursor-default flex-shrink-0"
             draggable={false}
           />
-          <h1 className="font-['Trajan_Pro'] text-xl sm:text-3xl md:text-4xl lg:text-5xl text-black whitespace-nowrap">
-            LEGADO BOLIVIANO
+          {/* AJUSTE MINIMALISTA: Se reduce el tamaño y se añade espaciado para un look más limpio */}
+          <h1 className="font-bodoni text-xl sm:text-2xl md:text-3xl lg:text-4xl text-primary whitespace-nowrap tracking-widest">
+            ORBIS EMPRESARIAL
           </h1>
           <img
             src="/media/header/logo.png"
@@ -56,12 +57,12 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
           />
         </div>
 
-        {/* Derecha: Icono Login siempre visible, y usuario + logout si está logueado */}
+        {/* Derecha: Icono Login y datos de usuario */}
         <div className="flex-1 flex justify-end items-center gap-4">
           <motion.img
             src="/media/header/login.png"
             alt="Iniciar sesión"
-            className="h-[4.5vh] w-[4.5vh] cursor-pointer object-contain opacity-80 select-none"
+            className="h-10 w-10 cursor-pointer object-contain opacity-80 select-none"
             onClick={handleLoginClick}
             draggable={false}
             title="Iniciar sesión"
@@ -72,16 +73,17 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
           {loggedInUser && (
             <>
               <motion.span
-                className="font-['Century Gothic'] text-base text-gray-700 select-none"
+                className="font-miles text-base text-text-main select-none"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
                 {loggedInUser.usuario} ({getRoleName(loggedInUser.id_rol)})
               </motion.span>
+              
               <motion.button
                 onClick={onLogout}
-                className="bg-red-700 hover:bg-red-800 border-none text-white px-3 py-1.5 rounded-md font-semibold cursor-pointer font-['Century Gothic'] text-sm transition-colors duration-300 whitespace-nowrap"
+                className="bg-accent hover:bg-opacity-80 border-none text-primary px-3 py-1.5 rounded-md cursor-pointer font-bodoni text-sm transition-colors duration-300 whitespace-nowrap"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 title="Cerrar sesión"

@@ -4,8 +4,9 @@ import { motion, AnimatePresence } from "framer-motion";
 const ImagenInteractiva = ({ items, imagenDefault, ancho = "60vw" }) => {
   const [seleccionado, setSeleccionado] = useState(null);
 
+  // La lógica para el ancho dinámico se mantiene, ya que es parte del core del componente.
   const anchoNum = parseFloat(ancho);
-  const margenLateral = (anchoNum * 0.05) + "vw"; // 5% margen lateral
+  const margenLateral = (anchoNum * 0.05) + "vw";
   const iconoWidth = (anchoNum * 0.4) / items.length + "vw";
 
   const variants = {
@@ -19,16 +20,13 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "60vw" }) => {
       className="flex flex-col"
       style={{ width: ancho, aspectRatio: '4 / 3', marginLeft: 0 }}
     >
-      {/* Barra de iconos */}
+      {/* --- Barra de iconos --- */}
       <div
-        className="w-full flex items-center py-[0.5vw] gap-[1vw]"
+        // APLICAMOS ESTILOS DE LA PALETA: bg-surface y border-primary
+        className="w-full flex items-center justify-between py-[0.5vw] gap-[1vw] bg-surface border-t-[1.2vh] border-b-[1.2vh] border-primary"
         style={{
           paddingLeft: margenLateral,
           paddingRight: margenLateral,
-          justifyContent: "space-between",
-          backgroundColor: "#F5F2EE",
-          borderTop: "1.2vh solid #03213B",
-          borderBottom: "1.2vh solid #03213B"
         }}
       >
         {items.map((item, index) => (
@@ -36,45 +34,50 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "60vw" }) => {
             key={index}
             style={{ flex: `1 1 ${iconoWidth}`, display: 'flex', justifyContent: 'center' }}
           >
-            <img
+            <motion.img
               src={item.icono}
               alt={`icono-${index}`}
-              className="h-[3vw] cursor-pointer hover:opacity-80"
+              className="h-[3vw] cursor-pointer"
+              whileHover={{ scale: 1.1, opacity: 0.8 }}
+              whileTap={{ scale: 0.9 }}
               onClick={() => setSeleccionado(item)}
             />
           </div>
         ))}
       </div>
 
-      {/* Panel de contenido animado */}
+      {/* --- Panel de contenido animado --- */}
       <div
-        className="w-full bg-[#f1efe1] text-black flex flex-col items-center gap-[1.5vw] flex-grow overflow-auto"
+        // APLICAMOS ESTILOS DE LA PALETA: bg-background
+        className="w-full bg-background flex flex-col items-center gap-[1.5vw] flex-grow overflow-auto"
         style={{ paddingLeft: margenLateral, paddingRight: margenLateral, paddingTop: "2vw", paddingBottom: "2vw" }}
       >
         <AnimatePresence mode="wait">
           {seleccionado ? (
             <motion.div
-              key={seleccionado.subtitulo} // clave para animar cambio de contenido
+              key={seleccionado.subtitulo}
               initial="hidden"
               animate="visible"
               exit="exit"
               variants={variants}
               className="flex flex-col items-center"
             >
-              <h2 className="text-[1.2vw] font-bold text-center text-[#03213B]">
+              {/* APLICAMOS FUENTE Y COLOR: font-bodoni y text-primary */}
+              <h2 className="text-[1.2vw] font-bodoni text-primary text-center tracking-wider">
                 {seleccionado.subtitulo}
               </h2>
 
               <motion.img
                 src={seleccionado.imagen}
                 alt="contenido"
-                className="max-w-full h-[20vw] object-contain"
+                className="max-w-full h-[20vw] object-contain my-4" // Añadimos margen vertical
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8 }}
               />
+              {/* APLICAMOS FUENTE Y COLOR: font-miles y text-text-main */}
               <motion.p
-                className="text-center max-w-2xl text-[1vw]"
+                className="text-center max-w-2xl text-[1vw] font-miles text-text-main"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
@@ -87,7 +90,7 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "60vw" }) => {
               key="default"
               src={imagenDefault}
               alt="default"
-              className="w-full h-[30vw] object-contain"
+              className="w-full h-full max-h-[30vw] object-contain"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
