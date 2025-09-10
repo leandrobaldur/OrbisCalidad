@@ -63,11 +63,14 @@ const CarruselImagenes = ({ altura, filas, backendUrl }) => {
     obtenerImagenesDesdeBackend();
   }, []);
 
+  // Responsive height calculation
+  const responsiveHeight = `clamp(200px, ${altura}px, 600px)`;
+
   return (
     <div
       ref={contenedorRef}
-      className="w-full overflow-hidden relative"
-      style={{ height: `${altura}px`, position: 'relative' }}
+      className="w-full overflow-hidden relative bg-surface-elevated rounded-lg shadow-lg border border-stroke"
+      style={{ height: responsiveHeight, position: 'relative' }}
     >
       {imagenesDistribuidas.map((fila, i) => (
         <div
@@ -82,32 +85,27 @@ const CarruselImagenes = ({ altura, filas, backendUrl }) => {
           {fila.concat(fila).map((empresa, idx) => (
             <div
               key={`${i}-${idx}`}
+              className="flex justify-center items-center overflow-hidden p-1 md:p-2"
               style={{
                 height: '100%',
                 width: `${100 / fila.length}%`,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                overflow: 'hidden',
               }}
             >
               {empresa.imagen ? (
                 <img
-                  src={empresa.imagen || '/path/to/default-image.jpg'}  // Usar imagen predeterminada si no hay imagen
+                  src={empresa.imagen || '/path/to/default-image.jpg'}
                   alt={`Logo empresa ${empresa.id_empresa}`}
                   loading="lazy"
-                  className="object-contain"
+                  className="object-contain transition-transform duration-300 hover:scale-105 max-h-full max-w-full"
                   style={{
-                    height: '100%',
-                    width: '100%',
                     objectFit: 'contain',
                     display: 'block',
                     margin: '0 auto',
                   }}
                 />
               ) : (
-                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                  <span>No Image</span> {/* En caso de no tener imagen, muestra un texto de marcador */}
+                <div className="w-full h-full bg-surface flex items-center justify-center border border-stroke rounded-lg">
+                  <span className="font-miles text-text-muted text-xs md:text-sm">No Image</span>
                 </div>
               )}
             </div>

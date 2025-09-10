@@ -1,13 +1,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const ImagenInteractiva = ({ items, imagenDefault, ancho = "60vw" }) => {
+const ImagenInteractiva = ({ items, imagenDefault, ancho = "100%" }) => {
   const [seleccionado, setSeleccionado] = useState(null);
-
-  // La lógica para el ancho dinámico se mantiene, ya que es parte del core del componente.
-  const anchoNum = parseFloat(ancho);
-  const margenLateral = (anchoNum * 0.05) + "vw";
-  const iconoWidth = (anchoNum * 0.4) / items.length + "vw";
 
   const variants = {
     hidden: { opacity: 0, y: 20 },
@@ -17,41 +12,30 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "60vw" }) => {
 
   return (
     <div
-      className="flex flex-col"
-      style={{ width: ancho, aspectRatio: '4 / 3', marginLeft: 0 }}
+      className="flex flex-col shadow-lg rounded-lg overflow-hidden bg-surface-elevated border border-stroke"
+      style={{ width: ancho, aspectRatio: '1.618 / 1', marginLeft: 0 }}
     >
-      {/* --- Barra de iconos --- */}
-      <div
-        // APLICAMOS ESTILOS DE LA PALETA: bg-surface y border-primary
-        className="w-full flex items-center justify-between py-[0.5vw] gap-[1vw] bg-surface border-t-[1.2vh] border-b-[1.2vh] border-primary"
-        style={{
-          paddingLeft: margenLateral,
-          paddingRight: margenLateral,
-        }}
-      >
+      {/* --- Barra de iconos - Responsive padding --- */}
+      <div className="w-full flex items-center justify-between py-2 md:py-3 lg:py-4 gap-2 md:gap-4 lg:gap-6 bg-surface border-t-2 md:border-t-4 lg:border-t-6 border-b-2 md:border-b-4 lg:border-b-6 border-primary px-2 md:px-4 lg:px-6">
         {items.map((item, index) => (
           <div
             key={index}
-            style={{ flex: `1 1 ${iconoWidth}`, display: 'flex', justifyContent: 'center' }}
+            className="flex-1 flex justify-center"
           >
             <motion.img
               src={item.icono}
               alt={`icono-${index}`}
-              className="h-[3vw] cursor-pointer"
+              className="h-6 md:h-8 lg:h-10 xl:h-12 cursor-pointer transition-all duration-200 hover:brightness-110"
               whileHover={{ scale: 1.1, opacity: 0.8 }}
-              whileTap={{ scale: 0.9 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setSeleccionado(item)}
             />
           </div>
         ))}
       </div>
 
-      {/* --- Panel de contenido animado --- */}
-      <div
-        // APLICAMOS ESTILOS DE LA PALETA: bg-background
-        className="w-full bg-background flex flex-col items-center gap-[1.5vw] flex-grow overflow-auto"
-        style={{ paddingLeft: margenLateral, paddingRight: margenLateral, paddingTop: "2vw", paddingBottom: "2vw" }}
-      >
+      {/* --- Panel de contenido animado - Responsive spacing --- */}
+      <div className="w-full bg-background flex flex-col items-center gap-4 md:gap-6 lg:gap-8 flex-grow overflow-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 lg:py-8">
         <AnimatePresence mode="wait">
           {seleccionado ? (
             <motion.div
@@ -60,24 +44,24 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "60vw" }) => {
               animate="visible"
               exit="exit"
               variants={variants}
-              className="flex flex-col items-center"
+              className="flex flex-col items-center w-full"
             >
-              {/* APLICAMOS FUENTE Y COLOR: font-bodoni y text-primary */}
-              <h2 className="text-[1.2vw] font-bodoni text-primary text-center tracking-wider">
+              {/* Responsive title */}
+              <h2 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bodoni text-primary text-center tracking-wider font-bold uppercase mb-4 md:mb-6 lg:mb-8">
                 {seleccionado.subtitulo}
               </h2>
 
               <motion.img
                 src={seleccionado.imagen}
                 alt="contenido"
-                className="max-w-full h-[20vw] object-contain my-4" // Añadimos margen vertical
+                className="max-w-full h-32 md:h-40 lg:h-48 xl:h-56 object-contain my-4 md:my-6 lg:my-8 rounded-lg shadow-md border border-stroke"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8 }}
               />
-              {/* APLICAMOS FUENTE Y COLOR: font-miles y text-text-main */}
+              {/* Responsive text */}
               <motion.p
-                className="text-center max-w-2xl text-[1vw] font-miles text-text-main"
+                className="text-center max-w-2xl text-sm md:text-base lg:text-lg font-miles text-text-main leading-relaxed px-2 md:px-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
@@ -90,7 +74,7 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "60vw" }) => {
               key="default"
               src={imagenDefault}
               alt="default"
-              className="w-full h-full max-h-[30vw] object-contain"
+              className="w-full h-full max-h-48 md:max-h-64 lg:max-h-80 object-contain rounded-lg shadow-sm border border-stroke"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

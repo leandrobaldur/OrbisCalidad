@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import axios from 'axios';
-import './empresasPanel.css';
-import RegistroEmpresa from './registroEmpresa'; // Ajusta la ruta según tu estructura
+import RegistroEmpresa from './registroEmpresa';
 
 const EmpresasPanel = ({ loggedInUser }) => {
   // Estados para datos
@@ -399,261 +398,253 @@ const handleGuardarCambios = async (empresaEditada) => {
       setFormData({ ...empresa });
     }, [empresa]);
 
-      const handleChange = (e) => {
-        const { name, value } = e.target;
-        // Ignorar id_actividad y id_tamano si vienen de campos ocultos (no editables)
-        if (name === 'id_actividad' || name === 'id_tamano') return;
-        setFormData(prev => ({
-          ...prev,
-          [name]: value,
-        }));
-      };
-
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      // Ignorar id_actividad y id_tamano si vienen de campos ocultos (no editables)
+      if (name === 'id_actividad' || name === 'id_tamano') return;
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+      }));
+    };
 
     const handleSubmit = (e) => {
       e.preventDefault();
       onSave(formData);
     };
 
-    const labelStyle = { fontWeight: '700', marginBottom: '6px', display: 'block', marginTop: '15px', fontSize: '15px', color: '#222' };
-    const inputStyle = {
-      width: '100%',
-      marginBottom: '14px',
-      padding: '10px 14px',
-      fontSize: '16px',
-      borderRadius: '7px',
-      border: '1.8px solid #ccc',
-      boxSizing: 'border-box',
-      fontFamily: "'Poppins', sans-serif",
-      transition: 'border-color 0.3s ease',
-    };
-    const disabledInputStyle = {
-      ...inputStyle,
-      backgroundColor: '#f2f2f2',
-      color: '#777',
-      cursor: 'not-allowed',
-    };
-    const headingStyle = {
-      marginBottom: '35px',
-      fontWeight: '900',
-      fontSize: '26px',
-      color: '#166D3B',
-      textAlign: 'center',
-      textTransform: 'uppercase',
-      letterSpacing: '2px',
-      userSelect: 'none',
-    };
-    const buttonBaseStyle = {
-      padding: '12px 25px',
-      borderRadius: '8px',
-      fontWeight: '700',
-      fontSize: '15px',
-      cursor: 'pointer',
-      transition: 'background-color 0.3s ease',
-      border: 'none',
-      minWidth: '120px',
-    };
-    const cancelButtonStyle = {
-      ...buttonBaseStyle,
-      backgroundColor: '#bbb',
-      color: '#333',
-    };
-    const saveButtonStyle = {
-      ...buttonBaseStyle,
-      backgroundColor: '#166D3B',
-      color: '#fff',
-    };
-
     return (
-      <form onSubmit={handleSubmit} style={{ textAlign: 'left', maxWidth: '600px', margin: '0 auto', padding: '1% 20px' }}>
-        <h2 style={headingStyle}>Modo de Edición</h2>
-
-        <label style={labelStyle}>Denominación Social:</label>
-        <input
-          name="denominacion_social"
-          type="text"
-          value={formData.denominacion_social}
-          onChange={handleChange}
-          style={inputStyle}
-          required
-        />
-
-        <label style={labelStyle}>Nombre Comercial:</label>
-        <input
-          name="nombre"
-          type="text"
-          value={formData.nombre}
-          onChange={handleChange}
-          style={inputStyle}
-          required
-        />
-
-        <label style={labelStyle}>Eslogan / Visión:</label>
-        <input
-          name="slogan"
-          type="text"
-          value={formData.slogan}
-          onChange={handleChange}
-          style={inputStyle}
-        />
-
-        <label style={labelStyle}>Descripción:</label>
-        <textarea
-          name="descripcion"
-          value={formData.descripcion}
-          onChange={handleChange}
-          rows={3}
-          style={inputStyle}
-        />
-
-        {/* Rubro solo lectura */}
-
-
-        <label style={labelStyle}>Rubro (actividad):</label>
-        <input
-          type="text"
-          value={formData.rubro || ''}
-          style={disabledInputStyle}
-          disabled
-          title="Campo no editable"
-        />
-{/* Campo oculto para enviar el id_actividad */}
-        <input
-          type="hidden"
-          name="id_actividad"
-          value={formData.id_actividad || 0}
-        />
-
-        <label style={labelStyle}>Tamaño (Empleados):</label>
-        <input
-          type="text"
-          value={formData.empleados || ''}
-          style={disabledInputStyle}
-          disabled
-          title="Campo no editable"
-        />
-        {/* Campo oculto para enviar el id_tamano */}
-        <input
-          type="hidden"
-          name="id_tamano"
-          value={formData.id_tamano || 0}
-        />
-        <label style={labelStyle}>Actividad:</label>
-        <textarea
-          name="descripcion_actividad"
-          value={formData.descripcion_actividad}
-          onChange={handleChange}
-          rows={2}
-          style={inputStyle}
-        />
-
-        <label style={labelStyle}>Año Fundación:</label>
-        <input
-          name="fundacion"
-          type="number"
-          value={formData.fundacion}
-          onChange={handleChange}
-          min="1800"
-          max={new Date().getFullYear()}
-          style={inputStyle}
-        />
-
-        <label style={labelStyle}>Sede (Ciudad):</label>
-        <input
-          name="sede"
-          type="text"
-          value={formData.sede}
-          style={disabledInputStyle}
-          disabled
-          title="Campo no editable"
-          readOnly
-        />
-
-        <label style={labelStyle}>Departamento:</label>
-        <input
-          name="departamento"
-          type="text"
-          value={formData.departamento}
-          style={disabledInputStyle}
-          disabled
-          title="Campo no editable"
-          readOnly
-        />
-
-        {/* Tamaño solo lectura */}
-        <label style={labelStyle}>Tamaño (Empleados):</label>
-        <input
-          type="text"
-          value={formData.empleados || ''}
-          style={disabledInputStyle}
-          disabled
-          title="Campo no editable"
-        />
-
-        {/* ID Tamaño oculto para enviar */}
-        <input
-          type="hidden"
-          name="id_tamano"
-          value={formData.id_tamano || 0}
-        />
-
-        <label style={labelStyle}>Sitio Web:</label>
-        <input
-          name="sitioWeb"
-          type="text"
-          value={formData.sitioWeb}
-          onChange={handleChange}
-          style={inputStyle}
-        />
-
-        <label style={labelStyle}>NIT:</label>
-        <input
-          name="nit"
-          type="number"
-          value={formData.nit || ''}
-          onChange={handleChange}
-          style={inputStyle}
-          required
-        />
-
-        <label style={labelStyle}>URL (opcional):</label>
-        <input
-          name="url"
-          type="text"
-          value={formData.url || ''}
-          onChange={handleChange}
-          style={inputStyle}
-        />
-
-        <label style={labelStyle}>Misión:</label>
-        <textarea
-          name="mision"
-          value={formData.mision || ''}
-          onChange={handleChange}
-          rows={2}
-          style={inputStyle}
-        />
-
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '28px' }}>
-          <button
-            type="button"
+      <>
+        {/* Header */}
+        <div className="flex justify-between items-center p-6 border-b border-stroke">
+          <h2 className="text-2xl font-bodoni font-bold text-primary uppercase tracking-wider">
+            Modo de Edición
+          </h2>
+          <motion.button
+            className="text-3xl text-text-muted hover:text-primary transition-colors duration-200"
             onClick={onClose}
-            style={cancelButtonStyle}
-            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#999'}
-            onMouseLeave={e => e.currentTarget.style.backgroundColor = '#bbb'}
+            whileHover={{ scale: 1.2 }}
           >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            style={saveButtonStyle}
-            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#145a2a'}
-            onMouseLeave={e => e.currentTarget.style.backgroundColor = '#166D3B'}
-          >
-            Guardar
-          </button>
+            ×
+          </motion.button>
         </div>
-      </form>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Denominación Social */}
+            <div>
+              <label className="block text-sm font-bodoni font-bold text-primary mb-2">
+                Denominación Social *
+              </label>
+              <input
+                name="denominacion_social"
+                type="text"
+                value={formData.denominacion_social}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-stroke rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 font-miles"
+                required
+              />
+            </div>
+
+            {/* Nombre Comercial */}
+            <div>
+              <label className="block text-sm font-bodoni font-bold text-primary mb-2">
+                Nombre Comercial *
+              </label>
+              <input
+                name="nombre"
+                type="text"
+                value={formData.nombre}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-stroke rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 font-miles"
+                required
+              />
+            </div>
+
+            {/* Eslogan / Visión */}
+            <div>
+              <label className="block text-sm font-bodoni font-bold text-primary mb-2">
+                Eslogan / Visión
+              </label>
+              <input
+                name="slogan"
+                type="text"
+                value={formData.slogan}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-stroke rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 font-miles"
+              />
+            </div>
+
+            {/* Año Fundación */}
+            <div>
+              <label className="block text-sm font-bodoni font-bold text-primary mb-2">
+                Año Fundación
+              </label>
+              <input
+                name="fundacion"
+                type="number"
+                value={formData.fundacion}
+                onChange={handleChange}
+                min="1800"
+                max={new Date().getFullYear()}
+                className="w-full px-4 py-3 border border-stroke rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 font-miles"
+              />
+            </div>
+
+            {/* NIT */}
+            <div>
+              <label className="block text-sm font-bodoni font-bold text-primary mb-2">
+                NIT *
+              </label>
+              <input
+                name="nit"
+                type="number"
+                value={formData.nit || ''}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-stroke rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 font-miles"
+                required
+              />
+            </div>
+
+            {/* Sitio Web */}
+            <div>
+              <label className="block text-sm font-bodoni font-bold text-primary mb-2">
+                Sitio Web
+              </label>
+              <input
+                name="sitioWeb"
+                type="text"
+                value={formData.sitioWeb}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-stroke rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 font-miles"
+              />
+            </div>
+          </div>
+
+          {/* Descripción */}
+          <div>
+            <label className="block text-sm font-bodoni font-bold text-primary mb-2">
+              Descripción
+            </label>
+            <textarea
+              name="descripcion"
+              value={formData.descripcion}
+              onChange={handleChange}
+              rows={3}
+              className="w-full px-4 py-3 border border-stroke rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 font-miles"
+            />
+          </div>
+
+          {/* Actividad */}
+          <div>
+            <label className="block text-sm font-bodoni font-bold text-primary mb-2">
+              Actividad
+            </label>
+            <textarea
+              name="descripcion_actividad"
+              value={formData.descripcion_actividad}
+              onChange={handleChange}
+              rows={2}
+              className="w-full px-4 py-3 border border-stroke rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 font-miles"
+            />
+          </div>
+
+          {/* Misión */}
+          <div>
+            <label className="block text-sm font-bodoni font-bold text-primary mb-2">
+              Misión
+            </label>
+            <textarea
+              name="mision"
+              value={formData.mision || ''}
+              onChange={handleChange}
+              rows={2}
+              className="w-full px-4 py-3 border border-stroke rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 font-miles"
+            />
+          </div>
+
+          {/* Campos de solo lectura */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-bodoni font-bold text-primary mb-2">
+                Rubro (actividad)
+              </label>
+              <input
+                type="text"
+                value={formData.rubro || ''}
+                className="w-full px-4 py-3 border border-stroke rounded-lg bg-surface text-text-muted font-miles cursor-not-allowed"
+                disabled
+                title="Campo no editable"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bodoni font-bold text-primary mb-2">
+                Tamaño (Empleados)
+              </label>
+              <input
+                type="text"
+                value={formData.empleados || ''}
+                className="w-full px-4 py-3 border border-stroke rounded-lg bg-surface text-text-muted font-miles cursor-not-allowed"
+                disabled
+                title="Campo no editable"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bodoni font-bold text-primary mb-2">
+                Sede (Ciudad)
+              </label>
+              <input
+                type="text"
+                value={formData.sede}
+                className="w-full px-4 py-3 border border-stroke rounded-lg bg-surface text-text-muted font-miles cursor-not-allowed"
+                disabled
+                title="Campo no editable"
+                readOnly
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bodoni font-bold text-primary mb-2">
+                Departamento
+              </label>
+              <input
+                type="text"
+                value={formData.departamento}
+                className="w-full px-4 py-3 border border-stroke rounded-lg bg-surface text-text-muted font-miles cursor-not-allowed"
+                disabled
+                title="Campo no editable"
+                readOnly
+              />
+            </div>
+          </div>
+
+          {/* Campos ocultos */}
+          <input type="hidden" name="id_actividad" value={formData.id_actividad || 0} />
+          <input type="hidden" name="id_tamano" value={formData.id_tamano || 0} />
+
+          {/* Botones */}
+          <div className="flex justify-end gap-4 pt-6 border-t border-stroke">
+            <motion.button
+              type="button"
+              onClick={onClose}
+              className="px-8 py-3 bg-text-muted text-surface-elevated rounded-lg font-bodoni font-bold hover:bg-text-muted/80 transition-colors duration-200"
+              whileHover={{ scale: 1.05 }}
+            >
+              Cancelar
+            </motion.button>
+            <motion.button
+              type="submit"
+              className="px-8 py-3 bg-primary text-surface-elevated rounded-lg font-bodoni font-bold hover:bg-primary/90 transition-colors duration-200"
+              whileHover={{ scale: 1.05 }}
+            >
+              Guardar
+            </motion.button>
+          </div>
+        </form>
+      </>
     );
   };
 
@@ -673,115 +664,161 @@ const DetalleEmpresaModal = ({ empresa, onClose }) => {
 
   return (
     <>
-      <div className="modal-header">
-        <motion.h2 whileHover={{ scale: 1.03 }}>{empresa.nombre}</motion.h2>
+      {/* Header */}
+      <div className="flex justify-between items-center p-6 border-b border-stroke">
+        <motion.h2 
+          className="text-2xl font-bodoni font-bold text-primary"
+          whileHover={{ scale: 1.03 }}
+        >
+          {empresa.nombre}
+        </motion.h2>
         <motion.button
-          className="close-modal"
+          className="text-3xl text-text-muted hover:text-primary transition-colors duration-200"
           onClick={onClose}
           whileHover={{ scale: 1.2 }}
-          style={{ cursor: 'pointer' }}
         >
           ×
         </motion.button>
       </div>
 
-      <div className="modal-body" style={{ display: 'flex', gap: '15px' }}>
-        <div className="modal-info" style={{ flex: 1 }}>
-          <motion.h3 whileHover={{ scale: 1.03 }} {...fadeIn}>
-            {empresa.slogan}
-          </motion.h3>
+      {/* Body */}
+      <div className="p-6">
+        <div className="space-y-6">
+          {empresa.slogan && (
+            <motion.h3 
+              className="text-lg font-bodoni font-bold text-accent italic"
+              whileHover={{ scale: 1.03 }} 
+              {...fadeIn}
+            >
+              {empresa.slogan}
+            </motion.h3>
+          )}
 
-          <motion.p className="descripcion" {...fadeIn}>
-            {empresa.descripcion}
-          </motion.p>
-
-          <div className="info-detalle">
-            <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
-              <strong>Rubro:</strong> {empresa.rubro}
+          {empresa.descripcion && (
+            <motion.p 
+              className="text-text-main font-miles leading-relaxed"
+              {...fadeIn}
+            >
+              {empresa.descripcion}
             </motion.p>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <motion.div 
+              className="bg-surface p-4 rounded-lg border border-stroke"
+              {...fadeIn} 
+              whileHover={{ scale: 1.02 }}
+            >
+              <p className="font-miles text-text-main">
+                <span className="font-bold text-primary">Rubro:</span> {empresa.rubro}
+              </p>
+            </motion.div>
 
             {empresa.descripcion_actividad && (
-              <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
-                <strong>Actividad:</strong> {empresa.descripcion_actividad}
-              </motion.p>
+              <motion.div 
+                className="bg-surface p-4 rounded-lg border border-stroke"
+                {...fadeIn} 
+                whileHover={{ scale: 1.02 }}
+              >
+                <p className="font-miles text-text-main">
+                  <span className="font-bold text-primary">Actividad:</span> {empresa.descripcion_actividad}
+                </p>
+              </motion.div>
             )}
 
-            <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
-              <strong>Fundación:</strong> {empresa.fundacion}
-            </motion.p>
+            <motion.div 
+              className="bg-surface p-4 rounded-lg border border-stroke"
+              {...fadeIn} 
+              whileHover={{ scale: 1.02 }}
+            >
+              <p className="font-miles text-text-main">
+                <span className="font-bold text-primary">Fundación:</span> {empresa.fundacion}
+              </p>
+            </motion.div>
 
             {empresa.sede && (
-              <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
-                <strong>Sede:</strong> {empresa.sede}
-              </motion.p>
+              <motion.div 
+                className="bg-surface p-4 rounded-lg border border-stroke"
+                {...fadeIn} 
+                whileHover={{ scale: 1.02 }}
+              >
+                <p className="font-miles text-text-main">
+                  <span className="font-bold text-primary">Sede:</span> {empresa.sede}
+                </p>
+              </motion.div>
             )}
 
             {empresa.departamento && (
-              <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
-                <strong>Departamento:</strong> {empresa.departamento}
-              </motion.p>
+              <motion.div 
+                className="bg-surface p-4 rounded-lg border border-stroke"
+                {...fadeIn} 
+                whileHover={{ scale: 1.02 }}
+              >
+                <p className="font-miles text-text-main">
+                  <span className="font-bold text-primary">Departamento:</span> {empresa.departamento}
+                </p>
+              </motion.div>
             )}
 
             {empresa.empleados && (
-              <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
-                <strong>Tamaño:</strong> {empresa.empleados}
-              </motion.p>
+              <motion.div 
+                className="bg-surface p-4 rounded-lg border border-stroke"
+                {...fadeIn} 
+                whileHover={{ scale: 1.02 }}
+              >
+                <p className="font-miles text-text-main">
+                  <span className="font-bold text-primary">Tamaño:</span> {empresa.empleados}
+                </p>
+              </motion.div>
             )}
 
             {empresa.sitioWeb && (
-              <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
-                <strong>Sitio web:</strong> {empresa.sitioWeb}
-              </motion.p>
-            )}
-
-            {empresa.rubros?.length > 0 && (
-              <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
-                <strong>Rubros adicionales:</strong> {empresa.rubros.join(', ')}
-              </motion.p>
-            )}
-
-            {empresa.operacionesInternacionales?.length > 0 && (
-              <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
-                <strong>Operaciones internacionales:</strong> {empresa.operacionesInternacionales.join(', ')}
-              </motion.p>
-            )}
-
-            {empresa.familia?.length > 0 && (
-              <motion.p {...fadeIn} whileHover={{ scale: 1.02 }}>
-                <strong>Familiar:</strong> Sí ({empresa.familia.length} registros)
-              </motion.p>
-            )}
-
-            {empresa.premios?.length > 0 && (
-              <motion.div className="premios-section" {...fadeIn} whileHover={{ scale: 1.02 }}>
-                <strong>Premios:</strong>
-                <ul>
-                  {empresa.premios.map((premio, idx) => (
-                    <li key={idx}>
-                      {premio.entidad_otorgadora} ({premio.anio}) - {premio.descripcion} ({premio.tipo})
-                    </li>
-                  ))}
-                </ul>
+              <motion.div 
+                className="bg-surface p-4 rounded-lg border border-stroke"
+                {...fadeIn} 
+                whileHover={{ scale: 1.02 }}
+              >
+                <p className="font-miles text-text-main">
+                  <span className="font-bold text-primary">Sitio web:</span> {empresa.sitioWeb}
+                </p>
               </motion.div>
             )}
           </div>
+
+          {empresa.premios?.length > 0 && (
+            <motion.div 
+              className="bg-surface p-4 rounded-lg border border-stroke"
+              {...fadeIn} 
+              whileHover={{ scale: 1.02 }}
+            >
+              <h4 className="font-bodoni font-bold text-primary mb-3">Premios</h4>
+              <ul className="space-y-2">
+                {empresa.premios.map((premio, idx) => (
+                  <li key={idx} className="font-miles text-text-main text-sm">
+                    <span className="font-bold">{premio.entidad_otorgadora}</span> ({premio.anio}) - {premio.descripcion} ({premio.tipo})
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          )}
         </div>
       </div>
 
-      <div className="modal-footer" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+      {/* Footer */}
+      <div className="flex justify-end gap-3 p-6 border-t border-stroke">
         {empresa.sitioWeb && (
           <motion.button
-            className="btn-visitar"
+            className="bg-accent text-surface-elevated px-6 py-3 rounded-lg font-bodoni font-bold hover:bg-accent/90 transition-colors duration-200"
             onClick={visitarSitio}
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.05 }}
           >
             Visitar sitio web
           </motion.button>
         )}
         <motion.button
-          className="btn-contactar"
+          className="bg-primary text-surface-elevated px-6 py-3 rounded-lg font-bodoni font-bold hover:bg-primary/90 transition-colors duration-200"
           onClick={() => window.location.href = `mailto:info@desconocido.com`}
-          whileHover={{ scale: 1.1 }}
+          whileHover={{ scale: 1.05 }}
         >
           Contactar
         </motion.button>
@@ -795,42 +832,44 @@ const DetalleEmpresaModal = ({ empresa, onClose }) => {
     return empresas.map((e, i) => (
       <motion.div
         key={e.id}
-        className="empresa-card"
+        className="relative bg-surface-elevated rounded-lg shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden group"
         onClick={() => openModal(e)}
-        whileHover={{ scale: 1.05 }}
+        whileHover={{ scale: 1.02 }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: i * 0.1 }}
-        style={{ position: 'relative' }}
       >
-        <div className="empresa-img-contenedor">
-          
-          <div className="empresa-nombre-default">{e.nombre}</div>
-          <div className="empresa-overlay">
-            <div className="nombre">{e.nombre}</div>
-            <div className="rubro">{e.rubro}</div>
-            <div className="slogan">{e.slogan}</div>
+        <div className="relative h-48 bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
+          {/* Nombre por defecto */}
+          <div className="absolute inset-0 flex items-center justify-center z-10 group-hover:opacity-0 transition-opacity duration-300">
+            <div className="bg-surface-elevated/90 text-primary px-4 py-2 rounded-lg font-bodoni font-bold text-center text-sm lg:text-base">
+              {e.nombre}
+            </div>
           </div>
+          
+          {/* Overlay con información */}
+          <div className="absolute inset-0 bg-primary/90 flex flex-col items-center justify-center p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+            <h3 className="text-surface-elevated font-bodoni font-bold text-lg mb-2 text-center">
+              {e.nombre}
+            </h3>
+            <p className="text-surface-elevated/90 font-miles text-sm mb-1 text-center">
+              {e.rubro}
+            </p>
+            {e.slogan && (
+              <p className="text-surface-elevated/80 font-miles text-xs italic text-center">
+                {e.slogan}
+              </p>
+            )}
+          </div>
+          
+          {/* Botón de editar */}
           {puedeEditar && (
             <button
               onClick={(ev) => {
                 ev.stopPropagation();
                 openModalEditable(e);
               }}
-              style={{
-                position: 'absolute',
-                top: '8px',
-                right: '8px',
-                backgroundColor: 'rgba(250, 242, 242, 0.3)', // gris claro con 10% opacidad
-
-                border: 'none',
-                borderRadius: '4px',
-                color: 'white',
-                padding: '5px 10px',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                fontSize: '14px',
-              }}
+              className="absolute top-2 right-2 bg-surface-elevated/20 backdrop-blur-sm border border-surface-elevated/30 text-surface-elevated px-3 py-1 rounded-md font-miles font-bold text-xs hover:bg-surface-elevated/30 transition-colors duration-200 z-30"
               title="Editar empresa"
             >
               Editar
@@ -842,106 +881,114 @@ const DetalleEmpresaModal = ({ empresa, onClose }) => {
   };
 
   if (loading) {
-    return <div className="cargando">Cargando empresas...</div>;
+    return (
+      <div className="w-full min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-text-main font-miles text-lg">Cargando empresas...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <motion.div className="empresas-wrapper" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 } }>
+    <motion.div 
+      className="w-full min-h-screen bg-background" 
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }} 
+      transition={{ duration: 0.5 }}
+    >
       {/* BARRA SUPERIOR */}
-      <div className="barra-superior">
-
-
-        <div className="barra-centro">
-          <input
-            type="text"
-            placeholder="Buscar empresa..."
-            value={busqueda}
-            onChange={e => setBusqueda(e.target.value)}
-          />
-          <span className="icono-busqueda">🔍</span>
-        </div>
-        <div className="barra-derecha">
-          
+      <div className="w-full bg-primary px-4 md:px-8 lg:px-16 xl:px-32 py-4">
+        <div className="max-w-[1440px] mx-auto">
+          <div className="flex items-center justify-center">
+            <div className="relative w-full max-w-md">
+              <input
+                type="text"
+                placeholder="Buscar empresa..."
+                value={busqueda}
+                onChange={e => setBusqueda(e.target.value)}
+                className="w-full px-4 py-3 pl-12 pr-4 bg-surface-elevated border border-stroke rounded-full text-text-main placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 font-miles"
+              />
+              <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-accent text-xl">🔍</span>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* PANEL PRINCIPAL */}
-<div className="empresas-panel-container">
-  <div className="imagen-lateral">
-    <img 
-      src="/media/empresasPage/bolivia.jpg" 
-      alt="Imagen lateral" 
-      style={{ border: 'none', outline: 'none' }} 
-    />
-    { loggedInUser?.id_rol === 1 && (
-      <>
-        <button
-          className="boton-crear-empresa"
-          onClick={() => setShowRegistroModal(true)}
-          title="Crear nueva empresa"
-          style={{
-            marginTop: '10px',
-            backgroundColor: '#053015',
-            color: 'white',
-            borderRadius: '6px',
-            padding: '10px 20px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            border: 'none',
-          }}
-        >
-          Añadir empresa
-        </button>
+      <div className="w-full px-4 md:px-8 lg:px-16 xl:px-32 py-8">
+        <div className="max-w-[1440px] mx-auto">
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* IMAGEN LATERAL */}
+            <div className="w-full lg:w-[23.6%] flex flex-col items-center">
+              <div className="w-full max-w-[300px] lg:max-w-none">
+                <img 
+                  src="/media/empresasPage/bolivia.jpg" 
+                  alt="Imagen lateral" 
+                  className="w-full h-auto rounded-lg border-2 border-primary shadow-lg"
+                />
+                {loggedInUser?.id_rol === 1 && (
+                  <>
+                    <button
+                      onClick={() => setShowRegistroModal(true)}
+                      title="Crear nueva empresa"
+                      className="w-full mt-4 bg-primary text-surface-elevated px-6 py-3 rounded-lg font-bodoni font-bold hover:bg-primary/90 transition-colors duration-200 shadow-md hover:shadow-lg"
+                    >
+                      Añadir empresa
+                    </button>
 
-        {showRegistroModal && (
-          <div 
-            className="modal-overlay" 
-            onClick={() => setShowRegistroModal(false)}
-            style={{
-              position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              display: 'flex', justifyContent: 'center', alignItems: 'center',
-              zIndex: 9999,
-            }}
-          >
-            <div 
-              className="modal-content" 
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                backgroundColor: 'white',
-                borderRadius: '8px',
-                maxWidth: '600px',
-                width: '90%',
-                maxHeight: '90vh',
-                overflowY: 'auto',
-                padding: '20px',
-              }}
-            >
-              <RegistroEmpresa 
-                onRegistroExitoso={() => {
-                  setShowRegistroModal(false);
-                  recargarEmpresas();
-                }}
-              />
+                    {showRegistroModal && (
+                      <div 
+                        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+                        onClick={() => setShowRegistroModal(false)}
+                      >
+                        <div 
+                          className="bg-surface-elevated rounded-lg max-w-2xl w-[90%] max-h-[90vh] overflow-y-auto p-6 shadow-xl"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <RegistroEmpresa 
+                            onRegistroExitoso={() => {
+                              setShowRegistroModal(false);
+                              recargarEmpresas();
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* PANEL DE EMPRESAS */}
+            <div className="w-full lg:w-[76.4%]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {renderEmpresas()}
+              </div>
             </div>
           </div>
-        )}
-      </>
-    )}
-  </div>
-
-  <div className="empresas-panel">
-    <div className="empresas-grid">
-      {renderEmpresas()}
-    </div>
-  </div>
-</div>
+        </div>
+      </div>
 
       {/* MODAL */}
       <AnimatePresence>
         {showModal && selectedEmpresa && (
-          <motion.div className="modal-overlay" onClick={closeModal} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <motion.div className="modal-content" onClick={e => e.stopPropagation()} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }} transition={{ duration: 0.3 }}>
+          <motion.div 
+            className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" 
+            onClick={closeModal} 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }}
+          >
+            <motion.div 
+              className="bg-surface-elevated rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl" 
+              onClick={e => e.stopPropagation()} 
+              initial={{ scale: 0.8, opacity: 0 }} 
+              animate={{ scale: 1, opacity: 1 }} 
+              exit={{ scale: 0.8, opacity: 0 }} 
+              transition={{ duration: 0.3 }}
+            >
               {modalEditable ? (
                 <EditableEmpresaModal
                   empresa={selectedEmpresa}

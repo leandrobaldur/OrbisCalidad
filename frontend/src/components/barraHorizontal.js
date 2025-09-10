@@ -2,37 +2,41 @@ import React from "react";
 
 const BarraHorizontal = ({
   texto,
-  height = "10vh",
-  margenHorizontal = "10vw",
+  height = "clamp(0.3vh, 0.8vh, 1vh)", // Aún más delgada
+  margenHorizontal = "clamp(3vw, 4vw, 4vw)", // Márgenes más pequeños
   imagen,
 }) => {
-  // Las propiedades dinámicas como la imagen de fondo, el alto del contenedor
-  // y el ancho de las barras laterales se manejan con objetos de estilo.
-  // Esta es la práctica recomendada cuando se trabaja con valores que vienen de props.
   const containerStyle = { height };
 
   const imageStyle = {
     backgroundImage: `url(${imagen})`,
     width: margenHorizontal,
+    margin: 0,
   };
 
   return (
-    <div style={containerStyle} className="w-full flex items-center overflow-hidden">
+    <div 
+      style={{
+        ...containerStyle,
+        borderTopWidth: '0.1px',
+        borderBottomWidth: '0.1px',
+        padding: 0,
+        margin: 0
+      }}
+      className="w-full flex items-center overflow-hidden bg-surface border-stroke shadow-sm"
+    >
       <div
         style={imageStyle}
-        // Clases de Tailwind para el estilo y repetición de la imagen
-        className="bg-repeat-x bg-center h-[60%] flex-shrink-0 bg-[length:auto_100%]"
+        className="bg-repeat-x bg-center h-[40%] flex-shrink-0 bg-[length:auto_100%] opacity-50"
       />
       <div
-        // Aplicamos la fuente Bodoni, el color primario y un espaciado de letras amplio
-        // para lograr un efecto de título elegante y minimalista.
-        className="flex-grow h-full flex items-center justify-center font-bodoni text-primary text-lg tracking-[0.35em] transform -translate-y-[2%]"
+        className="flex-grow h-full flex items-center justify-center font-bodoni text-black text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] tracking-wider transform -translate-y-[1%] font-bold uppercase px-0"
       >
         {texto}
       </div>
       <div
         style={imageStyle}
-        className="bg-repeat-x bg-center h-[60%] flex-shrink-0 bg-[length:auto_100%]"
+        className="bg-repeat-x bg-center h-[40%] flex-shrink-0 bg-[length:auto_100%] opacity-50"
       />
     </div>
   );

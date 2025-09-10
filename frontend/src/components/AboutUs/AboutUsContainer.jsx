@@ -3,15 +3,19 @@ import NosotrosSection from "./NosotrosSection";
 import ImageSection from "./ImageSection";
 import ObjetivoSection from "./ObjetivoSection";
 import MisionSection from "./MisionSection";
-import PersonalSection from "./PersonalSection"; // Importa el componente del carrusel
+import PersonalSection from "./PersonalSection";
 
 const AboutUsContainer = () => {
   return (
-    <main style={{ backgroundColor: "#f8f2e7", color: "#003E73", padding: "3rem 1rem" }}>
-      <NosotrosSection />
-      <ObjetivoSection />
-      <MisionSection />
-      <PersonalSection /> {/* Aquí se muestra el carrusel con las cards */}
+    <main className="w-full min-h-screen bg-background text-text-main">
+      <div className="w-full px-4 md:px-8 lg:px-16 xl:px-32 py-8">
+        <div className="max-w-[1440px] mx-auto space-y-16">
+          <NosotrosSection />
+          <ObjetivoSection />
+          <MisionSection />
+          <PersonalSection />
+        </div>
+      </div>
     </main>
   );
 };

@@ -8,85 +8,81 @@ const ContenedorLateral = ({
   ovaloRedondez,
   cuadroRedondez,
 }) => {
-  // Se mantiene la lógica original para calcular el tamaño del óvalo
-  const ovaloAncho = `calc(${ancho} * 0.4)`; // 40% del ancho del contenedor
-  const ovaloAlto = `calc(${alto} * 0.10)`;  // 10% del alto del contenedor
+  // Responsive oval dimensions
+  const ovaloAncho = "clamp(200px, 40%, 300px)";
+  const ovaloAlto = "clamp(40px, 8vh, 60px)";
 
   return (
     <div
-      // Se aplican las clases de Tailwind para el color de fondo y la sombra.
-      // Los estilos dinámicos se mantienen en el objeto `style`.
-      className="relative flex flex-col items-center justify-start z-10 shadow-xl ml-auto"
+      className="relative flex flex-col items-center justify-start z-10 ml-auto bg-surface-elevated border border-stroke"
       style={{
         width: ancho,
         height: alto,
-        // APLICACIÓN DE ESTILOS: Se usa el color 'primary' de tu paleta para el borde.
-        borderColor: '#072D42', // Usamos el valor directo porque Tailwind no puede interpretar `border-primary` con un grosor dinámico en `style`.
-        borderWidth: '0.4vh',
+        borderColor: '#072D42', // Color primary (azul marino) de la paleta
+        borderWidth: 'clamp(2px, 0.618vh, 4px)',
         borderStyle: 'solid',
         borderRadius: `${cuadroRedondez} 0 0 ${cuadroRedondez}`,
-        marginTop: "5vh",
+        marginTop: "clamp(2rem, 6.18vh, 4rem)",
       }}
     >
       {/* Contenedor padre que incluye el óvalo y el contenido */}
       <div className="relative w-full h-full flex flex-col items-center justify-start">
-        {/* Subtítulo en óvalo */}
+        {/* Subtítulo en óvalo - Ajustado para mejor ajuste del texto */}
         <div
-          // APLICACIÓN DE ESTILOS: Clases para fondo, sombra y layout.
-          className="absolute bg-surface shadow px-1 py-2 flex items-center justify-center"
+          className="absolute bg-surface-elevated shadow-md px-3 md:px-6 lg:px-8 py-2 md:py-3 flex items-center justify-center border border-stroke"
           style={{
-            // Se mantiene la lógica de posicionamiento y tamaño original.
-            letterSpacing: "0.12rem",
-            fontSize: "clamp(1rem, 2.5vw, 1.854rem)",
+            letterSpacing: "clamp(0.05rem, 0.1rem, 0.15rem)", // Reducido para mejor ajuste
+            fontSize: "clamp(0.75rem, 1vw, 1.25rem)", // Reducido para que entre mejor
             borderRadius: ovaloRedondez,
-            left: "35%",
-            top: "-5%",
+            left: "50%",
+            top: "clamp(-10%, -8%, -5%)", // Ajustado para mejor posicionamiento
             transform: "translateX(-50%)",
-            maxWidth: ovaloAncho,
-            width: "100%",
-            height: ovaloAlto,
-            // APLICACIÓN DE ESTILOS: Se usa el color 'stroke' para el borde.
-            borderColor: '#BFAEA4',
-            borderWidth: '0.2vh',
+            maxWidth: "clamp(250px, 45%, 350px)", // Aumentado para acomodar el texto
+            width: "auto",
+            minWidth: "clamp(220px, 40%, 300px)", // Aumentado
+            height: "clamp(45px, 9vh, 65px)", // Aumentado para acomodar el texto
+            borderColor: '#E5E7EB',
+            borderWidth: 'clamp(1px, 0.1618vh, 2px)',
             borderStyle: 'solid',
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
           }}
         >
-          {/* APLICACIÓN DE ESTILOS: Se aplica la fuente Bodoni y el color primario. */}
-          <span className="font-bodoni text-primary">
+          <span className="font-bodoni text-black font-bold text-center leading-tight">
             {subtitulo}
           </span>
         </div>
 
-        {/* Contenido dentro del contenedor */}
+        {/* Contenido dentro del contenedor - Espaciado áureo ajustado */}
         <div
           className="w-full text-sm text-center"
           style={{
-            marginTop: "5vw",
+            marginTop: "clamp(3.5rem, 9vh, 6rem)", // Aumentado para compensar el óvalo más grande
           }}
         >
-          {/* Contenedor de la imagen */}
+          {/* Contenedor de la imagen - Dimensiones áureas con márgenes */}
           <div
+            className="flex justify-center items-center relative"
             style={{
-              width: "40vw",
-              height: "50vw",
-              display: "flex",
-              transform: "translate(40%, -10%)",
+              width: "clamp(200px, 55%, 380px)", // Reducido para dar espacio a márgenes
+              height: "clamp(140px, 35vh, 280px)", // Reducido para dar espacio a márgenes
+              margin: "0 auto",
+              padding: "clamp(1rem, 2.5vw, 2rem)", // Márgenes internos
               overflow: "hidden",
+              borderRadius: ovaloRedondez,
             }}
           >
             <img
               src={imagen}
               alt="contenido dinámico"
-              className="object-contain" // object-contain es suficiente, el resto se controla en `style`
+              className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
               style={{
-                width: "100%",
-                height: "100%",
                 borderRadius: ovaloRedondez,
                 display: "block",
-                margin: "0 auto",
+                maxWidth: "100%",
+                maxHeight: "100%",
+                objectFit: "cover",
               }}
             />
           </div>

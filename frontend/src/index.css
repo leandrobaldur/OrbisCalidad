@@ -32,7 +32,7 @@
 
 @layer base {
   body {
-    /* Aplicamos los colores con @apply */
+    /* APLICACIÓN DE LA PALETA AJUSTADA - FONDO CASI BLANCO */
     @apply bg-background text-text-main;
     
     /* CORRECCIÓN: Usamos la propiedad CSS estándar para la fuente base. 
@@ -43,24 +43,30 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    /* Aplicamos el color con @apply */
-    @apply text-primary;
+    /* APLICACIÓN DE LA PALETA OFICIAL: Azul marino para títulos */
+    @apply text-primary font-bold;
     
     /* CORRECCIÓN: Usamos la propiedad CSS estándar para la fuente de los títulos. */
     font-family: 'Bodoni', serif;
   }
 
   button {
-    /* Aplicamos todos los estilos de utilidad excepto la fuente con @apply */
-    @apply bg-accent text-primary px-4 py-2 rounded-lg transition-transform duration-200 ease-in-out hover:scale-105 disabled:opacity-50;
+    /* BOTONES CON LA PALETA OFICIAL */
+    @apply bg-accent text-primary px-6 py-3 rounded-lg font-bold shadow-sm transition-all duration-200 ease-in-out hover:shadow-md disabled:opacity-50;
     
     /* CORRECCIÓN: Usamos la propiedad CSS estándar para la fuente de los botones. */
     font-family: 'Bodoni', serif;
   }
 
   a {
-    /* Estilo base para los enlaces */
-    @apply text-accent hover:underline;
+    /* ENLACES CON LA PALETA OFICIAL */
+    @apply text-primary hover:text-accent transition-colors duration-200 font-medium;
+    
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
   }
 }
 
@@ -72,5 +78,26 @@
 
 .flip-card {
   perspective: 1000px;
+}
+
+/* Clases para transformaciones 3D */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-0 {
+  transform: rotateY(0deg);
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
 }
 

@@ -111,93 +111,113 @@ const PersonalSection = () => {
   };
 
   return (
-    <section style={{ textAlign: "center", padding: "1rem" }}>
-      <h2
+    <motion.section 
+      className="text-center"
+      style={{
+        padding: "clamp(1rem, 3vh, 1.8rem) 0",
+        margin: "clamp(1.5rem, 4vh, 2rem) auto"
+      }}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+    >
+      <motion.h2
+        className="font-bodoni font-bold select-none mb-8"
         style={{
-          fontSize: "2rem",          // más grande
-          fontWeight: "700",
-          color: "#000000",          // negro
-          marginBottom: "2rem",
-          userSelect: "none",
+          fontSize: "clamp(1rem, 2.8vw, 1.5rem)",
+          color: "#072D42",
+          lineHeight: "1.2",
+          letterSpacing: "clamp(0.01rem, 0.03rem, 0.05rem)"
+        }}
+        initial={{ opacity: 0, y: -20, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+        whileHover={{ 
+          scale: 1.02,
+          transition: { duration: 0.2 }
         }}
       >
         LAS PERSONAS Y EQUIPOS QUE HICIERON POSIBLE
-      </h2>
+      </motion.h2>
 
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "0.8rem",
-          flexWrap: "nowrap",
-          overflow: "hidden",
-          maxWidth: "1600px",
-          margin: "0 auto",
-          padding: "0 0.5rem",
-        }}
+      <motion.div 
+        className="flex items-center justify-center gap-3 flex-nowrap max-w-5xl mx-auto px-3"
+        style={{ overflow: "visible" }}
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
         <motion.button
-          whileTap={{ scale: 0.9 }}
+          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.05 }}
           onClick={handlePrev}
+          className={`rounded-full text-xl border-none cursor-pointer select-none flex-shrink-0 transition-all duration-200 shadow-md hover:shadow-lg ${
+            index === 0 
+              ? 'bg-text-muted text-surface-elevated opacity-30 pointer-events-none' 
+              : 'bg-primary text-surface-elevated hover:bg-primary/90'
+          }`}
           style={{
-            backgroundColor: "#154734",
-            color: "#e4d0a9",
-            width: 45,
-            height: 45,
-            borderRadius: "50%",
-            fontSize: "1.7rem",
-            border: "none",
-            cursor: "pointer",
-            userSelect: "none",
-            flexShrink: 0,
-            marginRight: 5,
-            opacity: index === 0 ? 0.3 : 1,
-            pointerEvents: index === 0 ? "none" : "auto",
+            width: "clamp(2rem, 3.5vw, 2.5rem)",
+            height: "clamp(2rem, 3.5vw, 2.5rem)"
           }}
           aria-label="Anterior"
         >
           ◀
         </motion.button>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "0.5rem",
-            overflow: "hidden",
-            flexGrow: 1,
-            justifyContent: "center",
+        <motion.div 
+          className="flex gap-3 flex-grow justify-center"
+          style={{ 
+            overflow: "visible",
+            padding: "1rem 0" // Espacio para que las cartas no se corten al hacer hover
           }}
+          initial={{ opacity: 0, x: 15 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
           {visibleCards.map((card, i) => (
-            <TestimonialCard key={index + i} card={card} />
+            <motion.div
+              key={index + i}
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ 
+                duration: 0.4, 
+                delay: 0.4 + i * 0.05,
+                ease: [0.25, 0.46, 0.45, 0.94]
+              }}
+              whileHover={{ 
+                scale: 1.02,
+                y: -5,
+                transition: { duration: 0.2 }
+              }}
+              style={{
+                zIndex: 1 // Asegurar que las cartas hovered estén por encima
+              }}
+            >
+              <TestimonialCard card={card} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         <motion.button
-          whileTap={{ scale: 0.9 }}
+          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.05 }}
           onClick={handleNext}
+          className={`rounded-full text-xl border-none cursor-pointer select-none flex-shrink-0 transition-all duration-200 shadow-md hover:shadow-lg ${
+            index === lastIndex 
+              ? 'bg-text-muted text-surface-elevated opacity-30 pointer-events-none' 
+              : 'bg-primary text-surface-elevated hover:bg-primary/90'
+          }`}
           style={{
-            backgroundColor: "#154734",
-            color: "#e4d0a9",
-            width: 45,
-            height: 45,
-            borderRadius: "50%",
-            fontSize: "1.7rem",
-            border: "none",
-            cursor: "pointer",
-            userSelect: "none",
-            flexShrink: 0,
-            marginLeft: 5,
-            opacity: index === lastIndex ? 0.3 : 1,
-            pointerEvents: index === lastIndex ? "none" : "auto",
+            width: "clamp(2rem, 3.5vw, 2.5rem)",
+            height: "clamp(2rem, 3.5vw, 2.5rem)"
           }}
           aria-label="Siguiente"
         >
           ▶
         </motion.button>
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   );
 };
 

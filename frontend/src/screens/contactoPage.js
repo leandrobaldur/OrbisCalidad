@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 
 const ContactoPage = () => {
   const items = [
@@ -7,7 +8,7 @@ const ContactoPage = () => {
       alt: 'Universidad Católica Boliviana La Paz',
       text: 'Universidad Católica Boliviana\nLA PAZ',
       link: 'https://www.ucb.edu.bo/',
-      hoverImg: '/media/contactoPage/UCB.png', // Imagen extra para hover
+      hoverImg: '/media/contactoPage/UCB.png',
     },
     {
       src: '/media/contactoPage/SIS - H.png',
@@ -28,166 +29,103 @@ const ContactoPage = () => {
   const [hoverIndex, setHoverIndex] = useState(null);
 
   return (
-    <main style={styles.page}>
-      <header style={styles.header}>
-        <div style={styles.line} />
-        <h2 style={styles.subtitle}>EMPRESAS QUE FORJARON EL PAIS</h2>
-        <div style={styles.line} />
-      </header>
+    <main className="w-full min-h-screen bg-background">
+      <div className="w-full px-4 md:px-8 lg:px-16 xl:px-32 py-8">
+        <div className="max-w-[1440px] mx-auto">
+          {/* Header con líneas decorativas */}
+          <motion.header 
+            className="flex items-center gap-8 mb-16 justify-center"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="flex-1 h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-30"></div>
+            <h2 className="text-lg md:text-xl lg:text-2xl font-bodoni font-bold text-primary uppercase tracking-wider whitespace-nowrap">
+              EMPRESAS QUE FORJARON EL PAÍS
+            </h2>
+            <div className="flex-1 h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-30"></div>
+          </motion.header>
 
-      <section style={styles.contentBox}>
-        <h1 style={styles.title}>DEPARTAMENTOS ANHIDADOS</h1>
-        <p style={styles.description}>
-          Explora las últimas noticias, actualizaciones y promociones disponibles en nuestra plataforma.
-        </p>
-
-        <div style={styles.grid}>
-          {items.map(({ src, alt, text, link, hoverImg }, idx) => (
-            <a
-              href={link}
-              target="_blank"
-              rel="noopener noreferrer"
-              key={idx}
-              style={styles.card}
-              onMouseEnter={() => setHoverIndex(idx)}
-              onMouseLeave={() => setHoverIndex(null)}
+          {/* Contenido principal */}
+          <motion.section 
+            className="bg-surface-elevated p-8 md:p-12 lg:p-16 xl:p-20 rounded-3xl shadow-2xl text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <motion.h1 
+              className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bodoni font-black text-primary mb-8"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <div style={{ position: 'relative' }}>
-                <img src={src} alt={alt} style={styles.image} />
-                {hoverIndex === idx && (
-                  <div style={styles.hoverCard}>
-                    <img src={hoverImg} alt={`Detalle de ${alt}`} style={styles.hoverImage} />
+              DEPARTAMENTOS ANHIDADOS
+            </motion.h1>
+            
+            <motion.p 
+              className="text-lg md:text-xl lg:text-2xl font-miles text-text-main leading-relaxed max-w-4xl mx-auto mb-16"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              Explora las últimas noticias, actualizaciones y promociones disponibles en nuestra plataforma.
+            </motion.p>
+
+            {/* Grid de tarjetas */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 justify-center">
+              {items.map(({ src, alt, text, link, hoverImg }, idx) => (
+                <motion.a
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key={idx}
+                  className="group relative bg-surface rounded-3xl p-8 lg:p-12 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer min-h-[400px] flex flex-col items-center justify-center text-decoration-none"
+                  onMouseEnter={() => setHoverIndex(idx)}
+                  onMouseLeave={() => setHoverIndex(null)}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.8 + idx * 0.2 }}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <div className="relative mb-8">
+                    <img 
+                      src={src} 
+                      alt={alt} 
+                      className="w-32 h-32 md:w-40 md:h-40 lg:w-44 lg:h-44 object-contain transition-transform duration-300 group-hover:scale-105" 
+                    />
+                    {hoverIndex === idx && (
+                      <motion.div 
+                        className="absolute top-1/2 left-full transform -translate-y-1/2 ml-4 bg-surface-elevated p-4 rounded-2xl shadow-xl z-10 w-48 h-48 flex items-center justify-center"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <img 
+                          src={hoverImg} 
+                          alt={`Detalle de ${alt}`} 
+                          className="max-w-full max-h-full object-contain" 
+                        />
+                      </motion.div>
+                    )}
                   </div>
-                )}
-              </div>
-              <p style={styles.cardText}>
-                {text.split('\n').map((line, i) => (
-                  <React.Fragment key={i}>
-                    {line}
-                    <br />
-                  </React.Fragment>
-                ))}
-              </p>
-            </a>
-          ))}
+                  
+                  <p className="text-lg md:text-xl lg:text-2xl font-bodoni font-bold text-primary text-center leading-tight whitespace-pre-line">
+                    {text.split('\n').map((line, i) => (
+                      <React.Fragment key={i}>
+                        {line}
+                        <br />
+                      </React.Fragment>
+                    ))}
+                  </p>
+                </motion.a>
+              ))}
+            </div>
+          </motion.section>
         </div>
-      </section>
+      </div>
     </main>
   );
-};
-
-const styles = {
-  page: {
-    backgroundColor: '#F5EEE2',
-    minHeight: '100vh',
-    padding: '8rem 6rem',
-    fontFamily: "'Montserrat', sans-serif",
-    color: '#032F27',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '2rem',
-    marginBottom: '4rem',
-    width: '100%',
-    maxWidth: 1400,
-    justifyContent: 'center',
-  },
-  line: {
-    flex: 1,
-    height: 5,
-    backgroundImage:
-      'repeating-linear-gradient(90deg, #032F27, #032F27 20px, transparent 20px, transparent 40px)',
-    borderRadius: 3,
-  },
-  subtitle: {
-    fontSize: '1.5rem',
-    fontWeight: '700',
-    letterSpacing: '0.5em',
-    textTransform: 'uppercase',
-    color: '#032F27',
-    whiteSpace: 'nowrap',
-  },
-  contentBox: {
-    backgroundColor: '#FDF8F0',
-    padding: '6rem 8rem',
-    borderRadius: '40px',
-    boxShadow: '0 18px 36px rgba(3,47,39,0.2)',
-    maxWidth: 1400,
-    textAlign: 'center',
-  },
-  title: {
-    fontSize: '4rem',
-    fontWeight: '900',
-    marginBottom: '3rem',
-  },
-  description: {
-    fontSize: '2rem',
-    lineHeight: 2,
-    maxWidth: 900,
-    margin: '0 auto 5rem',
-    color: '#032F27',
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-    gap: '4rem',
-    justifyContent: 'center',
-  },
-  card: {
-    backgroundColor: '#F5EEE2',
-    borderRadius: '28px',
-    padding: '4rem',
-    boxShadow: '0 10px 40px rgba(3,47,39,0.25)',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    textDecoration: 'none',
-    cursor: 'pointer',
-    userSelect: 'none',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-    color: '#032F27',
-    minHeight: 360,
-    justifyContent: 'center',
-    position: 'relative',
-  },
-  image: {
-    width: '180px',
-    height: '180px',
-    objectFit: 'contain',
-    marginBottom: '2rem',
-  },
-  cardText: {
-    fontSize: '1.5rem',
-    fontWeight: '800',
-    color: '#032F27',
-    whiteSpace: 'pre-line',
-    textAlign: 'center',
-  },
-  hoverCard: {
-    position: 'absolute',
-    top: '50%',
-    left: '110%',
-    transform: 'translateY(-50%)',
-    backgroundColor: '#FDF8F0',
-    padding: '1rem',
-    borderRadius: '20px',
-    boxShadow: '0 6px 20px rgba(3,47,39,0.2)',
-    zIndex: 10,
-    width: '220px',
-    height: '220px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  hoverImage: {
-    maxWidth: '100%',
-    maxHeight: '100%',
-    objectFit: 'contain',
-  },
 };
 
 export default ContactoPage;

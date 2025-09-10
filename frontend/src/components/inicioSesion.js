@@ -2,41 +2,24 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // --- Importa tu logo aquí ---
-import logo from '../assets/logo.png';// Asegúrate de que la ruta sea correcta
+import logo from '../assets/logo.png';
 
-// --- fácilmente AJUSTABLES ---
-const USER_ICON_ACTUAL_SIZE = "100px"; // Icono del logo más grande
-const TITLE_FONT_SIZE = "40px"; // Título más grande y prominente
-const SMALL_ICON_SVG_SIZE = "26px"; // Iconos de ojo un poco más grandes
-const LABEL_FONT_SIZE = "19px"; // Etiquetas de input más grandes
-const INPUT_FONT_SIZE = "20px"; // Texto dentro del input más grande
-const BUTTON_FONT_SIZE = "24px"; // Texto del botón más grande
-const MESSAGE_FONT_SIZE = "18px"; // Mensajes grandes
-
-// --- AJUSTES ESPECÍFICOS ---
-const MODAL_WIDTH = "530px"; // Ancho del modal reducido (550px - 20px)
-const MODAL_PADDING_VERTICAL = "40px"; // Ajuste para reducir la altura (originalmente 50px)
-const MODAL_PADDING_HORIZONTAL = "40px"; // Ajuste para reducir el ancho (originalmente 50px)
-
-const CLOSE_BUTTON_FONT_SIZE = "40px"; // Tamaño de la "X" aumentado
-// --- FIN DE AJUSTABLES ---
-
-// --- PALETA DE COLORES (sin cambios, ya que se ve bien con la imagen) ---
-const PALETTE = {
-  BACKGROUND_MODAL: "#F6EEE3", // Beige claro del fondo
-  PRIMARY_ACCENT_BLUE: "#2F4F8B", // Azul oscuro fuerte
-  SECONDARY_ACCENT_GOLD: "#E1B85D", // Dorado (para foco)
-  SUCCESS_GREEN: "#166D3B", // Verde oscuro para mensajes de éxito
-  TEXT_DARK: "#25384F", // Un gris azulado oscuro para el texto principal
-  TEXT_MUTED: "#78909C", // Gris más suave para detalles
-  ERROR_RED: "#E57373", // Rojo estándar para errores
-  WHITE: "#FFFFFF",
-  CONTOUR_COLOR: "#000000", // Color del contorno negro
-  BUTTON_HOVER_BLUE: "#4A6FA8", // Un azul ligeramente más claro para el hover del botón
+// --- TAMAÑOS RESPONSIVOS CON PROPORCIONES ÁUREAS (MÁS PEQUEÑOS) ---
+const SIZES = {
+  LOGO_SIZE: "clamp(60px, 8vw, 90px)", // Reducido de 12vw a 8vw
+  TITLE_SIZE: "clamp(1.4rem, 3vw, 1.8rem)", // Reducido de 4vw a 3vw
+  LABEL_SIZE: "clamp(0.8rem, 1.6vw, 1rem)", // Reducido de 2vw a 1.6vw
+  INPUT_SIZE: "clamp(0.9rem, 1.8vw, 1.1rem)", // Reducido de 2.2vw a 1.8vw
+  BUTTON_SIZE: "clamp(1rem, 2vw, 1.2rem)", // Reducido de 2.5vw a 2vw
+  MESSAGE_SIZE: "clamp(0.8rem, 1.6vw, 1rem)", // Reducido de 2vw a 1.6vw
+  ICON_SIZE: "clamp(16px, 2.4vw, 22px)", // Reducido de 3vw a 2.4vw
+  CLOSE_SIZE: "clamp(1.4rem, 3vw, 1.8rem)", // Reducido de 4vw a 3vw
+  MODAL_WIDTH: "clamp(280px, 70vw, 400px)", // Reducido de 90vw a 70vw y max de 500px a 400px
+  MODAL_PADDING: "clamp(1.2rem, 3vw, 1.8rem)", // Reducido de 4vw a 3vw
 };
 
 // Componente del ícono de ojo (mostrar contraseña)
-const EyeIconShow = ({ color, size = SMALL_ICON_SVG_SIZE }) => (
+const EyeIconShow = ({ color, size = SIZES.ICON_SIZE }) => (
   <svg
     viewBox="0 0 24 24"
     style={{ width: size, height: size, fill: color, display: "block" }}
@@ -46,7 +29,7 @@ const EyeIconShow = ({ color, size = SMALL_ICON_SVG_SIZE }) => (
 );
 
 // Componente del ícono de ojo (ocultar contraseña)
-const EyeIconHide = ({ color, size = SMALL_ICON_SVG_SIZE }) => (
+const EyeIconHide = ({ color, size = SIZES.ICON_SIZE }) => (
   <svg
     viewBox="0 0 24 24"
     style={{ width: size, height: size, fill: color, display: "block" }}
@@ -67,14 +50,19 @@ const InicioSesion = ({ onLogin, onClose }) => {
   const inputVariants = {
     focus: {
       scale: 1.01,
-      boxShadow: `0 0 0 2px ${PALETTE.SECONDARY_ACCENT_GOLD}`, // Borde dorado más visible al enfocar
+      boxShadow: "0 0 0 2px #F29E38", // Borde naranja de la paleta
       transition: { duration: 0.2 },
     },
   };
+  
   // Variantes de animación para botones
   const buttonVariants = {
-    hover: { backgroundColor: PALETTE.BUTTON_HOVER_BLUE, scale: 1.02, transition: { duration: 0.15 } },
-    tap: { scale: 0.98 }, // Efecto al presionar
+    hover: { 
+      backgroundColor: "#0A3A5A", 
+      scale: 1.02, 
+      transition: { duration: 0.15 } 
+    },
+    tap: { scale: 0.98 },
   };
 
   // Variantes de animación para el fondo
@@ -83,16 +71,26 @@ const InicioSesion = ({ onLogin, onClose }) => {
     visible: { opacity: 1, transition: { duration: 0.2 } },
     exit: { opacity: 0, transition: { duration: 0.2 } },
   };
+  
   // Variantes de animación para el modal
   const modalVariants = {
     hidden: { scale: 0.95, opacity: 0 },
-    visible: { scale: 1, opacity: 1, transition: { type: "spring", stiffness: 100, damping: 15 } },
+    visible: { 
+      scale: 1, 
+      opacity: 1, 
+      transition: { type: "spring", stiffness: 100, damping: 15 } 
+    },
     exit: { scale: 0.95, opacity: 0, transition: { duration: 0.2 } },
   };
+  
   // Variantes de animación para el icono superior
   const iconVariants = {
     hidden: { y: -20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { delay: 0.2, type: "spring", stiffness: 120 } },
+    visible: { 
+      y: 0, 
+      opacity: 1, 
+      transition: { delay: 0.2, type: "spring", stiffness: 120 } 
+    },
     exit: { y: -20, opacity: 0, transition: { duration: 0.1 } },
   };
 
@@ -143,140 +141,9 @@ const InicioSesion = ({ onLogin, onClose }) => {
     if (onClose) onClose(); // Llama a la función onClose pasada por props
   }
 
-  // Estilos base para las etiquetas de los inputs
-  const labelStyle = {
-    fontSize: LABEL_FONT_SIZE,
-    color: PALETTE.TEXT_DARK,
-    marginBottom: "10px",
-    display: "block",
-    textAlign: "left",
-    fontWeight: 500, // Menos negrita para Playfair Display en etiquetas
-    fontFamily: "'Playfair Display', serif", // APLICANDO PLAYFAIR DISPLAY
-  };
-
-  // Estilos base para los inputs de texto
-  const inputBaseStyle = {
-    width: "100%",
-    padding: "16px 18px",
-    fontSize: INPUT_FONT_SIZE,
-    border: `1px solid ${PALETTE.TEXT_MUTED}`,
-    borderRadius: "10px",
-    backgroundColor: PALETTE.WHITE,
-    color: PALETTE.TEXT_DARK,
-    fontFamily: "'Playfair Display', serif", // APLICANDO PLAYFAIR DISPLAY (para placeholder y texto)
-    boxSizing: "border-box",
-    marginBottom: "30px",
-  };
-
-  // Estilos específicos para el input de contraseña
-  const passwordInputStyle = {
-    ...inputBaseStyle,
-    paddingRight: "60px", // Espacio adicional para el icono del ojo
-    marginBottom: "0",
-  };
-
-  // Estilos del contenedor del icono de usuario (ahora el logo)
-  const iconContainerStyle = {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: "40px",
-    // Asegurarse que el logo se ajuste al tamaño definido por USER_ICON_ACTUAL_SIZE
-    width: USER_ICON_ACTUAL_SIZE,
-    height: USER_ICON_ACTUAL_SIZE,
-    margin: '0 auto 40px auto', // Centrar el contenedor del logo
-  };
-
-  // Estilos del modal principal
-  const modalStyle = {
-    backgroundColor: PALETTE.BACKGROUND_MODAL,
-    borderRadius: "20px",
-    width: MODAL_WIDTH, // ANCHO DEL MODAL REDUCIDO AQUÍ
-    padding: `${MODAL_PADDING_VERTICAL} ${MODAL_PADDING_HORIZONTAL}`, // ALTURA DEL MODAL REDUCIDA AQUÍ
-    textAlign: "center",
-    fontFamily: "'Playfair Display', serif", // APLICANDO PLAYFAIR DISPLAY
-    boxShadow: `0 10px 30px ${PALETTE.CONTOUR_COLOR}40`, // Sombra más grande
-    border: `2px solid ${PALETTE.CONTOUR_COLOR}`, // Contorno negro más grueso
-    position: "relative",
-  };
-
-  // Estilos para los mensajes (éxito/error)
-  const mensajeStyle = {
-    marginBottom: "30px",
-    fontWeight: "bold",
-    color: mensaje === "¡Sesión iniciada correctamente!" ? PALETTE.SUCCESS_GREEN : PALETTE.ERROR_RED,
-    fontFamily: "'Playfair Display', serif", // APLICANDO PLAYFAIR DISPLAY
-    fontSize: MESSAGE_FONT_SIZE,
-    minHeight: "30px", // Asegura un espacio constante para el mensaje
-  };
-
-  // Estilos para el contenedor del input de contraseña
-  const passwordInputContainerStyle = {
-    position: "relative",
-    width: "100%",
-    marginBottom: "30px",
-  };
-
-  // Estilos para el botón de mostrar/ocultar contraseña
-  const passwordToggleButtonStyle = {
-    position: "absolute",
-    top: "50%",
-    right: "20px",
-    transform: "translateY(-50%)",
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    padding: "0",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: PALETTE.TEXT_MUTED,
-    lineHeight: 1,
-  };
-
-  // Estilos para el título "Inicio de Sesión"
-  const titleStyle = {
-    fontSize: TITLE_FONT_SIZE,
-    fontWeight: 700, // Extra negrita para Playfair Display
-    color: PALETTE.TEXT_DARK,
-    marginBottom: "45px",
-    textTransform: "uppercase", // Mantenemos uppercase para impacto
-    letterSpacing: "3px", // Espaciado entre letras para el título (más prominente)
-    fontFamily: "'Playfair Display', serif", // APLICANDO PLAYFAIR DISPLAY
-  };
-
-  // Estilos para el botón de cerrar (la "X")
-  const closeButtonStyle = {
-    position: "absolute",
-    top: "18px",
-    right: "22px",
-    background: "none",
-    border: "none",
-    fontSize: CLOSE_BUTTON_FONT_SIZE, // ¡TAMAÑO DE LA "X" AUMENTADO AQUÍ!
-    cursor: "pointer",
-    color: PALETTE.TEXT_MUTED,
-    lineHeight: 1,
-    padding: "5px",
-    outline: "none",
-    transition: "transform 0.2s ease-in-out",
-  };
-
-  // Estilos para el botón de enviar
-  const submitButtonStyle = {
-    width: "100%",
-    padding: "18px",
-    fontSize: BUTTON_FONT_SIZE,
-    fontWeight: 700, // Extra negrita para Playfair Display
-    border: "none",
-    borderRadius: "10px",
-    backgroundColor: PALETTE.PRIMARY_ACCENT_BLUE,
-    color: PALETTE.WHITE,
-    cursor: loading ? "not-allowed" : "pointer",
-    textTransform: "uppercase", // Mantenemos uppercase
-    opacity: loading ? 0.8 : 1,
-    fontFamily: "'Playfair Display', serif", // APLICANDO PLAYFAIR DISPLAY
-    marginTop: "25px",
-    transition: "background-color 0.15s ease-in-out",
+  // Función para obtener el color del mensaje
+  const getMessageColor = () => {
+    return mensaje === "¡Sesión iniciada correctamente!" ? "text-green-600" : "text-red-500";
   };
 
   return (
@@ -288,18 +155,7 @@ const InicioSesion = ({ onLogin, onClose }) => {
           initial="hidden"
           animate="visible"
           exit="exit"
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "rgba(0,0,0,0.65)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-          }}
+          className="fixed inset-0 bg-black/65 flex justify-center items-center z-[9999]"
         >
           <motion.div
             key="modal"
@@ -307,28 +163,35 @@ const InicioSesion = ({ onLogin, onClose }) => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            style={modalStyle}
+            className="bg-surface-elevated rounded-2xl text-center font-bodoni shadow-2xl border-2 border-stroke relative"
+            style={{
+              width: SIZES.MODAL_WIDTH,
+              padding: SIZES.MODAL_PADDING,
+            }}
           >
             {/* Botón de cerrar (la X) */}
             <motion.button
               onClick={handleClose}
-              whileHover={{ scale: 1.2, color: PALETTE.ERROR_RED }}
-              style={closeButtonStyle}
+              whileHover={{ scale: 1.2, color: "#E57373" }}
+              className="absolute top-4 right-5 bg-transparent border-none cursor-pointer text-text-muted p-1 outline-none transition-transform duration-200"
+              style={{ fontSize: SIZES.CLOSE_SIZE }}
             >
               &times;
             </motion.button>
 
-            {/* Contenedor del ícono de usuario (ahora el logo) */}
-            <div style={iconContainerStyle}>
+            {/* Contenedor del logo */}
+            <div 
+              className="flex justify-center items-center mx-auto"
+              style={{
+                width: SIZES.LOGO_SIZE,
+                height: SIZES.LOGO_SIZE,
+                marginBottom: "clamp(1.5rem, 3vw, 2rem)", // Reducido proporcionalmente
+              }}
+            >
               <motion.img
-                src={logo} // Usamos tu logo importado aquí
+                src={logo}
                 alt="Logo de la aplicación"
-                style={{
-                  width: '100%', // El logo ocupará el 100% del contenedor
-                  height: '100%', // El logo ocupará el 100% del contenedor
-                  objectFit: 'contain', // Asegura que el logo se vea completo
-                  display: 'block'
-                }}
+                className="w-full h-full object-contain block"
                 variants={iconVariants}
                 initial="hidden"
                 animate="visible"
@@ -337,15 +200,42 @@ const InicioSesion = ({ onLogin, onClose }) => {
             </div>
 
             {/* Título del modal */}
-            <h2 style={titleStyle}>Inicio de Sesión</h2>
+            <h2 
+              className="font-bodoni font-bold text-text-main uppercase tracking-wider"
+              style={{
+                fontSize: SIZES.TITLE_SIZE,
+                letterSpacing: "clamp(0.05rem, 0.2rem, 0.3rem)", // Reducido proporcionalmente
+                marginBottom: "clamp(1.5rem, 3vw, 2rem)", // Reducido proporcionalmente
+              }}
+            >
+              Inicio de Sesión
+            </h2>
 
             {/* Mensajes de feedback (éxito/error) */}
-            {mensaje && <p style={mensajeStyle}>{mensaje}</p>}
+            {mensaje && (
+              <p 
+                className={`font-bold font-bodoni ${getMessageColor()}`}
+                style={{ 
+                  fontSize: SIZES.MESSAGE_SIZE,
+                  marginBottom: "clamp(1.2rem, 2.5vw, 1.5rem)", // Reducido proporcionalmente
+                  minHeight: "clamp(20px, 3vw, 25px)", // Reducido proporcionalmente
+                }}
+              >
+                {mensaje}
+              </p>
+            )}
 
             {/* Formulario de inicio de sesión */}
-            <form onSubmit={handleSubmit} style={{ textAlign: "left" }}>
+            <form onSubmit={handleSubmit} className="text-left">
               {/* Campo de Usuario */}
-              <label htmlFor="usuario" style={labelStyle}>
+              <label 
+                htmlFor="usuario" 
+                className="block text-left font-bodoni font-medium text-text-main"
+                style={{ 
+                  fontSize: SIZES.LABEL_SIZE,
+                  marginBottom: "clamp(0.5rem, 1vw, 0.8rem)", // Reducido proporcionalmente
+                }}
+              >
                 Usuario
               </label>
               <motion.input
@@ -356,14 +246,29 @@ const InicioSesion = ({ onLogin, onClose }) => {
                 onChange={(e) => setUsuario(e.target.value)}
                 variants={inputVariants}
                 whileFocus="focus"
-                style={inputBaseStyle}
+                className="w-full bg-surface border border-stroke rounded-xl text-text-main font-miles box-border focus:outline-none focus:border-accent transition-colors duration-200"
+                style={{
+                  padding: "clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 16px)", // Reducido proporcionalmente
+                  fontSize: SIZES.INPUT_SIZE,
+                  marginBottom: "clamp(1rem, 2.5vw, 1.5rem)", // Reducido proporcionalmente
+                }}
               />
 
               {/* Campo de Contraseña */}
-              <label htmlFor="contrasenia" style={labelStyle}>
+              <label 
+                htmlFor="contrasenia" 
+                className="block text-left font-bodoni font-medium text-text-main"
+                style={{ 
+                  fontSize: SIZES.LABEL_SIZE,
+                  marginBottom: "clamp(0.5rem, 1vw, 0.8rem)", // Reducido proporcionalmente
+                }}
+              >
                 Contraseña
               </label>
-              <div style={passwordInputContainerStyle}>
+              <div 
+                className="relative w-full"
+                style={{ marginBottom: "clamp(1rem, 2.5vw, 1.5rem)" }} // Reducido proporcionalmente
+              >
                 <motion.input
                   type={showPassword ? "text" : "password"}
                   id="contrasenia"
@@ -372,20 +277,26 @@ const InicioSesion = ({ onLogin, onClose }) => {
                   onChange={(e) => setContrasenia(e.target.value)}
                   variants={inputVariants}
                   whileFocus="focus"
-                  style={passwordInputStyle}
+                  className="w-full bg-surface border border-stroke rounded-xl text-text-main font-miles box-border focus:outline-none focus:border-accent transition-colors duration-200"
+                  style={{
+                    padding: "clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 16px)", // Reducido proporcionalmente
+                    paddingRight: "clamp(40px, 6vw, 50px)", // Reducido proporcionalmente
+                    fontSize: SIZES.INPUT_SIZE,
+                  }}
                 />
                 {/* Botón para mostrar/ocultar contraseña */}
                 <motion.button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  style={passwordToggleButtonStyle}
+                  className="absolute top-1/2 transform -translate-y-1/2 bg-transparent border-none cursor-pointer p-0 flex items-center justify-center text-text-muted"
+                  style={{ right: "clamp(12px, 2vw, 16px)" }} // Reducido proporcionalmente
                   whileHover={{ opacity: 0.7, scale: 1.1 }}
                   title={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                 >
                   {showPassword ? (
-                    <EyeIconHide color={PALETTE.TEXT_MUTED} size={SMALL_ICON_SVG_SIZE} />
+                    <EyeIconHide color="#78909C" size={SIZES.ICON_SIZE} />
                   ) : (
-                    <EyeIconShow color={PALETTE.TEXT_MUTED} size={SMALL_ICON_SVG_SIZE} />
+                    <EyeIconShow color="#78909C" size={SIZES.ICON_SIZE} />
                   )}
                 </motion.button>
               </div>
@@ -397,7 +308,12 @@ const InicioSesion = ({ onLogin, onClose }) => {
                 variants={buttonVariants}
                 whileHover="hover"
                 whileTap="tap"
-                style={submitButtonStyle}
+                className="w-full bg-primary text-surface-elevated border-none rounded-xl font-bodoni font-bold uppercase cursor-pointer transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-80"
+                style={{
+                  padding: "clamp(12px, 2.5vw, 16px)", // Reducido proporcionalmente
+                  fontSize: SIZES.BUTTON_SIZE,
+                  marginTop: "clamp(1.2rem, 3vw, 1.8rem)", // Reducido proporcionalmente
+                }}
               >
                 {loading ? "Accediendo..." : "ACCEDER"}
               </motion.button>
