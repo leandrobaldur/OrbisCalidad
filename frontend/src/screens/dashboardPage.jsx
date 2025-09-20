@@ -1,46 +1,58 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import FichaExpandidaEditable from '../components/fichaExpandidaEditable';
+import React from 'react';
 
 const DashboardPage = () => {
-  const [empresa, setEmpresa] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPrimeraEmpresa = async () => {
-      try {
-        const res = await axios.get('http://localhost:3000/empresas');
-        const lista = res.data;
-
-        if (lista.length > 0) {
-          const primera = lista[0];
-          const detalle = await axios.get(`http://localhost:3000/empresa/${primera.id_empresa}`);
-          setEmpresa(detalle.data);
-        }
-      } catch (error) {
-        console.error('Error al obtener empresa:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPrimeraEmpresa();
-  }, []);
-
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-100">
-      {loading && <p className="text-gray-700">Cargando datos desde el backend...</p>}
-      {!loading && empresa && (
-        <FichaExpandidaEditable
-          empresa={empresa}
-          onClose={() => alert('Cambios cancelados')}
-        />
-      )}
-      {!loading && !empresa && (
-        <p className="text-red-500">No hay empresas disponibles en la base de datos.</p>
-      )}
+    <div style={styles.container}>
+      {/* Fondo desenfocado */}
+      <div style={styles.background}></div>
+
+      {/* Capa de contenido con texto */}
+      <div style={styles.overlay}>
+        <h1 style={styles.text}>NECESITAS PERMISOS PARA ACCEDER AL MATERIAL</h1>
+      </div>
     </div>
   );
+};
+
+const styles = {
+  container: {
+    position: 'relative',
+    width: '100vw',
+    height: '100vh',
+    overflow: 'hidden',
+    fontFamily: "'Merriweather', serif",
+  },
+  background: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundImage: 'url("/media/dashboardsPage/bg.jpg")', // 🔁 Cambia esta ruta según tu imagen
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    filter: 'blur(12px) brightness(0.6)', // ✨ desenfoque + oscurecer
+    zIndex: 1,
+  },
+  overlay: {
+    position: 'relative',
+    zIndex: 2,
+    width: '100%',
+    height: '100%',
+    color: '#fff',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '20px',
+    textAlign: 'center',
+    backdropFilter: 'blur(2px)',
+  },
+  text: {
+    fontSize: '2.5rem',
+    fontWeight: 'bold',
+    textShadow: '2px 2px 5px rgba(0,0,0,0.7)',
+    textTransform: 'uppercase',
+  },
 };
 
 export default DashboardPage;

@@ -14,7 +14,42 @@ const CarruselImagenes = ({ altura, filas, backendUrl }) => {
   const [imagenesDistribuidas, setImagenesDistribuidas] = useState([]);
   const contenedorRef = useRef(null);
 
-  const CLOUDINARY_BASE_URL = 'https://res.cloudinary.com/diswqpy8v/image/upload/v1745018920';
+  // Convierte el enlace de Google Drive en una URL accesible para la imagen
+  const convertirUrlDrive = (url) => {
+    if (url && url.includes("drive.google.com")) {
+      const id = url.split("/d/")[1]?.split("/")[0]; // Extrae el ID del archivo
+      if (id) {
+        return `https://drive.google.com/uc?export=view&id=${id}`; // URL de imagen directa
+      }
+    }
+    return url; // Devolver la URL tal cual está si es válida
+  };
+
+  const obtenerImagenesDesdeBackend = async () => {
+    try {
+      const resumen = await axios.get(`${backendUrl}/empresas/resumen`);
+      const ids = resumen.data.map((e) => e.id_empresa);
+
+      const respuestas = await Promise.all(
+        ids.map((id) => axios.get(`${backendUrl}/empresa/${id}`))
+      );
+
+      const imagenes = respuestas.map((res) => {
+        const url = convertirUrlDrive(res.data.url); // Convierte la URL si es válida
+        console.log('Imagen URL:', url); // Verifica la URL convertida
+        return {
+          id_empresa: res.data.id_empresa,
+          imagen: url || "", // Si la URL no es válida, asigna un string vacío
+        };
+      });
+
+      const imagenesBarajadas = shuffleArray(imagenes);
+      const distribuidas = distribuirEquitativamente(imagenesBarajadas, filas);
+      setImagenesDistribuidas(distribuidas);
+    } catch (error) {
+      console.error('❌ Error al obtener imágenes desde backend:', error);
+    }
+  };
 
   const distribuirEquitativamente = (imagenes, filas) => {
     const distribuidas = Array.from({ length: filas }, () => []);
@@ -24,31 +59,18 @@ const CarruselImagenes = ({ altura, filas, backendUrl }) => {
     return distribuidas;
   };
 
-  const obtenerImagenesDesdeBackend = async () => {
-    try {
-      const res = await axios.get(`${backendUrl}/empresas`);
-      const urls = res.data
-        .map((empresa) => empresa.url)
-        .filter((nombre) => nombre && typeof nombre === 'string')
-        .map((nombre) => `${CLOUDINARY_BASE_URL}/${nombre}`);
-
-      const imagenesBarajadas = shuffleArray(urls);
-      const distribuidas = distribuirEquitativamente(imagenesBarajadas, filas);
-      setImagenesDistribuidas(distribuidas);
-    } catch (error) {
-      console.error('Error al obtener imágenes desde backend:', error);
-    }
-  };
-
   useEffect(() => {
     obtenerImagenesDesdeBackend();
-  }, [backendUrl]);
+  }, []);
+
+  // Responsive height calculation
+  const responsiveHeight = `clamp(200px, ${altura}px, 600px)`;
 
   return (
     <div
       ref={contenedorRef}
-      className="w-full overflow-hidden relative"
-      style={{ height: `${altura}px` }}
+      className="w-full overflow-hidden relative bg-surface-elevated rounded-lg shadow-lg border border-stroke"
+      style={{ height: responsiveHeight, position: 'relative' }}
     >
       {imagenesDistribuidas.map((fila, i) => (
         <div
@@ -60,17 +82,33 @@ const CarruselImagenes = ({ altura, filas, backendUrl }) => {
             animation: `${i % 2 === 0 ? 'moverIzquierda' : 'moverDerecha'} 30s linear infinite`
           }}
         >
-          {fila.concat(fila).map((img, idx) => (
-            <img
+          {fila.concat(fila).map((empresa, idx) => (
+            <div
               key={`${i}-${idx}`}
-              src={img}
-              alt={`img-${idx}`}
-              className="object-cover"
+              className="flex justify-center items-center overflow-hidden p-1 md:p-2"
               style={{
                 height: '100%',
-                width: `${100 / fila.length}%`
+                width: `${100 / fila.length}%`,
               }}
-            />
+            >
+              {empresa.imagen ? (
+                <img
+                  src={empresa.imagen || '/path/to/default-image.jpg'}
+                  alt={`Logo empresa ${empresa.id_empresa}`}
+                  loading="lazy"
+                  className="object-contain transition-transform duration-300 hover:scale-105 max-h-full max-w-full"
+                  style={{
+                    objectFit: 'contain',
+                    display: 'block',
+                    margin: '0 auto',
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full bg-surface flex items-center justify-center border border-stroke rounded-lg">
+                  <span className="font-miles text-text-muted text-xs md:text-sm">No Image</span>
+                </div>
+              )}
+            </div>
           ))}
         </div>
       ))}

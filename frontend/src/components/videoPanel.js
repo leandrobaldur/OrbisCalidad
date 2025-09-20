@@ -1,34 +1,26 @@
 import React from "react";
 
 const VideoPanel = ({ children, height = "50vh" }) => {
+  // La altura es una prop dinámica, por lo que la manejamos con un objeto de estilo.
+  // Es la forma más limpia cuando el valor no es fijo.
+  const panelStyle = {
+    height: height,
+  };
+
   return (
     <div
-      style={{
-        width: "100%",
-        height: height,
-        position: "relative",
-        overflow: "hidden",
-      }}
+      style={panelStyle}
+      // APLICACIÓN MINIMALISTA: Bordes simples y limpios
+      className="w-full relative overflow-hidden border-t-[0.7vh] border-b-[0.7vh] border-primary shadow-lg rounded-lg"
     >
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        {/* Clonamos el children agregando los estilos necesarios directamente si es un <video> */}
+      <div className="absolute inset-0 w-full h-full">
+        {/* Clonamos el `children` para aplicarle clases en lugar de estilos en línea. */}
         {React.Children.map(children, (child) =>
           React.isValidElement(child)
             ? React.cloneElement(child, {
-                style: {
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  objectPosition: "center", // <-- centrado vertical y horizontal
-                },
+                // Estas clases aseguran que el video (o cualquier otro elemento)
+                // llene el panel y se mantenga centrado con transiciones suaves.
+                className: "w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105",
               })
             : child
         )}

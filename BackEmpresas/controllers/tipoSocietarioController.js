@@ -1,6 +1,7 @@
 import TipoSocietario from '../models/TipoSocietario.js';
 import EmpresaTipoSocietario from '../models/EmpresaTipoSocietario.js';
 import pool from '../db.js';
+import logsModel from '../models/logsModel.js';
 
 export const getTiposSocietarios = async (req, res) => {
   try {
@@ -15,13 +16,19 @@ export const getTiposSocietarios = async (req, res) => {
 export const createEmpresaTipoSocietario = async (req, res) => {
   const client = await pool.connect();
   try {
-    const { id_empresa, id_tipsoc, fecha_inicio, fecha_fin } = req.body;
+    const { id_empresa, id_tipsoc, fecha_inicio, fecha_fin, id_usuario } = req.body;
     await client.query('BEGIN');
 
     const nuevaRelacion = await EmpresaTipoSocietario.create(
       { id_empresa, id_tipsoc, fecha_inicio, fecha_fin },
       client
     );
+
+    await logsModel.registrarLog({
+      id_usuario,
+      tabla: 'empresas_tipos_societarios',
+      tipo_log: 'insert',
+    });
 
     await client.query('COMMIT');
     res.status(201).json(nuevaRelacion);

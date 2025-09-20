@@ -1,8 +1,12 @@
+import React from "react";
+import AboutUsContainer from "../components/AboutUs/AboutUsContainer";
 
-import React from 'react';
-
-const HistoriaPage = () => {
-  return <div><h1>Historia Page</h1></div>;
+const AboutUsPage = () => {
+  return (
+    <div className="w-full min-h-screen bg-background">
+      <AboutUsContainer />
+    </div>
+  );
 };
 
-export default HistoriaPage;
+export default AboutUsPage;

@@ -6,12 +6,15 @@ const insertarEmpresa = async (empresaData) => {
       denominacion_social,
       nombre_comercial,
       fecha_fundacion,
-      fecha_cierre,
       nit,
-      eslogan,
+      vision,
+      mision,
       descripcion,
-      url
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      url,
+      direccion_web,
+      id_actividad,
+      id_tamanio
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
     RETURNING id_empresa
   `;
 
@@ -19,37 +22,125 @@ const insertarEmpresa = async (empresaData) => {
     empresaData.denominacion_social,
     empresaData.nombre_comercial,
     empresaData.fecha_fundacion,
-    empresaData.fecha_cierre || null,
     empresaData.nit,
-    empresaData.eslogan,
+    empresaData.vision,
+    empresaData.mision,
     empresaData.descripcion,
-    empresaData.url
+    empresaData.url,
+    empresaData.direccion_web,
+    empresaData.id_actividad,
+    empresaData.id_tamanio
   ];
 
   try {
     const { rows } = await pool.query(query, values);
     return rows[0].id_empresa;
   } catch (error) {
-    console.error('Error en insertarEmpresa:', error); // Deja esto
-  console.error('Detalle del error PostgreSQL:', error.message); // Agrega esto
-  throw new Error('Error al crear la empresa');
+    console.error('Error en insertarEmpresa:', error);
+    console.error('Detalle del error PostgreSQL:', error.message);
+    throw new Error('Error al crear la empresa');
   }
 };
 
-const obtenerEmpresas = async () => {
-  const query = "SELECT id_empresa, nombre_comercial, denominacion_social FROM EMPRESAS";
+const actualizarEmpresa = async (id, empresaData) => {
+  const query = `
+    UPDATE EMPRESAS
+    SET
+      denominacion_social = $1,
+      nombre_comercial = $2,
+      fecha_fundacion = $3,
+      nit = $4,
+      vision = $5,
+      mision = $6,
+      descripcion = $7,
+      url = $8,
+      direccion_web = $9,
+      id_actividad = $10,
+      id_tamanio = $11
+    WHERE id_empresa = $12
+    RETURNING id_empresa
+  `;
+
+  const values = [
+    empresaData.denominacion_social,
+    empresaData.nombre_comercial,
+    empresaData.fecha_fundacion,
+    empresaData.nit,
+    empresaData.vision,
+    empresaData.mision,
+    empresaData.descripcion,
+    empresaData.url,
+    empresaData.direccion_web,
+    empresaData.id_actividad,
+    empresaData.id_tamanio,
+    id
+  ];
+
+  try {
+    const { rows } = await pool.query(query, values);
+    return rows[0];
+  } catch (error) {
+    console.error('Error en actualizarEmpresa:', error);
+    throw new Error('Error al actualizar la empresa');
+  }
+};
+
+const obtenerEmpresasConPropietarios = async () => {
+  const query = `
+    SELECT 
+      e.id_empresa,
+      e.nombre_comercial,
+      e.denominacion_social,
+      COALESCE(STRING_AGG(
+        CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno), ', '
+      ), 'Sin propietario') AS nombre_propietario
+    FROM empresas e
+    LEFT JOIN historial_propiedad hp ON e.id_empresa = hp.id_empresa
+    LEFT JOIN propietarios p ON hp.id_propietario = p.id_propietario
+    GROUP BY e.id_empresa, e.nombre_comercial, e.denominacion_social
+  `;
+
   try {
     const { rows } = await pool.query(query);
     return rows;
   } catch (error) {
-    console.error('Error al obtener empresas:', error);
+    console.error('Error en obtenerEmpresasConPropietarios:', error);
     throw new Error('Error al obtener empresas');
   }
 };
 
+const obtenerPremios = async () => {
+  const query = `SELECT id_premio, descripcion FROM premios`;
+  try {
+    const { rows } = await pool.query(query);
+    return rows;
+  } catch (error) {
+    console.error('Error al obtener premios:', error);
+    throw new Error('Error al obtener premios');
+  }
+};
 
+const obtenerEmpresasPorPremio = async (idPremio) => {
+  const query = `
+    SELECT e.id_empresa, e.nombre_comercial, e.denominacion_social
+    FROM empresas e
+    JOIN premios_empresas pe ON e.id_empresa = pe.id_empresa
+    JOIN premios p ON pe.id_premio = p.id_premio
+    WHERE pe.id_premio = $1
+  `;
+  try {
+    const { rows } = await pool.query(query, [idPremio]);
+    return rows;
+  } catch (error) {
+    console.error('Error al filtrar empresas por premio:', error);
+    throw new Error('Error al filtrar empresas por premio');
+  }
+};
 
 export default {
   insertarEmpresa,
-  obtenerEmpresas,
+ actualizarEmpresa,
+  obtenerEmpresasConPropietarios,
+  obtenerPremios,
+  obtenerEmpresasPorPremio
 };
