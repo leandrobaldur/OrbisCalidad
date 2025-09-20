@@ -2,8 +2,8 @@ import React from "react";
 
 const BarraHorizontal = ({
   texto,
-  height = "clamp(0.3vh, 0.8vh, 1vh)", // Aún más delgada
-  margenHorizontal = "clamp(3vw, 4vw, 4vw)", // Márgenes más pequeños
+  height = "clamp(0.4vh, 1vh, 1.2vh)", // Altura ligeramente más elegante
+  margenHorizontal = "clamp(3vw, 4vw, 4vw)",
   imagen,
 }) => {
   const containerStyle = { height };
@@ -18,25 +18,25 @@ const BarraHorizontal = ({
     <div 
       style={{
         ...containerStyle,
-        borderTopWidth: '0.1px',
-        borderBottomWidth: '0.1px',
+        borderTopWidth: '0.5px',
+        borderBottomWidth: '0.5px',
         padding: 0,
         margin: 0
       }}
-      className="w-full flex items-center overflow-hidden bg-surface border-stroke shadow-sm"
+      className="w-full flex items-center overflow-hidden bg-surface-elevated/80 backdrop-blur-sm border-stroke/30 shadow-sm"
     >
       <div
         style={imageStyle}
-        className="bg-repeat-x bg-center h-[40%] flex-shrink-0 bg-[length:auto_100%] opacity-50"
+        className="bg-repeat-x bg-center h-[40%] flex-shrink-0 bg-[length:auto_100%] opacity-30 transition-opacity duration-300"
       />
       <div
-        className="flex-grow h-full flex items-center justify-center font-bodoni text-black text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] tracking-wider transform -translate-y-[1%] font-bold uppercase px-0"
+        className="flex-grow h-full flex items-center justify-center font-miles text-text-main text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] tracking-wide transform -translate-y-[0.5%] font-medium uppercase px-0 transition-colors duration-200"
       >
         {texto}
       </div>
       <div
         style={imageStyle}
-        className="bg-repeat-x bg-center h-[40%] flex-shrink-0 bg-[length:auto_100%] opacity-50"
+        className="bg-repeat-x bg-center h-[40%] flex-shrink-0 bg-[length:auto_100%] opacity-30 transition-opacity duration-300"
       />
     </div>
   );

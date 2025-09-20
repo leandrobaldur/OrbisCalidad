@@ -34,7 +34,7 @@ const Navbar = ({ loggedInUser }) => {
 
   return (
     <motion.nav
-      className="w-full fixed top-20 z-50 flex items-center justify-center bg-surface border-b border-stroke shadow-sm py-4 px-6 md:px-10 lg:px-20"
+      className="w-full fixed top-20 z-50 flex items-center justify-center bg-surface-elevated/95 backdrop-blur-sm border-b border-stroke shadow-sm py-4 px-6 md:px-10 lg:px-20"
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}
@@ -44,29 +44,38 @@ const Navbar = ({ loggedInUser }) => {
       <div className="hidden md:flex flex-nowrap justify-center items-center gap-x-6 lg:gap-x-8">
         {finalLinks.map((item, index) => {
           const isActive = location.pathname === item.path;
+
           return (
             <React.Fragment key={index}>
-              <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
+              <motion.div
+                whileHover={!isActive ? { scale: 1.08 } : {}}
+                whileTap={{ scale: 0.95 }}
+              >
                 <Link
                   to={item.path}
-                  /* AJUSTE MINIMALISTA: Se usa tracking-widest para un look más elegante */
-                  className={`font-bodoni text-base tracking-widest relative pb-1 cursor-pointer select-none inline-block transition-colors duration-200 whitespace-nowrap ${
-                    isActive ? "text-primary" : "text-text-main"
-                  } hover:text-primary`}
+                  className={`font-miles text-sm font-medium tracking-wide relative pb-1 select-none inline-block transition-all duration-200 whitespace-nowrap no-underline hover:no-underline ${
+                    isActive
+                      ? "text-primary font-semibold cursor-default hover:text-primary"
+                      : "text-text-main cursor-pointer hover:text-accent"
+                  }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.label}
+                  {/* Subrayado solo para página activa */}
                   {isActive && (
                     <motion.div
                       layoutId="underline"
                       className="h-0.5 bg-primary rounded-md absolute bottom-0 left-0 right-0"
+                      initial={{ width: 0 }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: 0.3 }}
                     />
                   )}
                 </Link>
               </motion.div>
               {index < finalLinks.length - 1 && (
                 <motion.span
-                  className="text-stroke font-light select-none text-lg"
+                  className="text-text-muted font-light select-none text-sm"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: index * 0.1 }}
@@ -90,7 +99,7 @@ const Navbar = ({ loggedInUser }) => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            className="fixed inset-0 bg-surface z-40 flex flex-col items-center justify-center space-y-6 md:hidden"
+            className="fixed inset-0 bg-surface-elevated/95 backdrop-blur-sm z-40 flex flex-col items-center justify-center space-y-6 md:hidden"
             variants={menuVariants}
             initial="hidden"
             animate="visible"
@@ -102,19 +111,29 @@ const Navbar = ({ loggedInUser }) => {
             {finalLinks.map((item, index) => {
               const isActive = location.pathname === item.path;
               return (
-                <motion.div key={index} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                <motion.div
+                  key={index}
+                  whileHover={!isActive ? { scale: 1.1 } : {}}
+                  whileTap={{ scale: 0.9 }}
+                >
                   <Link
                     to={item.path}
-                    className={`font-bodoni text-2xl tracking-widest relative pb-1 cursor-pointer select-none inline-block ${
-                      isActive ? "text-primary" : "text-text-main"
-                    } hover:text-primary`}
+                    className={`font-miles text-xl font-medium tracking-wide relative pb-1 select-none inline-block transition-all duration-200 no-underline hover:no-underline ${
+                      isActive
+                        ? "text-primary font-semibold cursor-default hover:text-primary"
+                        : "text-text-main cursor-pointer hover:text-accent"
+                    }`}
                     onClick={toggleMobileMenu}
                   >
                     {item.label}
+                    {/* Subrayado solo para página activa */}
                     {isActive && (
                       <motion.div
                         layoutId="underline-mobile"
                         className="h-1 bg-primary rounded-md absolute bottom-0 left-0 right-0"
+                        initial={{ width: 0 }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: 0.3 }}
                       />
                     )}
                   </Link>
@@ -129,4 +148,3 @@ const Navbar = ({ loggedInUser }) => {
 };
 
 export default Navbar;
-
