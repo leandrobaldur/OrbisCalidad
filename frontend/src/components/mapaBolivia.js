@@ -1,44 +1,40 @@
-import React, { useState } from "react";
-import { ReactComponent as BoliviaSVG } from "../assets/bolivia.svg"; // Asegúrate de tener este SVG
+import React, { useState, useEffect } from "react";
+import { ReactComponent as BoliviaSVG } from "../assets/bolivia.svg";
 
-const MapaBolivia = () => {
-  const [departamentoSeleccionado, setDepartamentoSeleccionado] = useState("Selecciona un departamento");
+const MapaBolivia = ({ onDepartamentoClick, empresas }) => {
+  const [departamentoSeleccionado, setDepartamentoSeleccionado] = useState(null);
 
   const manejarClick = (e) => {
     const nombre = e.target.getAttribute("name");
     if (nombre) {
       setDepartamentoSeleccionado(nombre);
+      if (onDepartamentoClick) {
+        onDepartamentoClick(nombre);
+      }
     }
   };
 
-  return (
-    <div className="w-full flex justify-center items-center gap-8 px-8 py-10">
-      {/* Texto vertical "BOLIVIA" */}
-      <div className="flex items-center justify-center mt-16">
-        <div className="text-4xl font-bold tracking-widest rotate-90 text-black">
-          BOLIVIA
-        </div>
-      </div>
+  useEffect(() => {
+    // Código para cambiar el color de los departamentos
+    const paths = document.querySelectorAll(".bolivia-map path");
+    paths.forEach((path) => {
+      const nombreDep = path.getAttribute("name");
+      if (nombreDep === departamentoSeleccionado) {
+        path.style.fill = "#000000ff"; // Color para el departamento seleccionado
+      } else {
+        path.style.fill = "#32302fff"; // Color por defecto
+      }
+    });
+  }, [departamentoSeleccionado]);
 
+  return (
+    <div className="w-full h-full flex items-center justify-center">
       {/* Mapa SVG Interactivo */}
-      <div className="w-[40vw]">
+      <div className="flex-grow w-full h-full flex items-center justify-center p-4">
         <BoliviaSVG
-          className="bolivia-map w-full h-auto cursor-pointer"
+          className="bolivia-map w-full h-full cursor-pointer" // <-- Aquí está el cambio clave
           onClick={manejarClick}
         />
-      </div>
-
-      {/* Texto vertical del departamento + descripción */}
-      <div className="flex items-center gap-6 mt-16">
-        <div className="text-3xl font-semibold rotate-90 text-black whitespace-nowrap">
-          {departamentoSeleccionado.toUpperCase()}
-        </div>
-
-        <div className="w-64 h-40 bg-gray-100 border border-black p-4 text-sm text-gray-700 shadow-inner">
-          <p>
-            Aquí irá la descripción del departamento seleccionado. Esto se puede reemplazar con contenido dinámico más adelante.
-          </p>
-        </div>
       </div>
     </div>
   );

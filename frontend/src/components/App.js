@@ -13,6 +13,7 @@ import EditorEmpresasPage from '../screens/editorEmpresasPage';
 import PanelEditorUsuarios from './panelEditorUsuarios_temp';
 import FooterBar from './footerBar.js';
 
+
 function RedirectDashboard() {
   useEffect(() => {
     window.open('https://dashboard.serverbb.site/', '_blank');
