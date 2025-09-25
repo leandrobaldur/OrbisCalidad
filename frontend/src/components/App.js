@@ -54,12 +54,15 @@ function App() {
 
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
-        {/* Volvemos a activar el Header y el Navbar */}
-        <Header loggedInUser={loggedInUser} onLogout={handleLogout} onLogin={handleLogin} />
-        <Navbar loggedInUser={loggedInUser} onLogout={handleLogout} />
+      <div className="flex flex-col min-h-screen bg-gradient-to-br from-white to-gray-50/50">
+        <Header 
+          loggedInUser={loggedInUser} 
+          onLogout={handleLogout} 
+          onLogin={handleLogin} 
+        />
+        {/* CORRECCIÓN: Asegurarnos de pasar loggedInUser al Navbar */}
+        <Navbar loggedInUser={loggedInUser} />
 
-        {/* El padding-top debe coincidir con la altura combinada de Header y Navbar */}
         <main className="flex-grow pt-[140px]">
           <Routes>
             <Route path="/" element={<HomePage />} />

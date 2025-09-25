@@ -183,7 +183,7 @@ const InicioSesion = ({ onLogin, onClose }) => {
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="fixed inset-0 bg-black/65 flex justify-center items-center z-[9999]"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[9999]"
         >
           <motion.div
             key="modal"
@@ -191,18 +191,21 @@ const InicioSesion = ({ onLogin, onClose }) => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="bg-surface-elevated rounded-2xl text-center font-bodoni shadow-2xl border-2 border-stroke relative"
+            className="bg-surface-elevated rounded-2xl text-center shadow-2xl border border-stroke/30 relative overflow-hidden"
             style={{
               width: SIZES.MODAL_WIDTH,
               padding: SIZES.MODAL_PADDING,
             }}
           >
-            {/* Botón de cerrar (la X) */}
+            {/* Botón de cerrar (la X) - completamente sin fondo */}
             <motion.button
               onClick={handleClose}
-              whileHover={{ scale: 1.2, color: "#E57373" }}
-              className="absolute top-4 right-5 bg-transparent border-none cursor-pointer text-text-muted p-1 outline-none transition-transform duration-200"
-              style={{ fontSize: SIZES.CLOSE_SIZE }}
+              whileHover={{ scale: 1.2, color: "#F29E38" }}
+              className="absolute top-4 right-5 border-none cursor-pointer text-text-muted p-1 outline-none transition-all duration-200"
+              style={{ 
+                fontSize: SIZES.CLOSE_SIZE,
+                backgroundColor: 'transparent'
+              }}
             >
               &times;
             </motion.button>
@@ -295,7 +298,7 @@ const InicioSesion = ({ onLogin, onClose }) => {
               </label>
               <div 
                 className="relative w-full"
-                style={{ marginBottom: "clamp(1rem, 2.5vw, 1.5rem)" }} // Reducido proporcionalmente
+                style={{ marginBottom: "clamp(1rem, 2.5vw, 1.5rem)" }}
               >
                 <motion.input
                   type={showPassword ? "text" : "password"}
@@ -305,19 +308,22 @@ const InicioSesion = ({ onLogin, onClose }) => {
                   onChange={(e) => setContrasenia(e.target.value)}
                   variants={inputVariants}
                   whileFocus="focus"
-                  className="w-full bg-surface border border-stroke rounded-xl text-text-main font-miles box-border focus:outline-none focus:border-accent transition-colors duration-200"
+                  className="w-full bg-surface border border-stroke rounded-lg text-text-main font-miles box-border focus:outline-none focus:border-accent transition-all duration-200"
                   style={{
-                    padding: "clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 16px)", // Reducido proporcionalmente
-                    paddingRight: "clamp(40px, 6vw, 50px)", // Reducido proporcionalmente
+                    padding: "clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 16px)",
+                    paddingRight: "clamp(40px, 6vw, 50px)",
                     fontSize: SIZES.INPUT_SIZE,
                   }}
                 />
-                {/* Botón para mostrar/ocultar contraseña */}
+                {/* Botón para mostrar/ocultar contraseña - completamente sin fondo */}
                 <motion.button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute top-1/2 transform -translate-y-1/2 bg-transparent border-none cursor-pointer p-0 flex items-center justify-center text-text-muted"
-                  style={{ right: "clamp(12px, 2vw, 16px)" }} // Reducido proporcionalmente
+                  className="absolute top-1/2 transform -translate-y-1/2 border-none cursor-pointer p-1 flex items-center justify-center text-text-muted transition-colors duration-200"
+                  style={{ 
+                    right: "clamp(8px, 1.5vw, 12px)",
+                    backgroundColor: 'transparent'
+                  }}
                   whileHover={{ opacity: 0.7, scale: 1.1 }}
                   title={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                 >
