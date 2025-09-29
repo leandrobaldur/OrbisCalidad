@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion'; // Mantenemos AnimatePresence para el modal importado
 import MapaBolivia from './mapaBolivia';
+import EmpresaBuscador from './empresaBuscador';
+import EmpresaLista from './empresaLista';
+import EmpresaModal from './empresaModal'; // Importamos el modal refactorizado
 
-// --- Datos Estáticos (sin cambios) ---
+// --- Datos Estáticos (con Hitos actualizados) ---
 const mockEmpresasResumen = [
   {
     id_empresa: 1,
@@ -13,6 +16,11 @@ const mockEmpresasResumen = [
     sedes: [{ ciudad: 'La Paz', departamento: 'La Paz' }],
     descripcion: 'Empresa dedicada a la creación de software innovador y soluciones tecnológicas.',
     urlLogo: 'https://res.cloudinary.com/diswqpy8v/image/upload/v1692290483/logos/innovatech_logo.png',
+    hitos: [
+      { nombre: 'Lanzamiento de Plataforma', fecha: '2015' },
+      { nombre: 'Alianza Estratégica Regional', fecha: '2020' },
+      { nombre: 'Certificación ISO 27001', fecha: '2023' },
+    ],
   },
   {
     id_empresa: 2,
@@ -23,6 +31,10 @@ const mockEmpresasResumen = [
     sedes: [{ ciudad: 'Santa Cruz', departamento: 'Santa Cruz' }],
     descripcion: 'Especialistas en la producción y exportación de productos agrícolas orgánicos y sostenibles.',
     urlLogo: 'https://res.cloudinary.com/diswqpy8v/image/upload/v1692290547/logos/agro_futuro.png',
+    hitos: [
+      { nombre: 'Primera Exportación', fecha: '1980' },
+      { nombre: 'Adopción de Tecnologías Sostenibles', fecha: '2018' },
+    ],
   },
   {
     id_empresa: 3,
@@ -33,6 +45,9 @@ const mockEmpresasResumen = [
     sedes: [{ ciudad: 'Cochabamba', departamento: 'Cochabamba' }],
     descripcion: 'Compañía con una amplia experiencia en la construcción de infraestructuras civiles y residenciales a gran escala.',
     urlLogo: 'https://res.cloudinary.com/diswqpy8v/image/upload/v1692290610/logos/atlas_logo.jpg',
+    hitos: [
+      { nombre: 'Proyecto de Infraestructura Nacional', fecha: '2005' },
+    ],
   },
   {
     id_empresa: 4,
@@ -63,6 +78,12 @@ const mockEmpresasResumen = [
     sedes: [{ ciudad: 'Santa Cruz', departamento: 'Santa Cruz' }],
     descripcion: 'Líderes en el sector de transporte y logística, con una amplia red de distribución nacional e internacional.',
     urlLogo: 'https://res.cloudinary.com/diswqpy8v/image/upload/v1692290650/logos/logistica_total.png',
+    hitos: [
+      { nombre: 'Ampliación de Flota Norte', fecha: '2000' },
+      { nombre: 'Apertura de Centro en Tarija', fecha: '2008' },
+      { nombre: 'Digitalización de Servicios', fecha: '2015' },
+      { nombre: 'Socio Logístico Principal', fecha: '2022' },
+    ],
   },
   {
     id_empresa: 7,
@@ -135,6 +156,7 @@ const EmpresasPanel = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedEmpresa, setSelectedEmpresa] = useState(null);
+  const [vistaGrid, setVistaGrid] = useState(false); // false = Vertical/Lista, true = Cuadrícula/Grid
 
   const mapEmpresaResumen = (e) => ({
     id: e.id_empresa,
@@ -144,6 +166,7 @@ const EmpresasPanel = () => {
     descripcion: e.descripcion || 'Descripción no disponible.',
     departamento: e.sedes?.[0]?.departamento || '',
     imagen: e.urlLogo ? (e.urlLogo.startsWith('http') ? e.urlLogo : `${CLOUDINARY_BASE_URL}/${e.urlLogo}`) : 'https://via.placeholder.com/300.png?text=Sin+Imagen',
+    hitos: e.hitos || [], 
   });
 
   useEffect(() => {
@@ -173,11 +196,11 @@ const EmpresasPanel = () => {
         (e.rubro || '').toLowerCase().includes(term) ||
         (e.departamento || '').toLowerCase().includes(term)
       );
-    } 
+    }
     else if (departamentoActivo) {
       lista = lista.filter(e => e.departamento === departamentoActivo);
     }
-    
+
     setEmpresas(lista);
   }, [fullEmpresas, busqueda, departamentoActivo]);
 
@@ -191,130 +214,60 @@ const EmpresasPanel = () => {
     setSelectedEmpresa(null);
   };
 
-  const EmpresaCard = ({ empresa, onClick }) => (
-    <motion.div
-      className="relative bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer"
-      whileHover={{ scale: 1.02 }}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      onClick={() => onClick(empresa)}
-    >
-      <div className="relative h-32 w-full flex-shrink-0">
-        <img
-          src={empresa.imagen}
-          alt={`Logo de ${empresa.nombre}`}
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-          <h3 className="text-white text-lg font-bold text-center p-2">
-            {empresa.nombre}
-          </h3>
-        </div>
-      </div>
-      <div className="p-4">
-        <p className="text-sm text-gray-600">{empresa.rubro}</p>
-        <p className="text-sm text-gray-500">{empresa.departamento}</p>
-      </div>
-    </motion.div>
-  );
-
-  const EmpresaModal = ({ empresa, onClose }) => {
-    if (!empresa) return null;
-    return (
-      <motion.div
-        className="absolute inset-0 bg-white rounded-lg p-6 shadow-xl flex flex-col items-center justify-center overflow-y-auto z-10" // <-- z-10 añadido
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.3 }}
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition-colors"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-        <div className="text-center mb-6">
-          <h2 className="text-3xl font-bold text-gray-900">{empresa.nombre}</h2>
-          <p className="text-lg text-gray-600">{empresa.rubro}</p>
-          <p className="text-sm text-gray-500 italic">"{empresa.slogan}"</p>
-        </div>
-        <div className="w-full flex-shrink-0 mb-4 rounded-lg overflow-hidden">
-          <img
-            src={empresa.imagen}
-            alt={`Logo de ${empresa.nombre}`}
-            className="w-full h-48 object-cover"
-          />
-        </div>
-        <div className="w-full text-gray-700 text-center">
-          <p className="text-base mb-2">{empresa.descripcion}</p>
-          <p className="text-sm">
-            <span className="font-semibold">Departamento:</span> {empresa.departamento}
-          </p>
-        </div>
-      </motion.div>
-    );
+  const handleBusquedaChange = (e) => {
+    setBusqueda(e.target.value);
   };
-  
+
+  const toggleVista = () => {
+    setVistaGrid(prev => !prev);
+  };
+
   return (
     <div className="p-4 flex flex-col md:flex-row gap-6 h-screen overflow-hidden">
-      {/* Columna Izquierda: Mapa */}
-      <div className="w-full md:w-1/2 lg:w-1/2 bg-gray-100 rounded-lg p-4 shadow-md flex-shrink-0 flex flex-col">
-        <h2 className="text-2xl font-bold mb-4">Empresas por Departamento</h2>
-        <div className="flex-grow w-full h-full">
+      {/* Columna Izquierda: Mapa (Layout y altura reducida) */}
+      <div className="w-full md:w-1/2 lg:w-1/2 bg-gray-100 rounded-lg p-4 shadow-md flex-shrink-0 flex flex-col h-full">
+        <h2 className="text-2xl font-bold mb-4 flex-shrink-0">Empresas por Departamento</h2>
+
+        {/* CONTENEDOR DEL MAPA */}
+        <div className="w-full h-[68%] flex-shrink-0">
           <MapaBolivia
             onDepartamentoClick={handleDepartamentoClick}
             empresas={fullEmpresas}
           />
         </div>
+
+        {/* ESPACIO DE RELLENO */}
+        <div className="flex-grow">
+          {/* Información adicional o vacío */}
+        </div>
       </div>
 
       {/* Columna Derecha: Buscador y Empresas */}
       <div className="relative w-full md:w-1/2 lg:w-1/2 flex-grow flex flex-col h-full z-0">
-        {/* Modal de la empresa - se renderiza por encima de todo */}
+        {/* Modal de la empresa */}
         <AnimatePresence>
           {showModal && (
+            // 💡 Llamada al componente importado
             <EmpresaModal empresa={selectedEmpresa} onClose={handleCloseModal} />
           )}
         </AnimatePresence>
 
-        {/* Barra de búsqueda */}
-        <div className="mb-4 flex-shrink-0">
-          <input
-            type="text"
-            placeholder="Buscar por nombre, rubro o departamento..."
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-            className="w-full px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
+        {/* BUSCADOR */}
+        <EmpresaBuscador
+          busqueda={busqueda}
+          onBusquedaChange={handleBusquedaChange}
+          vistaGrid={vistaGrid}
+          onVistaToggle={toggleVista}
+        />
 
-        {/* Contenedor de las empresas con scroll */}
-        <div className="flex-grow overflow-y-auto pr-2 z-0"> 
-          {loading ? (
-            <div className="text-center p-8">Cargando empresas...</div>
-          ) : (
-            <div className="grid gap-4">
-              <AnimatePresence>
-                {empresas.length > 0 ? (
-                  empresas.map((e) => (
-                    <EmpresaCard key={e.id} empresa={e} onClick={handleCardClick} />
-                  ))
-                ) : (
-                  <motion.div
-                    className="p-8 text-center text-gray-500"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                  >
-                    No se encontraron empresas para esta búsqueda o departamento.
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
-        </div>
+        {/* LISTA DE EMPRESAS */}
+        <EmpresaLista
+          empresas={empresas}
+          loading={loading}
+          vistaGrid={vistaGrid}
+          onCardClick={handleCardClick}
+        />
+
       </div>
     </div>
   );
