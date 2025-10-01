@@ -159,8 +159,12 @@ const ContactoPage = () => {
                   `}
                 >
                   <div className="flex items-center gap-3">
-                    {/* Icono de la institución */}
-                    <item.icon className="w-4 h-4 text-[#072D42] opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
+                    {/* Icono de la institución CON CONTORNO */}
+                    <div className="relative">
+                      <item.icon className="w-4 h-4 text-[#072D42] opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
+                      {/* Contorno sutil alrededor del icono */}
+                      <div className="absolute inset-0 rounded-sm border border-[#072D42]/30 group-hover:border-[#072D42]/50 transition-colors duration-300"></div>
+                    </div>
                     
                     {/* Texto del enlace */}
                     <span className="tracking-widest text-sm text-[#072D42] font-montserrat">
@@ -170,7 +174,6 @@ const ContactoPage = () => {
                   
                   {/* Icono de enlace externo */}
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
-                    
                     <ExternalLink className="w-3 h-3 text-[#072D42]" />
                   </div>
                 </a>
@@ -190,7 +193,12 @@ const ContactoPage = () => {
                 `}
               >
                 <div className="flex items-center gap-3">
-                  <Users className="w-4 h-4 text-[#072D42] opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
+                  {/* Icono con contorno */}
+                  <div className="relative">
+                    <Users className="w-4 h-4 text-[#072D42] opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
+                    {/* Contorno sutil alrededor del icono */}
+                    <div className="absolute inset-0 rounded-sm border border-[#072D42]/30 group-hover:border-[#072D42]/50 transition-colors duration-300"></div>
+                  </div>
                   <span className="tracking-widest text-sm text-[#072D42] font-montserrat">
                     Contacto General
                   </span>
@@ -274,35 +282,43 @@ const ContactoPage = () => {
                     transition={{ duration: 0.6, delay: 0.8 + idx * 0.2 }}
                     whileHover={{ scale: 1.02 }}
                   >
-                    {/* Icono superior */}
+                    {/* Icono superior CON CONTORNO */}
                     <div className="mb-6 transform group-hover:-translate-y-2 transition-transform duration-500">
-                      <div className="w-16 h-16 rounded-full bg-[#072D42] group-hover:bg-white/10 flex items-center justify-center transition-colors duration-500">
+                      <div className="relative w-16 h-16 rounded-full bg-[#WHITE] group-hover:bg-white/10 flex items-center justify-center transition-colors duration-500">
                         <Icon className="w-8 h-8 text-beige group-hover:text-white transition-colors duration-500" />
+                        {/* Contorno alrededor del icono circular */}
+                        <div className="absolute inset-0 rounded-full border-2 border-beige/30 group-hover:border-white/50 transition-colors duration-500"></div>
                       </div>
                     </div>
 
-                    {/* Imagen principal */}
+                    {/* Imagen principal CON CONTORNO */}
                     <div className="relative mb-8">
-                      <img 
-                        src={src} 
-                        alt={alt} 
-                        className="w-32 h-32 md:w-36 md:h-36 object-contain transition-all duration-500 group-hover:scale-110 group-hover:brightness-110" 
-                      />
+                      <div className="relative">
+                        <img 
+                          src={src} 
+                          alt={alt} 
+                          className="w-32 h-32 md:w-36 md:h-36 object-contain transition-all duration-500 group-hover:scale-110 group-hover:brightness-110" 
+                        />
+                        {/* Contorno sutil alrededor de la imagen */}
+                        <div className="absolute inset-0 border border-[#072D42]/20 rounded-lg group-hover:border-white/30 transition-colors duration-500"></div>
+                      </div>
                       
-                      {/* Overlay de QR al hover */}
+                      {/* Overlay de QR al hover - CENTRADO */}
                       {hoverIndex === idx && (
                         <motion.div 
-                          className="absolute top-1/2 left-full transform -translate-y-1/2 ml-6 bg-white p-4 rounded-2xl shadow-2xl z-10 w-40 h-40 flex items-center justify-center border border-[#072D42]/20"
-                          initial={{ opacity: 0, x: -20, scale: 0.8 }}
-                          animate={{ opacity: 1, x: 0, scale: 1 }}
-                          exit={{ opacity: 0, x: -20, scale: 0.8 }}
+                          className="absolute inset-0 flex items-center justify-center z-10"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
                           transition={{ duration: 0.3 }}
                         >
-                          <img 
-                            src={hoverImg} 
-                            alt={`QR de ${alt}`} 
-                            className="max-w-full max-h-full object-contain" 
-                          />
+                          <div className="bg-white p-4 rounded-2xl shadow-2xl w-40 h-40 flex items-center justify-center border border-[#072D42]/20">
+                            <img 
+                              src={hoverImg} 
+                              alt={`QR de ${alt}`} 
+                              className="max-w-full max-h-full object-contain" 
+                            />
+                          </div>
                         </motion.div>
                       )}
                     </div>
