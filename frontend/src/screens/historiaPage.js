@@ -3,7 +3,7 @@ import AboutUsContainer from "../components/AboutUs/AboutUsContainer";
 
 const AboutUsPage = () => {
   return (
-    <div className="min-h-screen bg-[#F4E9D7]">
+    <div className=" bg-[#FAF8F5] ">
       <AboutUsContainer />
     </div>
   );

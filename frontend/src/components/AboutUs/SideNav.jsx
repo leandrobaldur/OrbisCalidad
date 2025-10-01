@@ -1,108 +1,105 @@
-import { useEffect, useMemo, useState } from "react";
-import { cn } from "../lib/utils";
+import React, { useEffect, useMemo, useState } from "react";
+import PropTypes from "prop-types";
 
-export default function SideNav({ sections }) {
-  const [active, setActive] = useState(sections[0]?.id ?? null);
+/**
+ * Paleta de colores corporativa.
+ * @const
+ */
+const COLORS = {
+  navy: '#072d42',
+  beige: '#F4E9D7',
+};
 
-  const ids = useMemo(() => sections.map((s) => s.id), [sections]);
+/**
+ * Componente de navegación lateral que resalta la sección activa en la página.
+ * Es ideal para páginas de formato largo ("landing pages") o documentación.
+ * @param {{sections: Array<{id: string, label: string}>}} props
+ */
+export default function CorporateSideNav({ sections }) {
+  const [activeSection, setActiveSection] = useState(sections[0]?.id ?? null);
+
+  // Memoizamos los IDs para optimizar el rendimiento y evitar re-cálculos.
+  const sectionIds = useMemo(() => sections.map((s) => s.id), [sections]);
 
   useEffect(() => {
-    const elements = ids
+    const elements = sectionIds
       .map((id) => document.getElementById(id))
-      .filter((el) => Boolean(el));
+      .filter((el) => el !== null);
 
     if (elements.length === 0) return;
 
-    const handleInitial = () => {
-      const byTop = [...elements].sort((a, b) => Math.abs(a.getBoundingClientRect().top) - Math.abs(b.getBoundingClientRect().top))[0];
-      if (byTop?.id) setActive(byTop.id);
-    };
-
-    handleInitial();
-
+    // Se utiliza IntersectionObserver para detectar de manera eficiente qué sección está visible.
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
+        const visibleEntry = entries
+          .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target && visible.target.id) {
-          setActive(visible.target.id);
+        
+        if (visibleEntry) {
+          setActiveSection(visibleEntry.target.id);
         }
       },
       {
-        root: null,
-        rootMargin: "-45% 0px -45% 0px",
-        threshold: [0.2, 0.4, 0.6, 0.8, 1],
+        // El margen negativo asegura que la sección se active cuando esté más centrada en la pantalla.
+        rootMargin: "-40% 0px -40% 0px",
+        threshold: 0.2, // Un umbral bajo es suficiente para activar el cambio.
       }
     );
 
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, [ids]);
+    elements.forEach((element) => observer.observe(element));
 
-  const onClick = (id) => (e) => {
-    e.preventDefault();
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
-    setActive(id);
+    // Limpieza al desmontar el componente para evitar fugas de memoria.
+    return () => observer.disconnect();
+  }, [sectionIds]);
+
+  /**
+   * Maneja el clic en un enlace de navegación, realizando un scroll suave a la sección.
+   * @param {string} id - El ID del elemento de la sección a la que se navegará.
+   */
+  const handleScrollTo = (id) => (event) => {
+    event.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      setActiveSection(id);
+    }
   };
 
   return (
     <nav
-      aria-label="Secciones"
-      className="hidden md:flex fixed bg-[#F4E9D7] left-0 top-25 bottom-25 z-70 w-auto min-w-[180px] max-w-[220px] px-3"
+      aria-label="Navegación de secciones"
+      className="hidden md:flex fixed left-0 top-0 bottom-0 z-50 w-[240px] p-6"
     >
-      <div className="h-full rounded-r-lg border-r border-b border-t border-[#072D42]/10 bg-white/90 backdrop-blur-md p-4 flex-1">
-        <ul className="flex flex-col gap-2">
-          {sections.map((s) => {
-            const isActive = active === s.id;
+      <div 
+        className="h-full w-full rounded-lg p-4 flex flex-col backdrop-blur-md"
+        style={{ backgroundColor: 'rgba(244, 233, 215, 0.85)', border: `1px solid ${COLORS.navy}20` }}
+      >
+        <h2 
+          className="text-lg font-semibold mb-4 pb-2"
+          style={{ color: COLORS.navy, borderBottom: `1px solid ${COLORS.navy}30` }}
+        >
+          Contenido
+        </h2>
+        <ul className="flex flex-col space-y-2">
+          {sections.map((section) => {
+            const isActive = activeSection === section.id;
             return (
-              <li key={s.id} className="flex">
-                <a 
-                  href={`#${s.id}`} 
-                  onClick={onClick(s.id)} 
-                  className="group block flex-1"
+              <li key={section.id}>
+                <a
+                  href={`#${section.id}`}
+                  onClick={handleScrollTo(section.id)}
+                  className={`flex items-center w-full p-2 rounded-md transition-all duration-200 ease-in-out border-l-4 ${
+                    isActive
+                      ? 'font-semibold'
+                      : 'hover:bg-white/50'
+                  }`}
+                  style={{
+                    color: COLORS.navy,
+                    borderColor: isActive ? COLORS.navy : 'transparent',
+                    backgroundColor: isActive ? 'white' : 'transparent',
+                  }}
                 >
-                  <div
-                    className={cn(
-                      "rounded-lg p-[1px] transition-all w-full",
-                      isActive
-                        ? "bg-[#072D42]"
-                        : "bg-transparent group-hover:bg-[#072D42]/10"
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        "rounded-md px-3 py-2 transition-all w-full",
-                        isActive 
-                          ? "bg-white border-l-4 border-[#072D42]" 
-                          : "bg-transparent group-hover:bg-white/50"
-                      )}
-                    >
-                      <span className="relative inline-flex items-center gap-2 w-full">
-                        <span
-                          className={cn(
-                            "font-medium text-sm flex-1 transition-colors",
-                            isActive
-                              ? "text-[#072D42] font-semibold"
-                              : "text-[#072D42]/70 group-hover:text-[#072D42]"
-                          )}
-                        >
-                          {s.label}
-                        </span>
-                        <span
-                          aria-hidden
-                          className={cn(
-                            "absolute -bottom-1 left-0 h-0.5 rounded-full transition-all",
-                            isActive
-                              ? "w-full bg-[#072D42]"
-                              : "w-0 bg-[#072D42] group-hover:w-full"
-                          )}
-                        />
-                      </span>
-                    </div>
-                  </div>
+                  {section.label}
                 </a>
               </li>
             );
@@ -112,3 +109,13 @@ export default function SideNav({ sections }) {
     </nav>
   );
 }
+
+// PropTypes para asegurar la estructura de datos correcta y mejorar la mantenibilidad.
+CorporateSideNav.propTypes = {
+  sections: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+};
