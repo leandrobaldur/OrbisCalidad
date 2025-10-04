@@ -3,94 +3,80 @@ import React from "react";
 const ContenedorLateral = ({
   subtitulo,
   imagen,
-  ancho,
-  alto,
-  ovaloRedondez,
-  cuadroRedondez,
+  ancho = "100%",
+  alto = "clamp(400px, 45vh, 500px)",
+  ovaloRedondez = "20px",
+  cuadroRedondez = "12px",
+  className = ""
 }) => {
-  // Responsive oval dimensions
-  const ovaloAncho = "clamp(200px, 40%, 300px)";
-  const ovaloAlto = "clamp(40px, 8vh, 60px)";
-
   return (
     <div
-      className="relative flex flex-col items-center justify-start z-10 ml-auto bg-surface-elevated border border-stroke"
+      className={`relative flex flex-col items-center justify-start bg-white border border-[#072D42]/20 shadow-xl transition-all duration-300 hover:shadow-2xl hover:border-[#072D42]/30 ${className}`}
       style={{
         width: ancho,
         height: alto,
-        borderColor: '#072D42', // Color primary (azul marino) de la paleta
-        borderWidth: 'clamp(2px, 0.618vh, 4px)',
-        borderStyle: 'solid',
-        borderRadius: `${cuadroRedondez} 0 0 ${cuadroRedondez}`,
-        marginTop: "clamp(2rem, 6.18vh, 4rem)",
+        borderRadius: cuadroRedondez,
       }}
     >
-      {/* Contenedor padre que incluye el óvalo y el contenido */}
-      <div className="relative w-full h-full flex flex-col items-center justify-start">
-        {/* Subtítulo en óvalo - Ajustado para mejor ajuste del texto */}
+      {/* Contenedor principal */}
+      <div className="relative w-full h-full flex flex-col items-center justify-start p-4 md:p-6">
+        
+        {/* Óvalo del subtítulo - Diseño profesional */}
         <div
-          className="absolute bg-surface-elevated shadow-md px-3 md:px-6 lg:px-8 py-2 md:py-3 flex items-center justify-center border border-stroke"
+          className="absolute bg-white border border-[#072D42]/20 px-4 md:px-6 py-2 md:py-3 flex items-center justify-center shadow-lg z-10"
           style={{
-            letterSpacing: "clamp(0.05rem, 0.1rem, 0.15rem)", // Reducido para mejor ajuste
-            fontSize: "clamp(0.75rem, 1vw, 1.25rem)", // Reducido para que entre mejor
             borderRadius: ovaloRedondez,
             left: "50%",
-            top: "clamp(-10%, -8%, -5%)", // Ajustado para mejor posicionamiento
+            top: "-16px",
             transform: "translateX(-50%)",
-            maxWidth: "clamp(250px, 45%, 350px)", // Aumentado para acomodar el texto
-            width: "auto",
-            minWidth: "clamp(220px, 40%, 300px)", // Aumentado
-            height: "clamp(45px, 9vh, 65px)", // Aumentado para acomodar el texto
-            borderColor: '#E5E7EB',
-            borderWidth: 'clamp(1px, 0.1618vh, 2px)',
-            borderStyle: 'solid',
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
+            minWidth: "180px",
+            maxWidth: "90%",
           }}
         >
-          <span className="font-bodoni text-black font-bold text-center leading-tight">
+          <span className="font-sans font-semibold text-[#072D42] text-sm md:text-base uppercase tracking-wide text-center">
             {subtitulo}
           </span>
         </div>
 
-        {/* Contenido dentro del contenedor - Espaciado áureo ajustado */}
-        <div
-          className="w-full text-sm text-center"
-          style={{
-            marginTop: "clamp(3.5rem, 9vh, 6rem)", // Aumentado para compensar el óvalo más grande
-          }}
-        >
-          {/* Contenedor de la imagen - Dimensiones áureas con márgenes */}
-          <div
-            className="flex justify-center items-center relative"
+        {/* Contenedor de la imagen con marco profesional */}
+        <div className="w-full h-full flex items-center justify-center mt-6 md:mt-8">
+          <div className="relative w-full h-full bg-[#F4E9D7]/30 border border-[#072D42]/10 rounded-lg overflow-hidden group"
             style={{
-              width: "clamp(200px, 55%, 380px)", // Reducido para dar espacio a márgenes
-              height: "clamp(140px, 35vh, 280px)", // Reducido para dar espacio a márgenes
-              margin: "0 auto",
-              padding: "clamp(1rem, 2.5vw, 2rem)", // Márgenes internos
-              overflow: "hidden",
-              borderRadius: ovaloRedondez,
+              borderRadius: "10px",
             }}
           >
-            <img
-              src={imagen}
-              alt="contenido dinámico"
-              className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
-              style={{
-                borderRadius: ovaloRedondez,
-                display: "block",
-                maxWidth: "100%",
-                maxHeight: "100%",
-                objectFit: "cover",
-              }}
-            />
+            {/* Imagen que se ajusta al contenedor */}
+            <div className="w-full h-full relative overflow-hidden">
+              <img
+                src={imagen}
+                alt="Contenido visual"
+                className="object-cover w-full h-full transition-all duration-500 group-hover:scale-105"
+                style={{
+                  borderRadius: "8px",
+                }}
+                onError={(e) => {
+                  e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI0MCIgZmlsbD0iI0Y0RTlENyIgc3Ryb2tlPSIjMDcyRDQyIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSI4MCIgcj0iMTIiIGZpbGw9IiMwNzJENDIiLz4KICA8cGF0aCBkPSJNNzAgMTMwQzg1IDE1MCAxMTUgMTUwIDEzMCAxMzAiIHN0cm9rZT0iIzA3MkQ0MiIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+";
+                }}
+              />
+              
+              {/* Overlay sutil al hover */}
+              <div className="absolute inset-0 bg-[#072D42]/0 group-hover:bg-[#072D42]/5 transition-all duration-300" />
+            </div>
+
+            {/* Efecto de esquina decorativa */}
+            <div className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-[#F29E38] opacity-60" />
+            <div className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-[#F29E38] opacity-60" />
           </div>
         </div>
+
+        {/* Línea decorativa inferior */}
+        <div className="absolute bottom-4 left-1/2 transform -translateX(-50%) w-20 h-1 bg-[#F29E38] rounded-full" />
       </div>
+
+      {/* Borde lateral acentuado */}
+      <div className="absolute right-0 top-0 h-full w-1 bg-gradient-to-b from-[#F29E38] to-[#072D42] opacity-80" />
     </div>
   );
 };
 
 export default ContenedorLateral;
-
