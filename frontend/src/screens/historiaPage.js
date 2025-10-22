@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Target, Rocket, Eye, History, Telescope, ChevronRight } from "lucide-react";
+import { Rocket, Eye, History, Telescope, ChevronRight, ArrowRightToLine, Mountain, BookOpen } from "lucide-react";
 
 // Constantes de datos con iconos
 const mainSections = [
   {
     id: "objective",
-    title: "OBJECTIVO",
+    title: "OBJETIVO",
     displayTitle: "Objetivo",
-    icon: Target,
+    icon: ArrowRightToLine, // Diana con flecha
     body: ( 
       <p> 
         Preservamos, organizamos y exhibimos el patrimonio corporativo de empresas bolivianas con más de 40 años de trayectoria. 
@@ -21,7 +21,7 @@ const mainSections = [
     id: "mission",
     title: "MISIÓN",
     displayTitle: "Misión",
-    icon: Rocket,
+    icon: Mountain, // Montaña con bandera
     body: ( 
       <p> 
         Proteger la memoria de la empresa boliviana mediante documentación rigurosa, narrativas históricas cuidadosas y diseño atemporal, 
@@ -34,7 +34,7 @@ const mainSections = [
     id: "vision",
     title: "VISIÓN",
     displayTitle: "Visión",
-    icon: Eye,
+    icon: Eye, // Mantenido
     body: ( 
       <p> 
         Un archivo nacional prestigioso donde la historia de la excelencia empresarial sea atesorada, sirviendo como referencia para 
@@ -47,7 +47,7 @@ const mainSections = [
     id: "origin",
     title: "ORIGEN",
     displayTitle: "Origen",
-    icon: History,
+    icon: History, // Mantenido (similar a la imagen)
     body: ( 
       <p> 
         Nacidos del compromiso con la memoria cultural, surgimos cuando historiadores, archiveros e innovadores se unieron alrededor 
@@ -62,12 +62,12 @@ const howItStartedSection = {
   id: "how",
   title: "NUESTRA HISTORIA",
   displayTitle: "Nuestra Historia",
-  icon: Telescope,
+  icon: BookOpen, // Enciclopedia/libro abierto
   body: (
     <div className="w-full">
       <div className="relative py-6 px-4 md:px-0">
-        <div className="hidden md:block absolute left-0 right-0 top-10 h-[3px] bg-white" />
-        <div className="block md:hidden absolute left-[23px] top-6 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-[#072D42]/20 to-transparent" />
+        <div className="hidden md:block absolute left-0 right-0 top-10 h-0.5 bg-white" />
+        <div className="block md:hidden absolute left-6 top-6 bottom-0 w-px bg-gradient-to-b from-transparent via-[#072D42]/20 to-transparent" />
         <ol className="relative z-10 flex flex-col md:flex-row gap-12 md:gap-10 lg:gap-16">
           {[
             { year: "1980s", text: "Primeros archivos fundacionales recolectados en diversos sectores empresariales." },
@@ -76,7 +76,7 @@ const howItStartedSection = {
             { year: "2010s", text: "Exhibiciones interactivas y expansión institucional a nivel nacional." },
             { year: "Actualidad", text: "Una plataforma viva que conecta el legado con la innovación empresarial." },
           ].map((m) => (
-            <li key={m.year} className="md:min-w-[160px] md:text-center">
+            <li key={m.year} className="md:min-w-[10rem] md:text-center">
               <div className="hidden md:flex flex-col items-center gap-3">
                 <div className="relative">
                   <span className="block w-3 h-3 rounded-full border-2 border-[#072D42]" />
@@ -104,7 +104,7 @@ const howItStartedSection = {
 };
 
 const allSections = [...mainSections, howItStartedSection];
-const SCROLL_OFFSET = 150;
+const SCROLL_OFFSET = 9.375; // 150px en rem (150/16 = 9.375rem)
 
 // Estilos de fuentes
 const fontStyles = `
@@ -192,7 +192,7 @@ const AboutUsPage = () => {
     if (!el) return;
     
     const elementPosition = el.getBoundingClientRect().top + window.scrollY;
-    const offsetPosition = elementPosition - SCROLL_OFFSET;
+    const offsetPosition = elementPosition - (SCROLL_OFFSET * 16); // Convertir rem a px
     
     window.scrollTo({ top: offsetPosition, behavior: "smooth" });
     setActive(id);
@@ -202,10 +202,19 @@ const AboutUsPage = () => {
     transform: `translate3d(0, ${scrollY * 0.4}px, 0)`
   };
 
+  // Componente para el icono de fondo a la derecha (solo para mainSections)
+  const BackgroundIcon = ({ icon: Icon, className = "" }) => {
+    return (
+      <div className={`absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none ${className}`}>
+        <Icon className="w-32 h-32 md:w-48 md:h-48 opacity-10 text-[#072D42] group-hover:text-white transition-colors duration-500" />
+      </div>
+    );
+  };
+
   return (
     <div className="bg-[#FAF8F5] text-[#072D42] min-h-screen font-sans [&_a]:no-underline [&_a:hover]:no-underline">
       {/* HEADER CON EFECTO PARALLAX OPTIMIZADO */}
-      <div className="h-[80vh] min-h-[400px] max-h-[800px] mb-9 overflow-hidden relative">
+      <div className="h-[20vh] min-h-[25rem] max-h-[50rem] mb-9 overflow-hidden relative">
         <header className="relative h-full">
           <div 
             className="absolute inset-0 w-full h-full"
@@ -268,21 +277,8 @@ const AboutUsPage = () => {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-16 lg:items-start">
-          {/* ASIDE PARA DESKTOP CON ICONOS MEJORADOS */}
-          <aside className="hidden lg:block lg:w-1/5 sticky top-1/4">
-            <div 
-              className={`
-                transition-all duration-700 ease-in-out
-                ${isHeaderShrunk 
-                  ? 'opacity-100' 
-                  : 'opacity-0 -translate-y-4 pointer-events-none'
-                }
-              `}
-            >
-              <h2 className="font-playfair text-3xl leading-tight mb-4 text-[#072D42]">Nosotros</h2>
-              <div className="h-px w-20 bg-[#072D42]/50 mb-6"></div>
-            </div>
-
+          {/* ASIDE PARA DESKTOP CON ICONOS MEJORADOS - MÁS PEQUEÑO */}
+          <aside className="hidden lg:block lg:w-1/6 sticky top-40">
             <nav className="flex lg:flex-col gap-0 rounded-lg overflow-hidden border border-[#9298A6]/30 bg-white/10">
               {allSections.map((s) => (
                 <a
@@ -292,13 +288,13 @@ const AboutUsPage = () => {
                   className={`
                     relative group flex items-center justify-between py-3 px-4 transition-all duration-300
                     after:content-[''] after:absolute after:left-0 after:bottom-0
-                    after:w-full after:h-[1px] after:bg-[#9298A6]
+                    after:w-full after:h-px after:bg-[#9298A6]
                     after:origin-center after:transition-transform after:duration-300 after:ease-out
                     border-b border-[#9298A6]/20 last:border-b-0
                     hover:bg-[#9298A6]/10
                     ${
                       active === s.id 
-                        ? 'font-medium opacity-100 after:scale-x-100 bg-[#9298A6]/20'
+                        ? 'font-semibold  opacity-100 after:scale-x-100 bg-[#9298A6]/20'
                         : 'font-extralight opacity-70 hover:opacity-100 after:scale-x-0 hover:after:scale-x-100'
                     }
                   `}
@@ -308,9 +304,12 @@ const AboutUsPage = () => {
                     <s.icon className="w-4 h-4 text-[#072D42] opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
                     
                     {/* Texto con letra más fina */}
-                    <span className="tracking-widest text-sm text-[#072D42] font-montserrat font-extralight">
-                      {s.title}
-                    </span>
+                    <span className={`
+            tracking-widest text-sm text-[#072D42] font-montserrat
+            ${active === s.id ? 'font-semibold' : 'font-extralight'}
+          `}>
+            {s.title}
+          </span>
                   </div>
                   
                   {/* Flechita única que aparece al hacer hover */}
@@ -322,7 +321,7 @@ const AboutUsPage = () => {
             </nav>
           </aside>
 
-          <section className="w-full lg:w-4/5 flex flex-col gap-20">
+          <section className="w-full lg:w-5/6 flex flex-col gap-20">
             {mainSections.map((s) => (
               <div
                 key={s.id}
@@ -331,11 +330,14 @@ const AboutUsPage = () => {
                 className={`
                   scroll-mt-24 bg-white rounded-xl shadow-md border border-[#072D42]/20 hover:border-[#072D42] hover:shadow-lg 
                   overflow-hidden group hover:bg-[#072D42]
-                  transform transition-all duration-500 ease-out 
+                  transform transition-all duration-500 ease-out relative
                   ${revealedSections[s.id] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
                 `}
               >
-                <div className={`transition-opacity duration-300 ${active === s.id ? "opacity-100" : "opacity-80"}`}>
+                {/* ICONO DE FONDO A LA DERECHA - SOLO PARA MAIN SECTIONS */}
+                <BackgroundIcon icon={s.icon} />
+                
+                <div className={`transition-opacity duration-300 relative z-10 ${active === s.id ? "opacity-100" : "opacity-80"}`}>
                   <div className="flex flex-col md:flex-row">
                     {/* IMAGEN A LA IZQUIERDA - 35% SIN PADDING */}
                     {s.image && (
@@ -349,7 +351,7 @@ const AboutUsPage = () => {
                     )}
                     
                     {/* TEXTO A LA DERECHA - 65% CON PADDING - CON ANIMACIONES MEJORADAS */}
-                    <div className={s.image ? 'md:w-[65%] order-2 md:order-2 p-8 md:p-12 lg:p-16 text-center md:text-left' : 'w-full order-2 p-8 md:p-12 lg:p-16 text-center md:text-left'}>
+                    <div className={s.image ? 'md:w-[65%] order-2 md:order-2 p-8 md:p-12 lg:p-16 text-center md:text-left relative z-20' : 'w-full order-2 p-8 md:p-12 lg:p-16 text-center md:text-left relative z-20'}>
                       <div className="mb-8 flex flex-col items-center md:items-start overflow-hidden">
                         <div className="flex items-center gap-3 mb-4 flex-col md:flex-row w-full">
                           <s.icon className="w-6 h-6 text-[#072D42] group-hover:text-white transition-all duration-500 ease-out transform group-hover:scale-110 flex-shrink-0" />
@@ -364,8 +366,8 @@ const AboutUsPage = () => {
                         <div className="h-px w-20 bg-[#072D42] group-hover:bg-white transition-all duration-500 ease-out transform origin-left md:ml-9 mx-auto md:mx-0 group-hover:scale-x-150"></div>
                       </div>
                       
-                      {/* TEXTO CON FUENTE MODERNA */}
-                      <div className="font-inter text-lg leading-relaxed font-light tracking-wide text-[#072D42]/95 group-hover:text-white/95 transition-all duration-700 ease-out transform translate-x-0 group-hover:translate-x-2 max-w-prose mx-auto md:mx-0 text-justify md:text-left">
+                      {/* TEXTO CON FUENTE MODERNA - MANTIENE EL COLOR AZUL ORIGINAL */}
+                      <div className="font-inter text-lg leading-relaxed font-light tracking-wide text-[#072D42]/95 group-hover:text-white/95 transition-all duration-700 ease-out transform translate-x-0 group-hover:translate-x-2 max-w-prose mx-auto md:mx-0 text-justify md:text-left relative z-30">
                         {s.body}
                       </div>
                     </div>
@@ -374,7 +376,7 @@ const AboutUsPage = () => {
               </div>
             ))}
             
-            {/* Sección "Nuestra Historia" con icono */}
+            {/* Sección "Nuestra Historia" con nuevo icono de enciclopedia */}
             <div 
               id={howItStartedSection.id}
               ref={(el) => (sectionRefs.current[howItStartedSection.id] = el)}

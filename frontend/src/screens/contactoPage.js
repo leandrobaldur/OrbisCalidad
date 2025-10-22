@@ -91,7 +91,7 @@ const ContactoPage = () => {
   return (
     <div className="min-h-screen bg-beige font-inter [&_a]:no-underline [&_a:hover]:no-underline">
       {/* HEADER ELEGANTE CON PARALLAX */}
-      <div className="h-[80vh] min-h-[500px] max-h-[900px] mb-9 overflow-hidden relative">
+      <div className="h-[20vh] min-h-[25rem] max-h-[50rem] mb-9 overflow-hidden relative">
         <header className="relative h-full">
           {/* IMAGEN DE FONDO - REEMPLAZA LA URL POR LA QUE DESEES */}
           <div 
@@ -128,121 +128,14 @@ const ContactoPage = () => {
 
       <main className="px-10 py-0">
         <div className="flex flex-col lg:flex-row gap-16 lg:items-start">
-          {/* ASIDE ELEGANTE - STICKY NAVIGATION CON ICONOS DE ENLACE */}
-          <aside className="hidden lg:block lg:w-1/5 sticky top-1/4">
-            <div className={`
-              transition-all duration-700 ease-in-out
-              ${isHeaderShrunk 
-                ? 'opacity-100' 
-                : 'opacity-0 -translate-y-4 pointer-events-none'
-              }
-            `}>
-              <h2 className="font-playfair text-2xl leading-tight mb-4 text-[#072D42]">Contacto</h2>
-              <div className="h-px w-16 bg-[#072D42]/50 mb-6"></div>
-            </div>
-
-            <nav className="flex lg:flex-col gap-0 rounded-lg overflow-hidden border border-[#9298A6]/30 bg-white/10">
-              {items.map((item, index) => (
-                <a
-                  key={index}
-                  href={item.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`
-                    relative group flex items-center justify-between py-3 px-4 transition-all duration-300
-                    after:content-[''] after:absolute after:left-0 after:bottom-0
-                    after:w-full after:h-[1px] after:bg-[#9298A6]
-                    after:origin-center after:transition-transform after:duration-300 after:ease-out
-                    border-b border-[#9298A6]/20 last:border-b-0
-                    hover:bg-[#9298A6]/10
-                    font-light opacity-70 hover:opacity-100 after:scale-x-0 hover:after:scale-x-100
-                  `}
-                >
-                  <div className="flex items-center gap-3">
-                    {/* Icono de la institución CON CONTORNO */}
-                    <div className="relative">
-                      <item.icon className="w-4 h-4 text-[#072D42] opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
-                      {/* Contorno sutil alrededor del icono */}
-                      <div className="absolute inset-0 rounded-sm border border-[#072D42]/30 group-hover:border-[#072D42]/50 transition-colors duration-300"></div>
-                    </div>
-                    
-                    {/* Texto del enlace */}
-                    <span className="tracking-widest text-sm text-[#072D42] font-montserrat">
-                      {item.asideLabel}
-                    </span>
-                  </div>
-                  
-                  {/* Icono de enlace externo */}
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
-                    <ExternalLink className="w-3 h-3 text-[#072D42]" />
-                  </div>
-                </a>
-              ))}
-              
-              {/* Enlace adicional para contacto general */}
-              <a
-                href="#contacto"
-                className={`
-                  relative group flex items-center justify-between py-3 px-4 transition-all duration-300
-                  after:content-[''] after:absolute after:left-0 after:bottom-0
-                  after:w-full after:h-[1px] after:bg-[#9298A6]
-                  after:origin-center after:transition-transform after:duration-300 after:ease-out
-                  border-b border-[#9298A6]/20 last:border-b-0
-                  hover:bg-[#9298A6]/10
-                  font-light opacity-70 hover:opacity-100 after:scale-x-0 hover:after:scale-x-100
-                `}
-              >
-                <div className="flex items-center gap-3">
-                  {/* Icono con contorno */}
-                  <div className="relative">
-                    <Users className="w-4 h-4 text-[#072D42] opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
-                    {/* Contorno sutil alrededor del icono */}
-                    <div className="absolute inset-0 rounded-sm border border-[#072D42]/30 group-hover:border-[#072D42]/50 transition-colors duration-300"></div>
-                  </div>
-                  <span className="tracking-widest text-sm text-[#072D42] font-montserrat">
-                    Contacto General
-                  </span>
-                </div>
-                
-                <div className="opacity-0 group-hover:opacity-100 transition-all duration-300">
-                  <Link2 className="w-3 h-3 text-[#072D42]" />
-                </div>
-              </a>
-            </nav>
-
-            {/* Información adicional en el aside */}
-            <div className="mt-8 p-4 bg-white/5 rounded-lg border border-[#9298A6]/20">
-              <div className="flex items-center gap-2 mb-2">
-                <ExternalLink className="w-4 h-4 text-[#072D42]/70" />
-                <p className="font-inter text-xs text-[#072D42]/70 font-medium">
-                  Enlaces externos
-                </p>
-              </div>
-              <p className="font-inter text-xs text-[#072D42]/60 leading-tight">
-                Haz clic en cualquier institución para visitar su sitio web oficial.
-              </p>
-            </div>
-          </aside>
-
-          {/* CONTENIDO PRINCIPAL */}
-          <section className="w-full lg:w-4/5">
+          {/* CONTENIDO PRINCIPAL - AHORA TRANSPARENTE */}
+          <section className="w-full">
             {/* Header con líneas decorativas */}
-            <motion.header 
-              className="flex items-center gap-8 mb-16 justify-center"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[#072D42] to-transparent opacity-20"></div>
-              <h2 className="font-playfair text-xl md:text-2xl font-normal text-[#072D42] uppercase tracking-wider whitespace-nowrap">
-                ALIANZAS ESTRATÉGICAS
-              </h2>
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[#072D42] to-transparent opacity-20"></div>
-            </motion.header>
+            
 
-            {/* Contenido principal */}
+            {/* Contenido principal - AHORA TRANSPARENTE */}
             <motion.section 
-              className="bg-white p-8 md:p-12 lg:p-16 rounded-3xl shadow-lg border border-[#072D42]/10"
+              className="bg-transparent p-8 md:p-12 lg:p-16 rounded-3xl"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
