@@ -34,7 +34,7 @@ const Navbar = ({ loggedInUser }) => {
 
   return (
     <motion.nav
-      className="w-full fixed top-20 z-50 flex items-center justify-center bg-surface-elevated/95 backdrop-blur-sm border-b border-stroke shadow-sm py-4 px-6 md:px-10 lg:px-20"
+      className="w-full fixed top-24 z-50 flex items-center justify-center bg-surface-elevated/95 backdrop-blur-sm border-b border-stroke shadow-sm py-4 px-6 md:px-10 lg:px-20"
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}

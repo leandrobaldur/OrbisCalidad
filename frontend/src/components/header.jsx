@@ -107,33 +107,30 @@ function Header({ loggedInUser, onLogout, onLogin }) {
 
   return (
     <>
-      <header className="w-full fixed top-0 h-20 flex justify-between items-center px-4 md:px-10 bg-white/95 backdrop-blur-sm border-b border-gray-100 z-40">
+  <header className="w-full fixed top-0 h-24 flex justify-between items-center px-4 md:px-10 bg-primary backdrop-blur-sm z-40">
         {/* Izquierda: Logo */}
+        <div className="flex-1" />
+
+        {/* Centro: Título limpio */}
         <div
-          className="flex-1 flex items-center cursor-pointer"
+          className="flex items-center justify-center select-none cursor-pointer"
           onClick={() => navigate("/")}
+          title="Inicio"
         >
           <img
             src="/media/header/logo.png"
             alt="Logo Orbis Empresarial"
-            className="h-12 md:h-14 object-contain select-none"
+            className="h-16 sm:h-20 md:h-20 lg:h-24 object-contain"
             draggable={false}
           />
-        </div>
-
-        {/* Centro: Título limpio */}
-        <div className="flex items-center select-none">
-          <h1 className="font-serif text-xl sm:text-2xl md:text-3xl text-brand-dark font-normal tracking-wide">
-            Orbis Empresarial
-          </h1>
         </div>
 
         {/* Derecha: Icono Login y datos de usuario */}
         <div className="flex-1 flex justify-end items-center gap-4">
           <motion.img
-            src="/media/header/login.png"
+            src="/media/header/login-beige.svg"
             alt="Iniciar sesión"
-            className="h-10 w-10 cursor-pointer object-contain opacity-80 select-none"
+            className="h-10 w-10 cursor-pointer object-contain select-none"
             onClick={handleLoginClick}
             draggable={false}
             title="Iniciar sesión"

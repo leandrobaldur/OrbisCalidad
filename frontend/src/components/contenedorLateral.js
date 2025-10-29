@@ -21,7 +21,7 @@ const ContenedorLateral = ({
         borderColor: '#072D42', // Color primary (azul marino) de la paleta
         borderWidth: 'clamp(2px, 0.618vh, 4px)',
         borderStyle: 'solid',
-        borderRadius: `${cuadroRedondez} 0 0 ${cuadroRedondez}`,
+        borderRadius: `0 ${cuadroRedondez} ${cuadroRedondez} 0`,
         marginTop: "clamp(2rem, 6.18vh, 4rem)",
       }}
     >
