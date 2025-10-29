@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/static/css/main.8827a309.css",
+    "main.js": "/static/js/main.3562ea5f.js",
+    "static/media/guido.jpg": "/static/media/guido.9a291b1a8f8cc19d4c2c.jpg",
+    "static/media/bolivia.jpg": "/static/media/bolivia.b0bbe72ade6986de5afe.jpg",
+    "static/media/vita.jpg": "/static/media/vita.000df68f97791c6c7f70.jpg",
+    "static/media/logo.png": "/static/media/logo.591585b9be4bfe4e8cce.png",
+    "static/media/futbol.jpg": "/static/media/futbol.09f618735e9d19a92f40.jpg",
+    "static/media/ovando.jpg": "/static/media/ovando.108758f945a6db5e8266.jpg",
+    "static/media/RNSMiles-Light.otf": "/static/media/RNSMiles-Light.2a8678823157d87f1f8d.otf",
+    "static/media/jessica.jpg": "/static/media/jessica.8b4b05fe8325fc33f1d4.jpg",
+    "static/media/BodoniStd.otf": "/static/media/BodoniStd.50932b090dac5bf48789.otf",
+    "index.html": "/index.html",
+    "main.8827a309.css.map": "/static/css/main.8827a309.css.map",
+    "main.3562ea5f.js.map": "/static/js/main.3562ea5f.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.8827a309.css",
+    "static/js/main.3562ea5f.js"
+  ]
+}
