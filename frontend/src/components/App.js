@@ -9,9 +9,11 @@ import HomePage from '../screens/homePage';
 import EmpresasPage from '../screens/empresasPage';
 import ContactoPage from '../screens/contactoPage';
 import HistoriaPage from '../screens/historiaPage';
+import EquipoPage from '../screens/equipoPage.js'; // Importar el componente EquipoPage
 import EditorEmpresasPage from '../screens/editorEmpresasPage';
 import PanelEditorUsuarios from './panelEditorUsuarios_temp';
 import FooterBar from './footerBar.js';
+
 
 function RedirectDashboard() {
   useEffect(() => {
@@ -69,6 +71,7 @@ function App() {
             <Route path="/revistaPage" element={<RevistaPage />} />
             <Route path="/contacto" element={<ContactoPage />} />
             <Route path="/historia" element={<HistoriaPage />} />
+            <Route path="/equipo" element={<EquipoPage />} /> {/* Nueva ruta agregada */}
 
             <Route
               path="/dashboards"
@@ -139,4 +142,3 @@ function App() {
 }
 
 export default App;
-

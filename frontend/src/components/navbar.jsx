@@ -10,8 +10,11 @@ const Navbar = ({ loggedInUser }) => {
 
   const baseLinks = [
     { label: "NOSOTROS", path: "/historia" },
-    { label: "REVISTA", path: "/revistaPage" },
+    { label: "EQUIPO", path: "/equipo" },
     { label: "INICIO", path: "/" },
+    { label: "REVISTA", path: "/revistaPage" },
+    
+     // Nueva entrada agregada
     { label: "EMPRESAS", path: "/empresas" },
     { label: "CONTACTO", path: "/contacto" },
   ];

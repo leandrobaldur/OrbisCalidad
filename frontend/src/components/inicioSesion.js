@@ -18,6 +18,13 @@ const SIZES = {
   MODAL_PADDING: "clamp(1.2rem, 3vw, 1.8rem)", // Reducido de 4vw a 3vw
 };
 
+// --- DATOS ESTÁTICOS DE USUARIOS (CON ROL) ---
+const USUARIOS_STATICOS = [
+  { usuario: "admin", contrasenia: "admin123", id_rol: 1 },
+  { usuario: "user", contrasenia: "password456", id_rol: 2 },
+  { usuario: "test", contrasenia: "test789", id_rol: 2 },
+];
+
 // Componente del ícono de ojo (mostrar contraseña)
 const EyeIconShow = ({ color, size = SIZES.ICON_SIZE }) => (
   <svg
@@ -105,7 +112,28 @@ const InicioSesion = ({ onLogin, onClose }) => {
     }
 
     setLoading(true); // Activa el estado de carga
-    try {
+
+    //ESTATICOS
+    // --- LÓGICA DE LOGIN CON DATOS ESTÁTICOS ---
+    setTimeout(() => {
+      // Simula una demora de red de 1 a 2 segundos
+      const usuarioEncontrado = USUARIOS_STATICOS.find(
+        (user) => user.usuario === usuario
+      );
+
+      if (usuarioEncontrado && usuarioEncontrado.contrasenia === contrasenia) {
+        setMensaje("¡Sesión iniciada correctamente!");
+        onLogin(usuarioEncontrado); // Usa el objeto de usuario estático
+        setTimeout(() => {
+          setIsVisible(false);
+        }, 1500);
+      } else {
+        setMensaje("Credenciales incorrectas");
+      }
+      setLoading(false);
+    }, Math.random() * 1000 + 1000); // Demora aleatoria entre 1 y 2 segundos
+  };
+    /*try {
       // --- LA LLAMADA FETCH PARA EL LOGIN ESTÁ IMPLEMENTADA AQUÍ MISMO ---
       const res = await fetch("http://localhost:3000/usuarios/login", {
         method: "POST",
@@ -129,7 +157,7 @@ const InicioSesion = ({ onLogin, onClose }) => {
     } finally {
       setLoading(false); // Desactiva el estado de carga
     }
-  };
+  };*/
 
   // Función para cerrar el modal
   const handleClose = () => {

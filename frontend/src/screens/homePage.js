@@ -85,7 +85,7 @@ const HomePage = () => {
                   subtitulo="SEMANA DE ACTIVIDADES"
                   imagen="/media/homePage/work.jpeg"
                   ancho="100%"
-                  alto="clamp(35vh, 42vh, 55vh)"
+                  alto="clamp(100vh, 100vh, 100vh)"
                   ovaloRedondez="20px"
                   cuadroRedondez="10px"
                 />
