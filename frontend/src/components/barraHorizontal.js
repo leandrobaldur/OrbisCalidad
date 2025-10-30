@@ -2,8 +2,8 @@ import React from "react";
 
 const BarraHorizontal = ({
   texto,
-  height = "clamp(0.3vh, 0.8vh, 1vh)", // Un poco menos alto que antes
-  margenHorizontal = "clamp(3vw, 4vw, 4vw)",
+  height = "clamp(0.1vh, 0.6vh, 0.5vh)", // Un poco menos alto que antes
+  margenHorizontal = "clamp(1vw, 2vw, 2vw)",
   imagen,
 }) => {
   const containerStyle = { height };

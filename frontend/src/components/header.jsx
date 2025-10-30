@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import InicioSesion from "./inicioSesion";
 import axios from "axios";
 
-function Header({ loggedInUser, onLogout, onLogin }) {
+function Header({ loggedInUser, onLogout, onLogin, toggleMobileMenu }) {
   const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -107,9 +107,32 @@ function Header({ loggedInUser, onLogout, onLogin }) {
 
   return (
     <>
-  <header className="w-full fixed top-0 h-24 flex justify-between items-center px-4 md:px-10 bg-primary backdrop-blur-sm z-40">
-        {/* Izquierda: Logo */}
-        <div className="flex-1" />
+      <header className="w-full fixed top-0 h-24 flex justify-between items-center px-4 md:px-10 bg-primary backdrop-blur-sm z-40">
+        {/* Izquierda: Icono de menú para móvil */}
+        <div className="flex-1 flex justify-start">
+          {/* Botón de menú hamburguesa (siempre visible en móvil) */}
+          <button 
+            onClick={toggleMobileMenu}
+            className="block md:hidden focus:outline-none p-0 shadow-none font-normal rounded-none"
+            aria-label="Abrir menú"
+            style={{ background: 'none', boxShadow: 'none', border: 'none', color: '#FEFCFB', zIndex: 9999 }}
+          >
+            <svg
+              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              style={{ color: '#FEFCFB', display: 'block' }}
+            >
+              <path
+                d="M4 7h16M4 12h16M4 17h16"
+                stroke="#FEFCFB"
+                strokeWidth={window.innerWidth <= 640 ? 1.5 : window.innerWidth <= 768 ? 2 : 2.5}
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
+        </div>
 
         {/* Centro: Título limpio */}
         <div
@@ -128,9 +151,9 @@ function Header({ loggedInUser, onLogout, onLogin }) {
         {/* Derecha: Icono Login y datos de usuario */}
         <div className="flex-1 flex justify-end items-center gap-4">
           <motion.img
-            src="/media/header/login-beige.svg"
+            src={window.innerWidth <= 640 ? "/media/header/login-beige-mobile.svg" : "/media/header/login-beige.svg"}
             alt="Iniciar sesión"
-            className="h-10 w-10 cursor-pointer object-contain select-none"
+            className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 cursor-pointer object-contain select-none"
             onClick={handleLoginClick}
             draggable={false}
             title="Iniciar sesión"

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 
 const ContenedorLateral = ({
   subtitulo,
@@ -7,83 +7,115 @@ const ContenedorLateral = ({
   alto,
   ovaloRedondez,
   cuadroRedondez,
+  dias,
 }) => {
-  // Responsive oval dimensions
-  const ovaloAncho = "clamp(200px, 40%, 300px)";
-  const ovaloAlto = "clamp(40px, 8vh, 60px)";
+  // Construye días por defecto: hoy, mañana y pasado
+  const defaultDias = useMemo(() => {
+    const base = new Date();
+    const toISODate = (d) => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    };
+    const d1 = new Date(base);
+    const d2 = new Date(base); d2.setDate(base.getDate() + 1);
+    const d3 = new Date(base); d3.setDate(base.getDate() + 2);
+    return [
+      { label: "Día 1", date: toISODate(d1), imageUrl: imagen },
+      { label: "Día 2", date: toISODate(d2), imageUrl: imagen },
+      { label: "Día 3", date: toISODate(d3), imageUrl: imagen },
+    ];
+  }, [imagen]);
+
+  const diasData = dias && Array.isArray(dias) && dias.length === 3 ? dias : defaultDias;
+
+  // Selecciona el día según la fecha actual
+  const todayISO = useMemo(() => {
+    const t = new Date();
+    const y = t.getFullYear();
+    const m = String(t.getMonth() + 1).padStart(2, "0");
+    const d = String(t.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }, []);
+
+  const initialIndex = Math.max(0, diasData.findIndex((d) => d.date === todayISO));
+  const [activeIdx, setActiveIdx] = useState(initialIndex === -1 ? 0 : initialIndex);
+
+  const getStatus = (dateISO) => {
+    if (dateISO === todayISO) return "Hoy";
+    return dateISO < todayISO ? "Realizado" : "Próximamente";
+  };
 
   return (
     <div
-      className="relative flex flex-col items-center justify-start z-10 ml-auto bg-surface-elevated border border-stroke"
+      className="relative flex flex-col z-10 ml-auto bg-white shadow-sm"
       style={{
         width: ancho,
         height: alto,
-        borderColor: '#072D42', // Color primary (azul marino) de la paleta
-        borderWidth: 'clamp(2px, 0.618vh, 4px)',
-        borderStyle: 'solid',
-        borderRadius: `0 ${cuadroRedondez} ${cuadroRedondez} 0`,
-        marginTop: "clamp(2rem, 6.18vh, 4rem)",
+        borderColor: "#E5E7EB",
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderRadius: cuadroRedondez,
+        marginTop: "clamp(0rem, 3vh, 2rem)",
+        overflow: "hidden",
       }}
     >
-      {/* Contenedor padre que incluye el óvalo y el contenido */}
-      <div className="relative w-full h-full flex flex-col items-center justify-start">
-        {/* Subtítulo en óvalo - Ajustado para mejor ajuste del texto */}
-        <div
-          className="absolute bg-surface-elevated shadow-md px-3 md:px-6 lg:px-8 py-2 md:py-3 flex items-center justify-center border border-stroke"
-          style={{
-            letterSpacing: "clamp(0.05rem, 0.1rem, 0.15rem)", // Reducido para mejor ajuste
-            fontSize: "clamp(0.75rem, 1vw, 1.25rem)", // Reducido para que entre mejor
-            borderRadius: ovaloRedondez,
-            left: "50%",
-            top: "clamp(-10%, -8%, -5%)", // Ajustado para mejor posicionamiento
-            transform: "translateX(-50%)",
-            maxWidth: "clamp(250px, 45%, 350px)", // Aumentado para acomodar el texto
-            width: "auto",
-            minWidth: "clamp(220px, 40%, 300px)", // Aumentado
-            height: "clamp(45px, 9vh, 65px)", // Aumentado para acomodar el texto
-            borderColor: '#E5E7EB',
-            borderWidth: 'clamp(1px, 0.1618vh, 2px)',
-            borderStyle: 'solid',
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          <span className="font-bodoni text-black font-bold text-center leading-tight">
-            {subtitulo}
-          </span>
-        </div>
+      {/* Header */}
+      <div
+        className="px-4 md:px-6 lg:px-8 py-3 md:py-4"
+        style={{ borderBottom: "1px solid #E5E7EB", backgroundColor: "#FFFFFF" }}
+      >
+        <h2 className="font-playfair font-medium text-primary text-2xl md:text-3xl text-center tracking-tight">
+          {subtitulo || "Semana de actividades"}
+        </h2>
+      </div>
 
-        {/* Contenido dentro del contenedor - Espaciado áureo ajustado */}
-        <div
-          className="w-full text-sm text-center"
-          style={{
-            marginTop: "clamp(3.5rem, 9vh, 6rem)", // Aumentado para compensar el óvalo más grande
-          }}
-        >
-          {/* Contenedor de la imagen - Dimensiones áureas con márgenes */}
-          <div
-            className="flex justify-center items-center relative"
-            style={{
-              width: "clamp(200px, 55%, 380px)", // Reducido para dar espacio a márgenes
-              height: "clamp(140px, 35vh, 280px)", // Reducido para dar espacio a márgenes
-              margin: "0 auto",
-              padding: "clamp(1rem, 2.5vw, 2rem)", // Márgenes internos
-              overflow: "hidden",
-              borderRadius: ovaloRedondez,
-            }}
-          >
+      {/* Selector de días */}
+      <div className="px-3 md:px-6 lg:px-8 py-3">
+        <div className="flex gap-1 md:gap-2 rounded-full border" style={{ borderColor: '#E5E7EB', backgroundColor: '#FFFFFF', padding: '6px' }}>
+          {diasData.map((d, idx) => {
+            const status = getStatus(d.date);
+            const isActive = idx === activeIdx;
+            return (
+              <button
+                key={d.label}
+                onClick={() => setActiveIdx(idx)}
+                className={`group flex-1 flex flex-col items-center justify-center rounded-full transition-colors duration-200 focus:outline-none py-2 md:py-2.5`}
+                style={
+                  isActive
+                    ? { backgroundColor: 'rgba(7,45,66,0.08)', color: '#072D42' }
+                    : { backgroundColor: '#FFFFFF', color: '#111827' }
+                }
+                aria-pressed={isActive}
+              >
+                <span className={`font-miles text-xs md:text-sm`}>{d.label}</span>
+                <span className="mt-1 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] md:text-xs border font-miles font-light"
+                  style={
+                    status === 'Hoy'
+                      ? { backgroundColor: 'rgba(7,45,66,0.08)', color: '#072D42', borderColor: 'rgba(7,45,66,0.18)' }
+                      : status === 'Realizado'
+                      ? { backgroundColor: '#F3F4F6', color: '#374151', borderColor: '#E5E7EB' }
+                      : { backgroundColor: '#F9FAFB', color: '#4B5563', borderColor: '#E5E7EB' }
+                  }
+                >
+                  {status}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Contenido */}
+      <div className="flex-1 px-2 md:px-4 lg:px-6 pb-4 flex items-center justify-center">
+        <div className="relative w-full max-w-[760px] h-full flex items-start justify-center">
+          <div className="relative mt-4 w-[min(95%,680px)] h-[min(62%,440px)] md:w-[min(94%,720px)] md:h-[min(66%,500px)] lg:w-[min(93%,760px)] lg:h-[min(68%,540px)] overflow-hidden rounded-xl bg-white shadow-sm"
+               style={{ border: '1px solid #E5E7EB' }}>
             <img
-              src={imagen}
-              alt="contenido dinámico"
-              className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
-              style={{
-                borderRadius: ovaloRedondez,
-                display: "block",
-                maxWidth: "100%",
-                maxHeight: "100%",
-                objectFit: "cover",
-              }}
+              src={diasData[activeIdx]?.imageUrl || imagen}
+              alt={`${diasData[activeIdx]?.label || "Día"} - imagen`}
+              className="w-full h-full object-cover"
             />
           </div>
         </div>

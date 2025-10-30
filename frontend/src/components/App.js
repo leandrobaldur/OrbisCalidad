@@ -30,6 +30,11 @@ function RedirectDashboard() {
 function App() {
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   useEffect(() => {
     const storedUser = localStorage.getItem('loggedInUser');
@@ -60,11 +65,16 @@ function App() {
           loggedInUser={loggedInUser} 
           onLogout={handleLogout} 
           onLogin={handleLogin} 
+          toggleMobileMenu={toggleMobileMenu}
         />
         {/* CORRECCIÓN: Asegurarnos de pasar loggedInUser al Navbar */}
-        <Navbar loggedInUser={loggedInUser} />
+        <Navbar 
+          loggedInUser={loggedInUser} 
+          isMobileMenuOpen={isMobileMenuOpen}
+          toggleMobileMenu={toggleMobileMenu}
+        />
 
-        <main className="flex-grow pt-[140px]">
+        <main className="flex-grow pt-[156px]">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/empresas" element={<EmpresasPage loggedInUser={loggedInUser} />} />

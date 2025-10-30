@@ -43,7 +43,7 @@ const HomePage = () => {
         <div className="max-w-[1440px] mx-auto">
           <div className="flex flex-col lg:flex-row items-start" style={{ gap: 'clamp(2rem, 6.18vw, 4rem)' }}>
             {/* Panel Interactivo Izquierdo - Proporción áurea 30.9% (agrandado) */}
-            <div className="w-full lg:w-[30.9%] flex justify-center lg:justify-start" style={{ marginTop: 'clamp(2rem, 6.18vh, 4rem)' }}>
+            <div className="w-full lg:w-[40%] flex justify-center lg:justify-start" style={{ marginTop: 'clamp(2rem, 6.18vh, 4rem)' }}>
               <div className="w-full max-w-[400px] lg:max-w-none">
                 <ImagenInteractiva
                   ancho="100%"
@@ -79,13 +79,13 @@ const HomePage = () => {
             </div>
 
             {/* Contenedor Lateral Derecho - Proporción áurea 69.1% pegado al lateral derecho */}
-            <div className="w-full lg:w-[69.1%] flex justify-center lg:justify-end">
-              <div className="w-full max-w-[700px] lg:max-w-none">
+            <div className="w-full lg:w-[60%] flex justify-end">
+              <div className="w-full ml-auto -mr-4 md:-mr-8 lg:-mr-16 xl:-mr-32">
                 <ContenedorLateral
                   subtitulo="SEMANA DE ACTIVIDADES"
                   imagen="/media/homePage/work.jpeg"
                   ancho="100%"
-                  alto="clamp(100vh, 100vh, 100vh)"
+                  alto="clamp(40vh, 61.8vh, 70vh)"
                   ovaloRedondez="20px"
                   cuadroRedondez="10px"
                 />
@@ -113,19 +113,14 @@ const HomePage = () => {
 
       {/* Carrusel de Imágenes - Responsive padding */}
       <section className="w-full bg-surface py-8 md:py-12 lg:py-16">
-        <div className="px-4 md:px-8 lg:px-16 xl:px-32">
-          <div className="max-w-[1440px] mx-auto">
-            <CarruselImagenes
-              altura={400}
-              filas={3}
-              backendUrl="http://localhost:3001"
-            />
-          </div>
-        </div>
+        <CarruselImagenes
+          altura={600}
+          filas={3}
+          backendUrl="http://localhost:3001"
+        />
       </section>
     </div>
   );
 };
 
 export default HomePage;
-

@@ -6,7 +6,7 @@ import logo from '../assets/logo.png';
 
 // --- TAMAÑOS RESPONSIVOS CON PROPORCIONES ÁUREAS (MÁS PEQUEÑOS) ---
 const SIZES = {
-  LOGO_SIZE: "clamp(60px, 8vw, 90px)", // Reducido de 12vw a 8vw
+  LOGO_SIZE: "clamp(120px, 16vw, 180px)",
   TITLE_SIZE: "clamp(1.4rem, 3vw, 1.8rem)", // Reducido de 4vw a 3vw
   LABEL_SIZE: "clamp(0.8rem, 1.6vw, 1rem)", // Reducido de 2vw a 1.6vw
   INPUT_SIZE: "clamp(0.9rem, 1.8vw, 1.1rem)", // Reducido de 2.2vw a 1.8vw
@@ -216,7 +216,7 @@ const InicioSesion = ({ onLogin, onClose }) => {
               style={{
                 width: SIZES.LOGO_SIZE,
                 height: SIZES.LOGO_SIZE,
-                marginBottom: "clamp(1.5rem, 3vw, 2rem)", // Reducido proporcionalmente
+                marginBottom: "clamp(0.5rem, 1.5vw, 1rem)",
               }}
             >
               <motion.img

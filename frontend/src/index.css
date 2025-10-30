@@ -1,3 +1,6 @@
+/* Google Fonts: Playfair Display para títulos elegantes (Contacto) */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap');
+
 /* Importaciones base de Tailwind CSS */
 @tailwind base;
 @tailwind components;
@@ -12,6 +15,14 @@
 @font-face {
   font-family: 'Bodoni';
   src: url('./fonts/BodoniStd.otf') format('opentype'); 
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Alias explícito para Bodoni Std (mismo archivo) */
+@font-face {
+  font-family: 'Bodoni Std';
+  src: url('./fonts/BodoniStd.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
@@ -47,7 +58,7 @@
     @apply text-primary font-bold;
     
     /* CORRECCIÓN: Usamos la propiedad CSS estándar para la fuente de los títulos. */
-    font-family: 'Bodoni', serif;
+    font-family: 'Bodoni Std', 'Bodoni', serif;
   }
 
   button {
@@ -55,7 +66,7 @@
     @apply bg-accent text-primary px-6 py-3 rounded-lg font-bold shadow-sm transition-all duration-200 ease-in-out hover:shadow-md disabled:opacity-50;
     
     /* CORRECCIÓN: Usamos la propiedad CSS estándar para la fuente de los botones. */
-    font-family: 'Bodoni', serif;
+    font-family: 'Bodoni Std', 'Bodoni', serif;
   }
 
   a {
