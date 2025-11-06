@@ -51,6 +51,40 @@ const fontStyles = `
     background: none !important;
     border: none !important;
   }
+
+  /* Estilos responsivos para textos */
+  .responsive-title {
+    font-size: clamp(2rem, 5vw, 5rem);
+    line-height: 0.9;
+  }
+
+  .responsive-subtitle {
+    font-size: clamp(0.875rem, 2vw, 1.5rem);
+  }
+
+  .responsive-description {
+    font-size: clamp(0.75rem, 1.5vw, 1.25rem);
+  }
+
+  .responsive-section-title {
+    font-size: clamp(1.5rem, 3vw, 3rem);
+  }
+
+  .responsive-member-name {
+    font-size: clamp(0.875rem, 1.25vw, 1.125rem);
+  }
+
+  .responsive-member-position {
+    font-size: clamp(0.75rem, 1vw, 0.875rem);
+  }
+
+  .responsive-join-title {
+    font-size: clamp(1.5rem, 3.5vw, 3rem);
+  }
+
+  .responsive-join-text {
+    font-size: clamp(0.875rem, 1.5vw, 1.125rem);
+  }
 `;
 
 // Componente Reveal
@@ -249,6 +283,14 @@ const EquipoPage = () => {
         skills: ['Organización', 'Comunicación', 'Logística'],
         email: 'maria.fernandez@orbis.com',
         linkedin: 'https://linkedin.com/in/maria-fernandez'
+      },
+      { 
+        id: 3, 
+        name: 'María Fernández', 
+        position: 'Coordinadora', 
+        skills: ['Organización', 'Comunicación', 'Logística'],
+        email: 'maria.fernandez@orbis.com',
+        linkedin: 'https://linkedin.com/in/maria-fernandez'
       }
     ],
     backend: [
@@ -362,135 +404,135 @@ const EquipoPage = () => {
   return (
     <div className="min-h-screen bg-beige font-inter [&_a]:no-underline [&_a:hover]:no-underline">
       
-      {/* HEADER MODIFICADO - FONDO MÁS OSCURO */}
-<div className="h-[60vh] md:h-[70vh] lg:h-[80vh] min-h-[20rem] md:min-h-[25rem] max-h-[40rem] md:max-h-[50rem] mb-6 md:mb-9 overflow-hidden relative">
-  <header className="relative h-full">
-    <div className="absolute inset-0 w-full h-full overflow-hidden" style={parallaxStyle}>
-      <img 
-        src="/media/historiapage/futbol.jpg"
-        alt="Nuestro Equipo - Orbis Empresarial"
-        className="w-full h-full object-cover object-top"
-      />
-      {/* FONDO MÁS OSCURO - AUMENTADO A 70% */}
-      <div className="absolute inset-0 bg-black/70"></div>
-    </div>
-    
-    <div className="relative z-30 p-4 sm:p-6 lg:p-8 xl:p-20 text-white h-full flex flex-col justify-center items-center text-center">
-      <div className="relative z-10 w-full max-w-6xl">
-        
-        {/* TÍTULO PRINCIPAL RESPONSIVE */}
-        <div className="mb-6 md:mb-8">
-          <h1 className="font-playfair text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-normal leading-[0.9] tracking-tight mb-3 md:mb-4 text-white">
-            Nuestro Equipo
-          </h1>
-        </div>
-        
-        {/* SUBTÍTULO RESPONSIVE */}
-        <div className="mb-6 md:mb-8">
-          <h2 className="font-montserrat text-lg sm:text-xl md:text-2xl lg:text-3xl font-light tracking-[0.15em] sm:tracking-[0.2em] uppercase text-white/95 mb-2 md:mb-3">
-            Talento y Excelencia
-          </h2>
-          <div className="h-px w-20 sm:w-24 md:w-32 bg-white/80 mb-3 md:mb-4 mx-auto"></div>
-        </div>
-        
-        {/* DESCRIPCIÓN RESPONSIVE */}
-        <div className="mb-8 md:mb-12">
-          <p className="font-inter text-base sm:text-lg md:text-xl lg:text-2xl font-extralight tracking-wide max-w-4xl mx-auto text-white/95 leading-relaxed px-2 sm:px-4">
-            Conoce al equipo profesional detrás de Orbis Empresarial. 
-            Expertos comprometidos con la excelencia y la innovación.
-          </p>
-        </div>
-
-        {/* LOGOS EN CAJITA CON FONDO MÁS OSCURO - VERSIÓN RESPONSIVE */}
-        <div className="relative z-10 -mt-8 md:-mt-12 px-2 sm:px-4 mb-8 md:mb-12">
-          <div className="max-w-6xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl md:rounded-2xl shadow-lg border border-white/20 p-4 md:p-6">
+      {/* HEADER MEJORADO - COMPLETAMENTE RESPONSIVE */}
+      <div className="h-[60vh] md:h-[70vh] lg:h-[80vh] min-h-[20rem] md:min-h-[25rem] max-h-[40rem] md:max-h-[50rem] mb-6 md:mb-9 overflow-hidden relative">
+        <header className="relative h-full">
+          <div className="absolute inset-0 w-full h-full overflow-hidden" style={parallaxStyle}>
+            <img 
+              src="/media/historiapage/futbol.jpg"
+              alt="Nuestro Equipo - Orbis Empresarial"
+              className="w-full h-full object-cover object-top"
+            />
+            {/* FONDO MÁS OSCURO */}
+            <div className="absolute inset-0 bg-black/70"></div>
+          </div>
+          
+          <div className="relative z-30 p-4 sm:p-6 lg:p-8 xl:p-20 text-white h-full flex flex-col justify-center items-center text-center">
+            <div className="relative z-10 w-full max-w-6xl mx-auto">
               
-              {/* VERSIÓN MÓVIL - GRID 3 COLUMNAS */}
-              <div className="block md:hidden">
-                <div className="grid grid-cols-3 gap-3 sm:gap-4">
-                  {bodyLogos.map((body) => {
-                    const IconComponent = body.icon;
-                    return (
-                      <div key={body.id} className="text-center group">
-                        <button
-                          onClick={(e) => scrollTo(e, body.section)}
-                          className="header-icon-button w-full"
-                        >
-                          <div className="bg-white/10 rounded-lg sm:rounded-xl p-2 sm:p-3 mb-2 sm:mb-3 mx-auto w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center group-hover:bg-white/20 transition-colors duration-300">
-                            <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
-                          </div>
-                          <div className="text-xs sm:text-sm font-light text-white/90 font-montserrat tracking-wide leading-tight">
-                            {body.name}
-                          </div>
-                        </button>
+              {/* TÍTULO PRINCIPAL CON CLAMP */}
+              <div className="mb-4 md:mb-6 lg:mb-8">
+                <h1 className="font-playfair responsive-title font-normal tracking-tight mb-2 md:mb-3 lg:mb-4 text-white">
+                  Nuestro Equipo
+                </h1>
+              </div>
+              
+              {/* SUBTÍTULO CON CLAMP */}
+              <div className="mb-4 md:mb-6 lg:mb-8">
+                <h2 className="font-montserrat responsive-subtitle font-light tracking-[0.15em] sm:tracking-[0.2em] uppercase text-white/95 mb-2 md:mb-3">
+                  Talento y Excelencia
+                </h2>
+                <div className="h-px w-16 sm:w-20 md:w-24 lg:w-32 bg-white/80 mb-2 md:mb-3 lg:mb-4 mx-auto"></div>
+              </div>
+              
+              {/* DESCRIPCIÓN CON CLAMP */}
+              <div className="mb-6 md:mb-8 lg:mb-12">
+                <p className="font-inter responsive-description font-extralight tracking-wide max-w-4xl mx-auto text-white/95 leading-relaxed px-2 sm:px-4">
+                  Conoce al equipo profesional detrás de Orbis Empresarial. 
+                  Expertos comprometidos con la excelencia y la innovación.
+                </p>
+              </div>
+
+              {/* LOGOS EN CAJITA - VERSIÓN RESPONSIVE MEJORADA */}
+              <div className="relative z-10 -mt-4 md:-mt-6 lg:-mt-8 px-2 sm:px-4 mb-6 md:mb-8 lg:mb-12">
+                <div className="max-w-6xl mx-auto">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg md:rounded-xl lg:rounded-2xl shadow-lg border border-white/20 p-3 md:p-4 lg:p-6">
+                    
+                    {/* VERSIÓN MÓVIL PEQUEÑA - GRID 3 COLUMNAS */}
+                    <div className="block md:hidden">
+                      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                        {bodyLogos.map((body) => {
+                          const IconComponent = body.icon;
+                          return (
+                            <div key={body.id} className="text-center group">
+                              <button
+                                onClick={(e) => scrollTo(e, body.section)}
+                                className="header-icon-button w-full"
+                              >
+                                <div className="bg-white/10 rounded-lg p-1.5 sm:p-2 mb-1.5 sm:mb-2 mx-auto w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center group-hover:bg-white/20 transition-colors duration-300">
+                                  <IconComponent className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+                                </div>
+                                <div className="text-xs font-light text-white/90 font-montserrat tracking-wide leading-tight line-clamp-2">
+                                  {body.name}
+                                </div>
+                              </button>
+                            </div>
+                          );
+                        })}
                       </div>
-                    );
-                  })}
+                    </div>
+                    
+                    {/* VERSIÓN ESCRITORIO - GRID 6 COLUMNAS */}
+                    <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 lg:gap-6">
+                      {bodyLogos.map((body) => {
+                        const IconComponent = body.icon;
+                        return (
+                          <div key={body.id} className="text-center group">
+                            <button
+                              onClick={(e) => scrollTo(e, body.section)}
+                              className="header-icon-button w-full"
+                            >
+                              <div className="bg-white/10 rounded-lg md:rounded-xl p-2 md:p-3 mb-2 md:mb-3 mx-auto w-10 h-10 md:w-12 md:h-12 flex items-center justify-center group-hover:bg-white/20 transition-colors duration-300">
+                                <IconComponent className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-white" />
+                              </div>
+                              <div className="text-xs md:text-sm font-light text-white/90 font-montserrat tracking-wide line-clamp-2">
+                                {body.name}
+                              </div>
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    
+                  </div>
                 </div>
               </div>
               
-              {/* VERSIÓN ESCRITORIO - GRID 6 COLUMNAS */}
-              <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
-                {bodyLogos.map((body) => {
-                  const IconComponent = body.icon;
-                  return (
-                    <div key={body.id} className="text-center group">
-                      <button
-                        onClick={(e) => scrollTo(e, body.section)}
-                        className="header-icon-button w-full"
-                      >
-                        <div className="bg-white/10 rounded-xl p-3 mb-3 mx-auto w-12 h-12 flex items-center justify-center group-hover:bg-white/20 transition-colors duration-300">
-                          <IconComponent className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
-                        </div>
-                        <div className="text-sm font-light text-white/90 font-montserrat tracking-wide">
-                          {body.name}
-                        </div>
-                      </button>
-                    </div>
-                  );
-                })}
+              {/* BOTÓN DE SCROLL PARA MÓVIL */}
+              <div className="block md:hidden mt-2">
+                <button 
+                  onClick={(e) => scrollTo(e, 'delegacion')}
+                  className="bg-white/20 hover:bg-white/30 text-white px-5 py-2.5 rounded-lg font-montserrat font-medium tracking-wide transition-all duration-300 transform hover:scale-105 text-sm border border-white/30"
+                >
+                  Conocer Equipo
+                </button>
               </div>
               
             </div>
           </div>
-        </div>
-        
-        {/* BOTÓN DE SCROLL PARA MÓVIL (OPCIONAL) */}
-        <div className="block md:hidden mt-4">
-          <button 
-            onClick={(e) => scrollTo(e, 'delegacion')}
-            className="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg font-montserrat font-medium tracking-wide transition-all duration-300 transform hover:scale-105 text-sm border border-white/30"
-          >
-            Conocer Equipo
-          </button>
-        </div>
-        
+          
+          {/* INDICADOR DE SCROLL */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+            <div className="animate-bounce">
+              <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-white/80 transform rotate-90" />
+            </div>
+          </div>
+        </header>
       </div>
-    </div>
-    
-    {/* INDICADOR DE SCROLL PARA MÓVIL */}
-    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 hidden md:block">
-      <div className="animate-bounce">
-        <ChevronRight className="w-6 h-6 text-white/80 transform rotate-90" />
-      </div>
-    </div>
-  </header>
-</div>
 
       <main className="py-0">
-        {/* NAVEGACIÓN MÓVIL */}
-        <div className="block lg:hidden mb-8 px-4 sm:px-6 lg:px-8">
-          <nav className="flex flex-row gap-2 overflow-x-auto py-4">
+        {/* NAVEGACIÓN MÓVIL MEJORADA */}
+        <div className="block lg:hidden mb-6 px-4 sm:px-6">
+          <nav className="flex flex-row gap-1 sm:gap-2 overflow-x-auto py-3 scrollbar-hide">
             {sections.map((s) => (
               <a
                 key={s.id}
                 href={`#${s.id}`}
                 onClick={(e) => scrollTo(e, s.id)}
                 className={`
-                  relative text-left py-3 px-4 transition-colors duration-200 whitespace-nowrap
+                  relative text-left py-2 px-3 transition-colors duration-200 whitespace-nowrap
                   rounded-lg border border-[#9298A6]/30 bg-white/10
-                  hover:bg-[#9298A6]/10
+                  hover:bg-[#9298A6]/10 flex-shrink-0
                   ${
                     activeSection === s.id 
                       ? 'bg-[#9298A6]/20 font-medium'
@@ -498,19 +540,19 @@ const EquipoPage = () => {
                   }
                 `}
               >
-                <span className="tracking-widest text-sm text-[#072D42] font-montserrat">{s.label}</span>
+                <span className="tracking-widest text-xs sm:text-sm text-[#072D42] font-montserrat">{s.label}</span>
               </a>
             ))}
           </nav>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8 lg:items-start px-4 sm:px-6 lg:px-8">
-          {/* ASIDE STICKY CON BOTTOM DINÁMICO */}
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 lg:items-start px-4 sm:px-6 lg:px-8">
+          {/* ASIDE STICKY AL 40% */}
           <aside 
             ref={asideRef}
-            className="hidden lg:block lg:w-2/6 sticky"
+            className="hidden lg:block lg:w-[20%] sticky" // 40% del ancho
             style={{ 
-              top: '10rem', // 160px en rem
+              top: '10rem',
               bottom: asideBottom 
             }}
           >
@@ -551,16 +593,15 @@ const EquipoPage = () => {
             </nav>
           </aside>
 
-          {/* CONTENIDO PRINCIPAL */}
-          <section className="w-full lg:w-5/6 flex flex-col px-0">
+          {/* CONTENIDO PRINCIPAL AL 60% */}
+          <section className="w-full lg:w-[80%] flex flex-col px-0">
             {sections.map((section, index) => (
               <div key={section.id} className={section.bgColor}>
-                {/* LÍNEA SEPARADORA ELEGANTE - Solo entre secciones del mismo color */}
+                {/* SEPARADORES RESPONSIVOS */}
                 {index > 0 && sections[index - 1].bgColor === section.bgColor && (
                   <div className="h-px w-full bg-gradient-to-r from-transparent via-[#072D42]/10 to-transparent"></div>
                 )}
 
-                {/* SEPARADOR DE FONDO - Cuando cambia el color de fondo */}
                 {index > 0 && sections[index - 1].bgColor !== section.bgColor && (
                   <div className="h-2 w-full bg-gradient-to-b from-gray-50 to-white"></div>
                 )}
@@ -570,60 +611,59 @@ const EquipoPage = () => {
                   ref={(el) => (sectionRefs.current[section.id] = el)}
                   className="scroll-mt-24"
                 >
-                  <div className="py-12 md:py-16 px-4 sm:px-6 lg:px-8">
+                  <div className="py-8 md:py-12 lg:py-16 px-4 sm:px-6 lg:px-8">
                     <Reveal delay={index * 100}>
-                      <div className="mb-12 md:mb-16 text-center">
-                        <div className="flex items-center justify-center gap-3 mb-4">
-                          <h2 className="font-playfair text-3xl md:text-4xl lg:text-5xl text-[#072D42] font-normal">
+                      <div className="mb-8 md:mb-12 lg:mb-16 text-center">
+                        <div className="flex items-center justify-center gap-3 mb-3 md:mb-4">
+                          <h2 className="font-playfair responsive-section-title text-[#072D42] font-normal">
                             {section.label}
                           </h2>
                         </div>
-                        <div className="h-px w-20 bg-[#072D42]/60 mx-auto"></div>
+                        <div className="h-px w-16 sm:w-20 bg-[#072D42]/60 mx-auto"></div>
                       </div>
                     </Reveal>
 
-                    {/* TARJETAS COMPACTAS MEJORADAS */}
+                    {/* TARJETAS COMPACTAS MEJORADAS Y RESPONSIVAS */}
                     <div className="flex justify-center">
-                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full max-w-7xl">
-                        {teamMembers[section.id].map((member, memberIndex) => (
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 w-full max-w-8xl">                        {teamMembers[section.id].map((member, memberIndex) => (
                           <Reveal key={member.id} delay={(index * 100) + (memberIndex * 100)}>
-                            <div className="relative bg-white rounded-2xl shadow-lg border border-[#072D42]/10 hover:shadow-xl hover:border-[#072D42]/20 transition-all duration-500 ease-out group overflow-hidden">
+                            <div className="relative bg-white rounded-xl md:rounded-2xl shadow-lg border border-[#072D42]/10 hover:shadow-xl hover:border-[#072D42]/20 transition-all duration-500 ease-out group overflow-hidden">
                               
-                              {/* EFECTO DE HOVER - FONDO AZUL QUE SE EXPANDE */}
-                              <div className="absolute inset-0 bg-gradient-to-br from-[#072D42] to-[#0A3A5A] opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out rounded-2xl" />
+                              {/* EFECTO DE HOVER */}
+                              <div className="absolute inset-0 bg-gradient-to-br from-[#072D42] to-[#0A3A5A] opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out rounded-xl md:rounded-2xl" />
                               
                               {/* ICONO DE SECCIÓN COMO FONDO GRANDE */}
                               <div className="absolute right-0 top-1/2 transform -translate-y-1/2 flex items-center justify-center opacity-[0.03] group-hover:opacity-[0.15] transition-all duration-700 ease-out z-10">
-                                <section.icon className="w-48 h-48 text-[#072D42] group-hover:text-white transition-colors duration-500 group-hover:scale-105" />
+                                <section.icon className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 text-[#072D42] group-hover:text-white transition-colors duration-500 group-hover:scale-105" />
                               </div>
                               
                               {/* CONTENIDO PRINCIPAL */}
-                              <div className="relative z-20 p-5">
+                              <div className="relative z-20 p-4 md:p-5">
                                 {/* PRIMERA FILA: PERFIL + NOMBRE Y POSICIÓN */}
-                                <div className="flex items-start gap-4 mb-4">
-                                  {/* ICONO DE PERFIL - IZQUIERDA */}
+                                <div className="flex items-start gap-3 md:gap-4 mb-3 md:mb-4">
+                                  {/* ICONO DE PERFIL */}
                                   <div className="flex-shrink-0">
-                                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#072D42] to-[#0A3A5A] group-hover:from-white group-hover:to-gray-100 flex items-center justify-center group-hover:scale-110 transition-all duration-500 border-2 border-white group-hover:border-[#072D42] shadow-md">
-                                      <User className="w-6 h-6 text-white group-hover:text-[#072D42] transition-colors duration-500" />
+                                    <div className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full bg-gradient-to-br from-[#072D42] to-[#0A3A5A] group-hover:from-white group-hover:to-gray-100 flex items-center justify-center group-hover:scale-110 transition-all duration-500 border-2 border-white group-hover:border-[#072D42] shadow-md">
+                                      <User className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-white group-hover:text-[#072D42] transition-colors duration-500" />
                                     </div>
                                   </div>
                                   
-                                  {/* NOMBRE Y POSICIÓN */}
+                                  {/* NOMBRE Y POSICIÓN CON CLAMP */}
                                   <div className="flex-1 min-w-0">
-                                    <h3 className="font-playfair text-lg text-[#072D42] group-hover:text-white font-normal mb-1 transition-colors duration-300 truncate">
+                                    <h3 className="font-playfair responsive-member-name text-[#072D42] group-hover:text-white font-normal mb-1 transition-colors duration-300 truncate">
                                       {member.name}
                                     </h3>
-                                    <p className="font-inter text-[#072D42]/80 group-hover:text-white/90 text-sm font-medium truncate transition-colors duration-300">
+                                    <p className="font-inter responsive-member-position text-[#072D42]/80 group-hover:text-white/90 font-medium truncate transition-colors duration-300">
                                       {member.position}
                                     </p>
                                   </div>
                                 </div>
                                 
                                 {/* SEGUNDA FILA: CONTACTO Y SKILLS */}
-                                <div className="space-y-3">
+                                <div className="space-y-2 md:space-y-3">
                                   {/* CONTACTO */}
                                   <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-2 md:gap-3">
                                       {/* Email con texto */}
                                       <a 
                                         href={`mailto:${member.email}`}
@@ -631,7 +671,7 @@ const EquipoPage = () => {
                                         title="Enviar email"
                                       >
                                         <Mail className="w-3 h-3 flex-shrink-0" />
-                                        <span className="text-xs font-inter truncate max-w-[120px]">
+                                        <span className="text-xs font-inter truncate max-w-[100px] md:max-w-[120px]">
                                           {member.email}
                                         </span>
                                       </a>
@@ -644,7 +684,7 @@ const EquipoPage = () => {
                                         className="text-[#072D42]/70 group-hover:text-white/80 hover:text-[#0077B5] group-hover:hover:text-white transition-colors duration-300 flex-shrink-0"
                                         title="LinkedIn"
                                       >
-                                        <Linkedin className="w-4 h-4" />
+                                        <Linkedin className="w-3 h-3 md:w-4 md:h-4" />
                                       </a>
                                     </div>
                                   </div>
@@ -672,25 +712,25 @@ const EquipoPage = () => {
               </div>
             ))}
 
-            {/* SEPARADOR ELEGANTE */}
-            <div className="flex items-center justify-center my-16 bg-white py-8">
-              <div className="h-px w-32 bg-[#072D42]/20"></div>
-              <div className="mx-4">
-                <TrendingUp className="w-6 h-6 text-[#072D42]/40" />
+            {/* SEPARADOR ELEGANTE RESPONSIVE */}
+            <div className="flex items-center justify-center my-12 md:my-16 bg-white py-6 md:py-8">
+              <div className="h-px w-16 md:w-24 lg:w-32 bg-[#072D42]/20"></div>
+              <div className="mx-3 md:mx-4">
+                <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-[#072D42]/40" />
               </div>
-              <div className="h-px w-32 bg-[#072D42]/20"></div>
+              <div className="h-px w-16 md:w-24 lg:w-32 bg-[#072D42]/20"></div>
             </div>
           </section>
         </div>
 
-        {/* SECCIÓN "ÚNETE" - ANCHO COMPLETO CON FONDO ESPECIAL */}
+        {/* SECCIÓN "ÚNETE" - COMPLETAMENTE RESPONSIVE */}
         <div 
           id="unete"
           ref={(el) => {
             sectionRefs.current.unete = el;
             uneteRef.current = el;
           }}
-          className="scroll-mt-24 relative min-h-[31.25rem] w-screen -ml-[calc(50vw-50%)] -mr-[calc(50vw-50%)] mt-16"
+          className="scroll-mt-24 relative min-h-[25rem] md:min-h-[31.25rem] w-screen -ml-[calc(50vw-50%)] -mr-[calc(50vw-50%)] mt-12 md:mt-16"
         >
           <div className="absolute inset-0 w-full h-full">
             <img 
@@ -701,18 +741,18 @@ const EquipoPage = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-[#072D42]/90 to-[#0A3A5A]/90"></div>
           </div>
           
-          <div className="relative z-10 py-20 md:py-24">
+          <div className="relative z-10 py-16 md:py-20 lg:py-24">
             <Reveal>
               <div className="text-center max-w-3xl mx-auto text-white px-4 sm:px-6">
-                <h2 className="font-playfair text-3xl md:text-4xl lg:text-5xl text-white mb-6 font-normal">
+                <h2 className="font-playfair responsive-join-title text-white mb-4 md:mb-6 font-normal">
                   Únete a Nuestro Equipo
                 </h2>
-                <div className="h-px w-20 bg-white/70 mx-auto mb-8"></div>
-                <p className="font-inter text-white/90 mb-10 text-lg leading-relaxed max-w-2xl mx-auto">
+                <div className="h-px w-16 md:w-20 bg-white/70 mx-auto mb-6 md:mb-8"></div>
+                <p className="font-inter responsive-join-text text-white/90 mb-8 md:mb-10 leading-relaxed max-w-2xl mx-auto">
                   Buscamos talento apasionado por la innovación 
                   y la preservación de la memoria empresarial.
                 </p>
-                <button className="bg-white/20 hover:bg-white/30 text-white px-8 py-4 md:px-10 md:py-4 rounded-lg font-montserrat font-medium tracking-wide transition-all duration-300 transform hover:scale-105 hover:shadow-xl text-lg border border-white/30 hover:border-white/50">
+                <button className="bg-white/20 hover:bg-white/30 text-white px-6 py-3 md:px-8 md:py-4 lg:px-10 lg:py-4 rounded-lg font-montserrat font-medium tracking-wide transition-all duration-300 transform hover:scale-105 hover:shadow-xl text-base md:text-lg border border-white/30 hover:border-white/50">
                   Ver Oportunidades
                 </button>
               </div>
