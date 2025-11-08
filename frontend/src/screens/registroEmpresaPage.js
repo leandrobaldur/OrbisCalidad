@@ -45,7 +45,7 @@ const RegistroEmpresaCompleta = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f2f0df] flex justify-center items-start pt-28 px-6 pb-6">
+  <div className="min-h-screen bg-[#f2f0df] flex justify-center items-start px-6 pb-6" style={{ paddingTop: 'calc(var(--site-header-height) - 6rem)' }}>
       <form 
         onSubmit={handleSubmit}
         className="bg-white shadow-xl rounded-xl p-6 w-full max-w-3xl space-y-8"

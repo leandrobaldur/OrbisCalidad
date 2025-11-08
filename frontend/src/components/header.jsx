@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import InicioSesion from "./inicioSesion";
@@ -6,6 +6,7 @@ import axios from "axios";
 
 function Header({ loggedInUser, onLogout, onLogin, toggleMobileMenu }) {
   const navigate = useNavigate();
+  const headerRef = useRef(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -17,7 +18,36 @@ function Header({ loggedInUser, onLogout, onLogin, toggleMobileMenu }) {
 
     checkLoginStatus();
     window.addEventListener("storage", checkLoginStatus);
-    return () => window.removeEventListener("storage", checkLoginStatus);
+    // Measure header height and apply as CSS variable and root padding
+    const applyHeaderSpacing = () => {
+      try {
+        const el = headerRef.current || document.querySelector('header.w-full.fixed');
+        const h = el ? el.offsetHeight : 0;
+  // set CSS variable on :root for use in styles
+  document.documentElement.style.setProperty('--site-header-height', h + 'px');
+      } catch (err) {
+        // ignore
+        console.warn('applyHeaderSpacing error', err);
+      }
+    };
+
+    // apply initially and on resize / font load
+    applyHeaderSpacing();
+    window.addEventListener('resize', applyHeaderSpacing);
+    window.addEventListener('load', applyHeaderSpacing);
+    // fonts might change metrics
+    var fontsReadyPromise = null;
+    if (document.fonts && document.fonts.ready) {
+      fontsReadyPromise = document.fonts.ready.then(applyHeaderSpacing).catch(()=>{});
+    }
+
+    return () => {
+      window.removeEventListener('storage', checkLoginStatus);
+      window.removeEventListener('resize', applyHeaderSpacing);
+      window.removeEventListener('load', applyHeaderSpacing);
+      // do not modify CSS variable on cleanup to avoid visual jumps; just remove stored promise reference
+      fontsReadyPromise = null;
+    };
   }, []);
 
   const handleLoginClick = () => setShowLogin(true);
@@ -107,7 +137,7 @@ function Header({ loggedInUser, onLogout, onLogin, toggleMobileMenu }) {
 
   return (
     <>
-      <header className="w-full fixed top-0 h-24 flex justify-between items-center px-4 md:px-10 bg-primary backdrop-blur-sm z-40">
+  <header ref={headerRef} className="w-full fixed top-0 h-28 flex justify-between items-center px-4 md:px-10 bg-primary backdrop-blur-sm z-40">
         {/* Izquierda: Icono de menú para móvil */}
         <div className="flex-1 flex justify-start">
           {/* Botón de menú hamburguesa (siempre visible en móvil) */}
@@ -143,7 +173,7 @@ function Header({ loggedInUser, onLogout, onLogin, toggleMobileMenu }) {
           <img
             src="/media/header/logo.png"
             alt="Logo Orbis Empresarial"
-            className="h-16 sm:h-20 md:h-20 lg:h-24 object-contain"
+            className="h-16 sm:h-20 md:h-24 lg:h-24 object-contain block"
             draggable={false}
           />
         </div>

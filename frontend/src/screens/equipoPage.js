@@ -299,7 +299,7 @@ const EquipoPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-beige font-inter [&_a]:no-underline [&_a:hover]:no-underline">
+  <div className="min-h-screen bg-beige font-inter [&_a]:no-underline [&_a:hover]:no-underline" style={{ paddingTop: 'calc(var(--site-header-height) - 6rem)' }}>
       
       {/* HEADER (se mantiene igual) */}
       <div className="h-[80vh] min-h-[400px] max-h-[800px] mb-9 overflow-hidden relative">

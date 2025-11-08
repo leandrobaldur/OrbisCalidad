@@ -8,7 +8,7 @@ import CarruselImagenes from "../components/carruselImagenes";
 
 const HomePage = () => {
   return (
-    <div className="w-full min-h-screen bg-background flex flex-col">
+  <div className="w-full min-h-screen bg-background flex flex-col" style={{ paddingTop: 'calc(var(--site-header-height) - 6rem)' }}>
       {/* Video Principal - Responsive height */}
       <section className="relative">
         <VideoPanel height="clamp(40vh, 61.8vh, 80vh)">
@@ -85,7 +85,6 @@ const HomePage = () => {
                   subtitulo="SEMANA DE ACTIVIDADES"
                   imagen="/media/homePage/work.jpeg"
                   ancho="100%"
-                  alto="clamp(40vh, 61.8vh, 70vh)"
                   ovaloRedondez="20px"
                   cuadroRedondez="10px"
                 />

@@ -212,7 +212,7 @@ const AboutUsPage = () => {
   };
 
   return (
-    <div className="bg-[#FAF8F5] text-[#072D42] min-h-screen font-sans [&_a]:no-underline [&_a:hover]:no-underline">
+  <div className="bg-[#FAF8F5] text-[#072D42] min-h-screen font-sans [&_a]:no-underline [&_a:hover]:no-underline" style={{ paddingTop: 'calc(var(--site-header-height) - 6rem)' }}>
       {/* HEADER CON EFECTO PARALLAX OPTIMIZADO */}
       <div className="h-[20vh] min-h-[25rem] max-h-[50rem] mb-9 overflow-hidden relative">
         <header className="relative h-full">

@@ -5,7 +5,7 @@ import EmpresasPanelWrapper from '../components/EmpresasPanelWrapper';
 
 const EmpresasPage = ({ loggedInUser }) => {
   return (
-    <div className="w-full min-h-screen bg-background">
+  <div className="w-full min-h-screen bg-background" style={{ paddingTop: 'calc(var(--site-header-height) - 6rem)' }}>
       <EmpresasPanelWrapper loggedInUser={loggedInUser} />
     </div>
   );
