@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import axios from 'axios';
 import RegistroEmpresa from './registroEmpresa';
+import MapaBolivia from './mapaBolivia';
+import empresaPanelNuevo from './empresaPanelNuevo';
 
 const EmpresasPanel = ({ loggedInUser }) => {
+  
   // Estados para datos
   const [fullEmpresas, setFullEmpresas] = useState([]);
   const [empresas, setEmpresas] = useState([]);
@@ -15,10 +18,12 @@ const EmpresasPanel = ({ loggedInUser }) => {
   const [modalEditable, setModalEditable] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showRegistroModal, setShowRegistroModal] = useState(false);
+  
+  
 
   // Lista de rubros para mostrar (solo lectura)
   const [rubrosDisponibles, setRubrosDisponibles] = useState([]);
-
+  
   // Base URL para Cloudinary
   const CLOUDINARY_BASE_URL = 'https://res.cloudinary.com/diswqpy8v/image/upload';
 
@@ -1010,4 +1015,3 @@ const DetalleEmpresaModal = ({ empresa, onClose }) => {
 };
 
 export default EmpresasPanel;
-

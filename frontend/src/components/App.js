@@ -14,6 +14,7 @@ import EditorEmpresasPage from '../screens/editorEmpresasPage';
 import PanelEditorUsuarios from './panelEditorUsuarios_temp';
 import FooterBar from './footerBar.js';
 
+
 function RedirectDashboard() {
   useEffect(() => {
     window.open('https://dashboard.serverbb.site/', '_blank');
@@ -29,6 +30,11 @@ function RedirectDashboard() {
 function App() {
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   useEffect(() => {
     const storedUser = localStorage.getItem('loggedInUser');
@@ -54,13 +60,21 @@ function App() {
 
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
-        {/* Volvemos a activar el Header y el Navbar */}
-        <Header loggedInUser={loggedInUser} onLogout={handleLogout} onLogin={handleLogin} />
-        <Navbar loggedInUser={loggedInUser} onLogout={handleLogout} />
+      <div className="flex flex-col min-h-screen bg-gradient-to-br from-white to-gray-50/50">
+        <Header 
+          loggedInUser={loggedInUser} 
+          onLogout={handleLogout} 
+          onLogin={handleLogin} 
+          toggleMobileMenu={toggleMobileMenu}
+        />
+        {/* CORRECCIÓN: Asegurarnos de pasar loggedInUser al Navbar */}
+        <Navbar 
+          loggedInUser={loggedInUser} 
+          isMobileMenuOpen={isMobileMenuOpen}
+          toggleMobileMenu={toggleMobileMenu}
+        />
 
-        {/* El padding-top debe coincidir con la altura combinada de Header y Navbar */}
-        <main className="flex-grow pt-[140px]">
+        <main className="flex-grow pt-[156px]">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/empresas" element={<EmpresasPage loggedInUser={loggedInUser} />} />

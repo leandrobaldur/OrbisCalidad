@@ -1,14 +1,89 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import InicioSesion from "./inicioSesion";
+import axios from "axios";
 
-const Header = ({ loggedInUser, onLogout, onLogin }) => {
+function Header({ loggedInUser, onLogout, onLogin, toggleMobileMenu }) {
   const navigate = useNavigate();
+  const headerRef = useRef(null);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      setLoggedIn(localStorage.getItem("loggedIn") === "true");
+    };
+
+    checkLoginStatus();
+    window.addEventListener("storage", checkLoginStatus);
+    // Measure header height and apply as CSS variable and root padding
+    const applyHeaderSpacing = () => {
+      try {
+        const el = headerRef.current || document.querySelector('header.w-full.fixed');
+        const h = el ? el.offsetHeight : 0;
+  // set CSS variable on :root for use in styles
+  document.documentElement.style.setProperty('--site-header-height', h + 'px');
+      } catch (err) {
+        // ignore
+        console.warn('applyHeaderSpacing error', err);
+      }
+    };
+
+    // apply initially and on resize / font load
+    applyHeaderSpacing();
+    window.addEventListener('resize', applyHeaderSpacing);
+    window.addEventListener('load', applyHeaderSpacing);
+    // fonts might change metrics
+    var fontsReadyPromise = null;
+    if (document.fonts && document.fonts.ready) {
+      fontsReadyPromise = document.fonts.ready.then(applyHeaderSpacing).catch(()=>{});
+    }
+
+    return () => {
+      window.removeEventListener('storage', checkLoginStatus);
+      window.removeEventListener('resize', applyHeaderSpacing);
+      window.removeEventListener('load', applyHeaderSpacing);
+      // do not modify CSS variable on cleanup to avoid visual jumps; just remove stored promise reference
+      fontsReadyPromise = null;
+    };
+  }, []);
+
   const handleLoginClick = () => setShowLogin(true);
+
+  const handleLoginSuccess = async ({ usuario, contrasena }) => {
+    try {
+      const res = await axios.post("http://localhost:3000/usuarios/login", {
+        usuario,
+        contrasenia: contrasena,
+      });
+
+      if (res.data && res.data.encontrado === 1) {
+        localStorage.setItem("loggedIn", "true");
+        localStorage.setItem("userInfo", JSON.stringify(res.data.usuario));
+        setLoggedIn(true);
+        setShowLogin(false);
+      } else {
+        alert("Credenciales incorrectas");
+      }
+    } catch (error) {
+      console.error("Error en login:", error);
+      alert("Error al iniciar sesión");
+    }
+  };
+
   const handleCloseLogin = () => setShowLogin(false);
+
+  const handleUserClick = () => setMenuOpen((prev) => !prev);
+
+  const handleLogout = () => {
+    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("userInfo");
+    setLoggedIn(false);
+    setMenuOpen(false);
+    navigate("/");
+  };
 
   const getRoleName = (id_rol) => {
     switch (id_rol) {
@@ -21,38 +96,84 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
     }
   };
 
+  const styles = {
+    header: {
+      width: "100%",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "1rem 2.5rem",
+      backgroundColor: "white",
+      position: "relative",
+      zIndex: 50,
+    },
+    icon: {
+      color: "black",
+      cursor: "pointer",
+    },
+    logo: {
+      height: "64px",
+      objectFit: "contain",
+    },
+    dropdown: {
+      position: "absolute",
+      top: "80px",
+      right: "40px",
+      backgroundColor: "white",
+      border: "1px solid #e2e2e2",
+      borderRadius: "8px",
+      boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+      zIndex: 99,
+    },
+    dropdownItem: {
+      padding: "10px 16px",
+      width: "200px",
+      textAlign: "left",
+      cursor: "pointer",
+      backgroundColor: "white",
+      borderBottom: "1px solid #eee",
+    },
+  };
+
   return (
     <>
-      <header className="w-full fixed top-0 h-20 flex justify-between items-center px-4 md:px-10 bg-background z-40">
-        {/* Izquierda: Logo Bolivia */}
-        <div
-          className="flex-1 flex items-center cursor-pointer"
-          onClick={() => navigate("/")}
-        >
-          <img
-            src="/media/header/bolivia.png"
-            alt="Logo Bicentenario Bolivia"
-            className="h-12 md:h-14 object-contain select-none"
-            draggable={false}
-          />
+  <header ref={headerRef} className="w-full fixed top-0 h-28 flex justify-between items-center px-4 md:px-10 bg-primary backdrop-blur-sm z-40">
+        {/* Izquierda: Icono de menú para móvil */}
+        <div className="flex-1 flex justify-start">
+          {/* Botón de menú hamburguesa (siempre visible en móvil) */}
+          <button 
+            onClick={toggleMobileMenu}
+            className="block md:hidden focus:outline-none p-0 shadow-none font-normal rounded-none"
+            aria-label="Abrir menú"
+            style={{ background: 'none', boxShadow: 'none', border: 'none', color: '#FEFCFB', zIndex: 9999 }}
+          >
+            <svg
+              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              style={{ color: '#FEFCFB', display: 'block' }}
+            >
+              <path
+                d="M4 7h16M4 12h16M4 17h16"
+                stroke="#FEFCFB"
+                strokeWidth={window.innerWidth <= 640 ? 1.5 : window.innerWidth <= 768 ? 2 : 2.5}
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
         </div>
 
-        {/* Centro: Logos y Título */}
-        <div className="flex items-center gap-2 sm:gap-4 select-none">
+        {/* Centro: Título limpio */}
+        <div
+          className="flex items-center justify-center select-none cursor-pointer"
+          onClick={() => navigate("/")}
+          title="Inicio"
+        >
           <img
             src="/media/header/logo.png"
-            alt="Logo Bicentenario"
-            className="h-8 md:h-10 object-contain opacity-70 cursor-default flex-shrink-0"
-            draggable={false}
-          />
-          {/* AJUSTE MINIMALISTA: Se reduce el tamaño y se añade espaciado para un look más limpio */}
-          <h1 className="font-bodoni text-xl sm:text-2xl md:text-3xl lg:text-4xl text-primary whitespace-nowrap tracking-widest">
-            ORBIS EMPRESARIAL
-          </h1>
-          <img
-            src="/media/header/logo.png"
-            alt="Logo Bicentenario"
-            className="h-8 md:h-10 object-contain opacity-70 cursor-default hidden sm:block flex-shrink-0"
+            alt="Logo Orbis Empresarial"
+            className="h-16 sm:h-20 md:h-24 lg:h-24 object-contain block"
             draggable={false}
           />
         </div>
@@ -60,9 +181,9 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
         {/* Derecha: Icono Login y datos de usuario */}
         <div className="flex-1 flex justify-end items-center gap-4">
           <motion.img
-            src="/media/header/login.png"
+            src={window.innerWidth <= 640 ? "/media/header/login-beige-mobile.svg" : "/media/header/login-beige.svg"}
             alt="Iniciar sesión"
-            className="h-10 w-10 cursor-pointer object-contain opacity-80 select-none"
+            className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 cursor-pointer object-contain select-none"
             onClick={handleLoginClick}
             draggable={false}
             title="Iniciar sesión"
@@ -73,17 +194,17 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
           {loggedInUser && (
             <>
               <motion.span
-                className="font-miles text-base text-text-main select-none"
+                className="font-sans text-sm text-brand-slate select-none"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
                 {loggedInUser.usuario} ({getRoleName(loggedInUser.id_rol)})
               </motion.span>
-              
+
               <motion.button
                 onClick={onLogout}
-                className="bg-accent hover:bg-opacity-80 border-none text-primary px-3 py-1.5 rounded-md cursor-pointer font-bodoni text-sm transition-colors duration-300 whitespace-nowrap"
+                className="bg-brand-dark hover:bg-brand-slate text-white px-4 py-2 rounded-md cursor-pointer font-sans text-sm transition-all duration-200 whitespace-nowrap"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 title="Cerrar sesión"
@@ -107,7 +228,6 @@ const Header = ({ loggedInUser, onLogout, onLogin }) => {
       )}
     </>
   );
-};
+}
 
 export default Header;
-

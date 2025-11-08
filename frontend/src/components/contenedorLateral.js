@@ -1,82 +1,139 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 
 const ContenedorLateral = ({
   subtitulo,
   imagen,
-  ancho = "100%",
-  alto = "clamp(400px, 45vh, 500px)",
-  ovaloRedondez = "20px",
-  cuadroRedondez = "12px",
-  className = ""
+  ancho,
+  alto,
+  ovaloRedondez,
+  cuadroRedondez,
+  dias,
 }) => {
+  // Construye días por defecto: hoy, mañana y pasado
+  const defaultDias = useMemo(() => {
+    const base = new Date();
+    const toISODate = (d) => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    };
+    const d1 = new Date(base);
+    const d2 = new Date(base); d2.setDate(base.getDate() + 1);
+    const d3 = new Date(base); d3.setDate(base.getDate() + 2);
+    // Usar imágenes específicas para cada día (day1..day3)
+    return [
+      { label: "Día 1", date: toISODate(d1), imageUrl: "/media/homePage/day1.jpeg" },
+      { label: "Día 2", date: toISODate(d2), imageUrl: "/media/homePage/day2.jpeg" },
+      { label: "Día 3", date: toISODate(d3), imageUrl: "/media/homePage/day3.jpeg" },
+    ];
+  }, [imagen]);
+
+  const diasData = dias && Array.isArray(dias) && dias.length === 3 ? dias : defaultDias;
+
+  // Selecciona el día según la fecha actual
+  const todayISO = useMemo(() => {
+    const t = new Date();
+    const y = t.getFullYear();
+    const m = String(t.getMonth() + 1).padStart(2, "0");
+    const d = String(t.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }, []);
+
+  // viewMode: 'semana' (mostrar imagen prop) o 'dias' (mostrar imagen del día)
+  const [viewMode, setViewMode] = useState('semana');
+  // Por defecto no seleccionar ningún día porque el modo por defecto es 'semana'
+  const [activeIdx, setActiveIdx] = useState(null);
+
+  const getStatus = (dateISO) => {
+    if (dateISO === todayISO) return "Hoy";
+    return dateISO < todayISO ? "Realizado" : "Próximamente";
+  };
+
   return (
     <div
-      className={`relative flex flex-col items-center justify-start bg-white border border-[#072D42]/20 shadow-xl transition-all duration-300 hover:shadow-2xl hover:border-[#072D42]/30 ${className}`}
+      className="relative flex flex-col z-10 ml-auto bg-white shadow-sm"
       style={{
         width: ancho,
-        height: alto,
+        borderColor: "#E5E7EB",
+        borderWidth: "1px",
+        borderStyle: "solid",
         borderRadius: cuadroRedondez,
+        marginTop: "clamp(0rem, 3vh, 2rem)",
+        overflow: "hidden",
       }}
     >
-      {/* Contenedor principal */}
-      <div className="relative w-full h-full flex flex-col items-center justify-start p-4 md:p-6">
-        
-        {/* Óvalo del subtítulo - Diseño profesional */}
-        <div
-          className="absolute bg-white border border-[#072D42]/20 px-4 md:px-6 py-2 md:py-3 flex items-center justify-center shadow-lg z-10"
-          style={{
-            borderRadius: ovaloRedondez,
-            left: "50%",
-            top: "-16px",
-            transform: "translateX(-50%)",
-            minWidth: "180px",
-            maxWidth: "90%",
-          }}
+      {/* Header */}
+      <div
+        className="px-4 md:px-6 lg:px-8 py-3 md:py-4"
+        style={{ borderBottom: "1px solid #E5E7EB", backgroundColor: "#FFFFFF" }}
+      >
+        {/* Subtítulo clickable: al hacer click muestra el modo 'semana' y se subraya cuando esté activo */}
+        <h2
+          role="button"
+          tabIndex={0}
+          onClick={() => { setViewMode('semana'); setActiveIdx(null); }}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setViewMode('semana'); setActiveIdx(null); } }}
+          className="font-playfair font-medium text-primary text-2xl md:text-3xl text-center tracking-tight"
+          style={{ cursor: 'pointer', textDecoration: viewMode === 'semana' ? 'underline' : 'none' }}
+          aria-pressed={viewMode === 'semana'}
         >
-          <span className="font-sans font-semibold text-[#072D42] text-sm md:text-base uppercase tracking-wide text-center">
-            {subtitulo}
-          </span>
-        </div>
-
-        {/* Contenedor de la imagen con marco profesional */}
-        <div className="w-full h-full flex items-center justify-center mt-6 md:mt-8">
-          <div className="relative w-full h-full bg-[#F4E9D7]/30 border border-[#072D42]/10 rounded-lg overflow-hidden group"
-            style={{
-              borderRadius: "10px",
-            }}
-          >
-            {/* Imagen que se ajusta al contenedor */}
-            <div className="w-full h-full relative overflow-hidden">
-              <img
-                src={imagen}
-                alt="Contenido visual"
-                className="object-cover w-full h-full transition-all duration-500 group-hover:scale-105"
-                style={{
-                  borderRadius: "8px",
-                }}
-                onError={(e) => {
-                  e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI0MCIgZmlsbD0iI0Y0RTlENyIgc3Ryb2tlPSIjMDcyRDQyIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSI4MCIgcj0iMTIiIGZpbGw9IiMwNzJENDIiLz4KICA8cGF0aCBkPSJNNzAgMTMwQzg1IDE1MCAxMTUgMTUwIDEzMCAxMzAiIHN0cm9rZT0iIzA3MkQ0MiIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+";
-                }}
-              />
-              
-              {/* Overlay sutil al hover */}
-              <div className="absolute inset-0 bg-[#072D42]/0 group-hover:bg-[#072D42]/5 transition-all duration-300" />
-            </div>
-
-            {/* Efecto de esquina decorativa */}
-            <div className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-[#F29E38] opacity-60" />
-            <div className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-[#F29E38] opacity-60" />
-          </div>
-        </div>
-
-        {/* Línea decorativa inferior */}
-        <div className="absolute bottom-4 left-1/2 transform -translateX(-50%) w-20 h-1 bg-[#F29E38] rounded-full" />
+          {subtitulo || "Semana de actividades"}
+        </h2>
       </div>
 
-      {/* Borde lateral acentuado */}
-      <div className="absolute right-0 top-0 h-full w-1 bg-gradient-to-b from-[#F29E38] to-[#072D42] opacity-80" />
+      {/* Selector de días */}
+      <div className="px-3 md:px-6 lg:px-8 py-3">
+        <div className="flex gap-1 md:gap-2 rounded-full border" style={{ borderColor: '#E5E7EB', backgroundColor: '#FFFFFF', padding: '6px' }}>
+          {diasData.map((d, idx) => {
+            const status = getStatus(d.date);
+            const isActive = idx === activeIdx;
+            return (
+              <button
+                key={d.label}
+                    onClick={() => { setActiveIdx(idx); setViewMode('dias'); }}
+                className={`group flex-1 flex flex-col items-center justify-center rounded-full transition-colors duration-200 focus:outline-none py-2 md:py-2.5`}
+                style={
+                  isActive
+                    ? { backgroundColor: 'rgba(7,45,66,0.08)', color: '#072D42' }
+                    : { backgroundColor: '#FFFFFF', color: '#111827' }
+                }
+                aria-pressed={isActive}
+              >
+                <span className={`font-miles text-xs md:text-sm`}>{d.label}</span>
+                <span className="mt-1 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] md:text-xs border font-miles font-light"
+                  style={
+                    status === 'Hoy'
+                      ? { backgroundColor: 'rgba(7,45,66,0.08)', color: '#072D42', borderColor: 'rgba(7,45,66,0.18)' }
+                      : status === 'Realizado'
+                      ? { backgroundColor: '#F3F4F6', color: '#374151', borderColor: '#E5E7EB' }
+                      : { backgroundColor: '#F9FAFB', color: '#4B5563', borderColor: '#E5E7EB' }
+                  }
+                >
+                  {status}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Contenido */}
+      <div className="flex-1 px-2 md:px-4 lg:px-6 pb-4 flex items-center justify-center">
+        <div className="relative w-full max-w-[760px] flex items-start justify-center">
+          <div className="relative mt-4 w-full overflow-hidden rounded-xl bg-white shadow-sm"
+               style={{ border: '1px solid #E5E7EB' }}>
+            <img
+              src={viewMode === 'semana' ? imagen : (diasData[activeIdx]?.imageUrl || imagen)}
+              alt={`${viewMode === 'semana' ? (subtitulo || 'Semana') : (diasData[activeIdx]?.label || "Día")} - imagen`}
+              className="w-full h-auto object-contain"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default ContenedorLateral;
+

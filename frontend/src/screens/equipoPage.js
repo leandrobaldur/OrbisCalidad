@@ -402,7 +402,7 @@ const EquipoPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-beige font-inter [&_a]:no-underline [&_a:hover]:no-underline">
+  <div className="min-h-screen bg-beige font-inter [&_a]:no-underline [&_a:hover]:no-underline" style={{ paddingTop: 'calc(var(--site-header-height) - 6rem)' }}>
       
       {/* HEADER MEJORADO - COMPLETAMENTE RESPONSIVE */}
       <div className="h-[60vh] md:h-[70vh] lg:h-[80vh] min-h-[20rem] md:min-h-[25rem] max-h-[40rem] md:max-h-[50rem] mb-6 md:mb-9 overflow-hidden relative">

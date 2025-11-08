@@ -89,7 +89,7 @@ const ContactoPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-beige font-inter [&_a]:no-underline [&_a:hover]:no-underline">
+  <div className="min-h-screen bg-beige font-inter [&_a]:no-underline [&_a:hover]:no-underline" style={{ paddingTop: 'calc(var(--site-header-height) - 6rem)' }}>
       {/* HEADER ELEGANTE CON PARALLAX */}
       <div className="h-[20vh] min-h-[25rem] max-h-[50rem] mb-9 overflow-hidden relative">
         <header className="relative h-full">

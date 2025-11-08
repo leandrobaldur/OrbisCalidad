@@ -18,8 +18,11 @@ module.exports = {
       // ESTA SECCIÓN ES CRUCIAL:
       // Le dice a Tailwind que existen las clases font-bodoni y font-miles.
       fontFamily: {
-        'bodoni': ['Bodoni', 'serif'],
+        // Mapear utilidades a las familias reales instaladas
+        // Prioriza "Bodoni Std" y cae a "Bodoni" si no está
+        'bodoni': ['Bodoni Std', 'Bodoni', 'serif'],
         'miles': ['Miles Light', 'sans-serif'],
+        'playfair': ['"Playfair Display"', 'serif'],
       },
     },
   },

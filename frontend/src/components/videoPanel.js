@@ -11,7 +11,7 @@ const VideoPanel = ({ children, height = "50vh" }) => {
     <div
       style={panelStyle}
       // APLICACIÓN MINIMALISTA: Bordes simples y limpios
-      className="w-full relative overflow-hidden border-t-[0.7vh] border-b-[0.7vh] border-primary shadow-lg rounded-lg"
+      className="w-full relative overflow-hidden"
     >
       <div className="absolute inset-0 w-full h-full">
         {/* Clonamos el `children` para aplicarle clases en lugar de estilos en línea. */}

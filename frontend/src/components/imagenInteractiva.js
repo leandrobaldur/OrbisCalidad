@@ -16,7 +16,7 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "100%" }) => {
       style={{ width: ancho, aspectRatio: '1.618 / 1', marginLeft: 0 }}
     >
       {/* --- Barra de iconos - Responsive padding --- */}
-      <div className="w-full flex items-center justify-between py-2 md:py-3 lg:py-4 gap-2 md:gap-4 lg:gap-6 bg-surface border-t-2 md:border-t-4 lg:border-t-6 border-b-2 md:border-b-4 lg:border-b-6 border-primary px-2 md:px-4 lg:px-6">
+  <div className="w-full flex items-center justify-between py-2 md:py-3 lg:py-4 gap-2 md:gap-4 lg:gap-6 bg-white border-t-2 md:border-t-4 lg:border-t-6 border-b-2 md:border-b-4 lg:border-b-6 border-primary px-2 md:px-4 lg:px-6">
         {items.map((item, index) => (
           <div
             key={index}
@@ -34,8 +34,8 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "100%" }) => {
         ))}
       </div>
 
-      {/* --- Panel de contenido animado - Responsive spacing --- */}
-      <div className="w-full bg-background flex flex-col items-center gap-4 md:gap-6 lg:gap-8 flex-grow overflow-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 lg:py-8">
+  {/* --- Panel de contenido animado - Responsive spacing (fondo más claro) --- */}
+  <div className="w-full bg-surface-elevated flex flex-col items-center gap-4 md:gap-6 lg:gap-8 flex-grow overflow-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 lg:py-8">
         <AnimatePresence mode="wait">
           {seleccionado ? (
             <motion.div
@@ -47,7 +47,7 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "100%" }) => {
               className="flex flex-col items-center w-full"
             >
               {/* Responsive title */}
-              <h2 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bodoni text-primary text-center tracking-wider font-bold uppercase mb-4 md:mb-6 lg:mb-8">
+              <h2 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-playfair font-medium text-primary text-center tracking-tight mb-4 md:mb-6 lg:mb-8">
                 {seleccionado.subtitulo}
               </h2>
 

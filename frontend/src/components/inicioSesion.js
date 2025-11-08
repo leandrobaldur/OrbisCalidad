@@ -6,7 +6,7 @@ import logo from '../assets/logo.png';
 
 // --- TAMAÑOS RESPONSIVOS CON PROPORCIONES ÁUREAS (MÁS PEQUEÑOS) ---
 const SIZES = {
-  LOGO_SIZE: "clamp(60px, 8vw, 90px)", // Reducido de 12vw a 8vw
+  LOGO_SIZE: "clamp(120px, 16vw, 180px)",
   TITLE_SIZE: "clamp(1.4rem, 3vw, 1.8rem)", // Reducido de 4vw a 3vw
   LABEL_SIZE: "clamp(0.8rem, 1.6vw, 1rem)", // Reducido de 2vw a 1.6vw
   INPUT_SIZE: "clamp(0.9rem, 1.8vw, 1.1rem)", // Reducido de 2.2vw a 1.8vw
@@ -17,6 +17,13 @@ const SIZES = {
   MODAL_WIDTH: "clamp(280px, 70vw, 400px)", // Reducido de 90vw a 70vw y max de 500px a 400px
   MODAL_PADDING: "clamp(1.2rem, 3vw, 1.8rem)", // Reducido de 4vw a 3vw
 };
+
+// --- DATOS ESTÁTICOS DE USUARIOS (CON ROL) ---
+const USUARIOS_STATICOS = [
+  { usuario: "admin", contrasenia: "admin123", id_rol: 1 },
+  { usuario: "user", contrasenia: "password456", id_rol: 2 },
+  { usuario: "test", contrasenia: "test789", id_rol: 2 },
+];
 
 // Componente del ícono de ojo (mostrar contraseña)
 const EyeIconShow = ({ color, size = SIZES.ICON_SIZE }) => (
@@ -105,7 +112,28 @@ const InicioSesion = ({ onLogin, onClose }) => {
     }
 
     setLoading(true); // Activa el estado de carga
-    try {
+
+    //ESTATICOS
+    // --- LÓGICA DE LOGIN CON DATOS ESTÁTICOS ---
+    setTimeout(() => {
+      // Simula una demora de red de 1 a 2 segundos
+      const usuarioEncontrado = USUARIOS_STATICOS.find(
+        (user) => user.usuario === usuario
+      );
+
+      if (usuarioEncontrado && usuarioEncontrado.contrasenia === contrasenia) {
+        setMensaje("¡Sesión iniciada correctamente!");
+        onLogin(usuarioEncontrado); // Usa el objeto de usuario estático
+        setTimeout(() => {
+          setIsVisible(false);
+        }, 1500);
+      } else {
+        setMensaje("Credenciales incorrectas");
+      }
+      setLoading(false);
+    }, Math.random() * 1000 + 1000); // Demora aleatoria entre 1 y 2 segundos
+  };
+    /*try {
       // --- LA LLAMADA FETCH PARA EL LOGIN ESTÁ IMPLEMENTADA AQUÍ MISMO ---
       const res = await fetch("http://localhost:3000/usuarios/login", {
         method: "POST",
@@ -129,7 +157,7 @@ const InicioSesion = ({ onLogin, onClose }) => {
     } finally {
       setLoading(false); // Desactiva el estado de carga
     }
-  };
+  };*/
 
   // Función para cerrar el modal
   const handleClose = () => {
@@ -155,7 +183,7 @@ const InicioSesion = ({ onLogin, onClose }) => {
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="fixed inset-0 bg-black/65 flex justify-center items-center z-[9999]"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[9999]"
         >
           <motion.div
             key="modal"
@@ -163,18 +191,21 @@ const InicioSesion = ({ onLogin, onClose }) => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="bg-surface-elevated rounded-2xl text-center font-bodoni shadow-2xl border-2 border-stroke relative"
+            className="bg-surface-elevated rounded-2xl text-center shadow-2xl border border-stroke/30 relative overflow-hidden"
             style={{
               width: SIZES.MODAL_WIDTH,
               padding: SIZES.MODAL_PADDING,
             }}
           >
-            {/* Botón de cerrar (la X) */}
+            {/* Botón de cerrar (la X) - completamente sin fondo */}
             <motion.button
               onClick={handleClose}
-              whileHover={{ scale: 1.2, color: "#E57373" }}
-              className="absolute top-4 right-5 bg-transparent border-none cursor-pointer text-text-muted p-1 outline-none transition-transform duration-200"
-              style={{ fontSize: SIZES.CLOSE_SIZE }}
+              whileHover={{ scale: 1.2, color: "#F29E38" }}
+              className="absolute top-4 right-5 border-none cursor-pointer text-text-muted p-1 outline-none transition-all duration-200"
+              style={{ 
+                fontSize: SIZES.CLOSE_SIZE,
+                backgroundColor: 'transparent'
+              }}
             >
               &times;
             </motion.button>
@@ -185,7 +216,7 @@ const InicioSesion = ({ onLogin, onClose }) => {
               style={{
                 width: SIZES.LOGO_SIZE,
                 height: SIZES.LOGO_SIZE,
-                marginBottom: "clamp(1.5rem, 3vw, 2rem)", // Reducido proporcionalmente
+                marginBottom: "clamp(0.5rem, 1.5vw, 1rem)",
               }}
             >
               <motion.img
@@ -267,7 +298,7 @@ const InicioSesion = ({ onLogin, onClose }) => {
               </label>
               <div 
                 className="relative w-full"
-                style={{ marginBottom: "clamp(1rem, 2.5vw, 1.5rem)" }} // Reducido proporcionalmente
+                style={{ marginBottom: "clamp(1rem, 2.5vw, 1.5rem)" }}
               >
                 <motion.input
                   type={showPassword ? "text" : "password"}
@@ -277,19 +308,22 @@ const InicioSesion = ({ onLogin, onClose }) => {
                   onChange={(e) => setContrasenia(e.target.value)}
                   variants={inputVariants}
                   whileFocus="focus"
-                  className="w-full bg-surface border border-stroke rounded-xl text-text-main font-miles box-border focus:outline-none focus:border-accent transition-colors duration-200"
+                  className="w-full bg-surface border border-stroke rounded-lg text-text-main font-miles box-border focus:outline-none focus:border-accent transition-all duration-200"
                   style={{
-                    padding: "clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 16px)", // Reducido proporcionalmente
-                    paddingRight: "clamp(40px, 6vw, 50px)", // Reducido proporcionalmente
+                    padding: "clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 16px)",
+                    paddingRight: "clamp(40px, 6vw, 50px)",
                     fontSize: SIZES.INPUT_SIZE,
                   }}
                 />
-                {/* Botón para mostrar/ocultar contraseña */}
+                {/* Botón para mostrar/ocultar contraseña - completamente sin fondo */}
                 <motion.button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute top-1/2 transform -translate-y-1/2 bg-transparent border-none cursor-pointer p-0 flex items-center justify-center text-text-muted"
-                  style={{ right: "clamp(12px, 2vw, 16px)" }} // Reducido proporcionalmente
+                  className="absolute top-1/2 transform -translate-y-1/2 border-none cursor-pointer p-1 flex items-center justify-center text-text-muted transition-colors duration-200"
+                  style={{ 
+                    right: "clamp(8px, 1.5vw, 12px)",
+                    backgroundColor: 'transparent'
+                  }}
                   whileHover={{ opacity: 0.7, scale: 1.1 }}
                   title={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                 >
