@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Rocket, Eye, History, Telescope, ChevronRight, ArrowRightToLine, Mountain, BookOpen, Building, FileText, Calendar } from "lucide-react";
+import { Eye, History, ArrowRightToLine, Mountain, BookOpen, Building, FileText, Calendar } from "lucide-react";
 
 // Constantes de datos con iconos
 const mainSections = [
@@ -111,6 +111,7 @@ const AnimatedCounter = ({ target, duration = 2000, suffix = "+" }) => {
   const ref = useRef(null);
 
   useEffect(() => {
+    const currentRef = ref.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !hasStarted) {
@@ -133,13 +134,13 @@ const AnimatedCounter = ({ target, duration = 2000, suffix = "+" }) => {
       { threshold: 0.3 }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, [target, duration, hasStarted]);
@@ -194,7 +195,6 @@ const fontStyles = `
 `;
 
 const AboutUsPage = () => {
-  const [active, setActive] = useState(allSections[0].id);
   const [revealedSections, setRevealedSections] = useState({});
   const sectionRefs = useRef({});
   const [scrollY, setScrollY] = useState(0);
@@ -233,7 +233,6 @@ const AboutUsPage = () => {
       (entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            setActive(entry.target.id);
             setRevealedSections(prev => ({ ...prev, [entry.target.id]: true }));
           }
         });
@@ -252,18 +251,6 @@ const AboutUsPage = () => {
     
     return () => observer.disconnect();
   }, []);
-
-  const scrollTo = (e, id) => {
-    e.preventDefault();
-    const el = sectionRefs.current[id];
-    if (!el) return;
-    
-    const elementPosition = el.getBoundingClientRect().top + window.scrollY;
-    const offsetPosition = elementPosition - (SCROLL_OFFSET * 16);
-    
-    window.scrollTo({ top: offsetPosition, behavior: "smooth" });
-    setActive(id);
-  };
 
   const parallaxStyle = {
     transform: `translate3d(0, ${scrollY * 0.4}px, 0)`
@@ -329,7 +316,7 @@ const AboutUsPage = () => {
                     key={index}
                     className="text-center group hover:scale-105 transition-transform duration-300"
                   >
-                    
+                    <IconComponent className="w-8 h-8 text-[#072D42] mx-auto mb-2" />
                     
                     {/* NÚMERO ANIMADO */}
                     <div className="font-playfair text-3xl font-light text-[#072D42] mb-1">

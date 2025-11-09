@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Building, GraduationCap, Users, Link2 } from 'lucide-react';
+import { ExternalLink, Building, GraduationCap, Users } from 'lucide-react';
 
 // Estilos de fuentes
 const fontStyles = `
@@ -21,7 +21,6 @@ const fontStyles = `
 
 const ContactoPage = () => {
   const [hoverIndex, setHoverIndex] = useState(null);
-  const [isHeaderShrunk, setIsHeaderShrunk] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const tickingRef = useRef(false);
 
@@ -39,8 +38,6 @@ const ContactoPage = () => {
   // Scroll handler para parallax
   useEffect(() => {
     const handleScroll = () => {
-      setIsHeaderShrunk(window.scrollY > 100);
-      
       if (!tickingRef.current) {
         requestAnimationFrame(() => {
           setScrollY(window.scrollY);

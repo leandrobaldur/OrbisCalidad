@@ -4,13 +4,21 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import EmpresaCard from './empresaCard'; 
 
-const EmpresaLista = ({ empresas, loading, vistaGrid, onCardClick }) => {
+const EmpresaLista = ({ empresas, loading, error, vistaGrid, onCardClick }) => {
     const gridContainerClass = vistaGrid 
         ? "grid grid-cols-1 sm:grid-cols-2 gap-4" // Vista Cuadrícula
         : "grid gap-4"; // Vista Lista 
 
     if (loading) {
         return <div className="text-center p-8">Cargando empresas...</div>;
+    }
+
+    if (error) {
+        return (
+            <div className="text-center p-8 text-red-600">
+                {error}
+            </div>
+        );
     }
 
     return (

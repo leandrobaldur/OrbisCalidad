@@ -72,8 +72,8 @@ const EmpresaCard = ({ empresa, onClick, isGrid }) => {
             
             {/* Contenido de la Tarjeta (flex-grow para ocupar el espacio restante) */}
             <div className="p-4 flex-grow">
-                <p className="text-sm text-gray-600">{empresa.rubro}</p>
-                <p className="text-sm text-gray-500">{empresa.departamento}</p>
+                <p className="text-sm text-gray-600">{empresa.rubro || 'Rubro no especificado'}</p>
+                <p className="text-sm text-gray-500">{empresa.departamento || 'Departamento no disponible'}</p>
             </div>
 
             <div className="absolute bottom-0 left-0 right-0">

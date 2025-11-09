@@ -1,5 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { getEmpresasCards, getEmpresaPublicById } from '../services/empresaService';
+import EmpresaModal from './empresaModal';
 
 const shuffleArray = (array) => {
   const newArray = [...array];
@@ -10,65 +12,136 @@ const shuffleArray = (array) => {
   return newArray;
 };
 
-const CarruselImagenes = ({ altura, filas, backendUrl }) => {
+const DISTRIBUTION_FALLBACK = 1;
+
+const CarruselImagenes = ({ altura = 400, filas = 3, limite = 60 }) => {
   const [imagenesDistribuidas, setImagenesDistribuidas] = useState([]);
-  const contenedorRef = useRef(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
+  const [modalError, setModalError] = useState(null);
+  const [selectedEmpresa, setSelectedEmpresa] = useState(null);
 
-  // Convierte el enlace de Google Drive en una URL accesible para la imagen
-  const convertirUrlDrive = (url) => {
-    if (url && url.includes("drive.google.com")) {
-      const id = url.split("/d/")[1]?.split("/")[0]; // Extrae el ID del archivo
-      if (id) {
-        return `https://drive.google.com/uc?export=view&id=${id}`; // URL de imagen directa
-      }
-    }
-    return url; // Devolver la URL tal cual está si es válida
-  };
-
-  const obtenerImagenesDesdeBackend = async () => {
-    try {
-      const resumen = await axios.get(`${backendUrl}/empresas/resumen`);
-      const ids = resumen.data.map((e) => e.id_empresa);
-
-      const respuestas = await Promise.all(
-        ids.map((id) => axios.get(`${backendUrl}/empresa/${id}`))
-      );
-
-      const imagenes = respuestas.map((res) => {
-        const url = convertirUrlDrive(res.data.url); // Convierte la URL si es válida
-        console.log('Imagen URL:', url); // Verifica la URL convertida
-        return {
-          id_empresa: res.data.id_empresa,
-          imagen: url || "", // Si la URL no es válida, asigna un string vacío
-        };
-      });
-
-      const imagenesBarajadas = shuffleArray(imagenes);
-      const distribuidas = distribuirEquitativamente(imagenesBarajadas, filas);
-      setImagenesDistribuidas(distribuidas);
-    } catch (error) {
-      console.error('❌ Error al obtener imágenes desde backend:', error);
-    }
-  };
-
-  const distribuirEquitativamente = (imagenes, filas) => {
-    const distribuidas = Array.from({ length: filas }, () => []);
+  const distribuirEquitativamente = (imagenes, filasDistribucion) => {
+    const filasSeguras = Math.max(filasDistribucion, DISTRIBUTION_FALLBACK);
+    const distribuidas = Array.from({ length: filasSeguras }, () => []);
     imagenes.forEach((img, index) => {
-      distribuidas[index % filas].push(img);
+      const posicion = index % filasSeguras;
+      distribuidas[posicion].push(img);
     });
     return distribuidas;
   };
 
+  const normalizarImagen = (url) => {
+    if (!url) {
+      return url;
+    }
+
+    if (url.includes('drive.google.com')) {
+      const driveId = url.split('/d/')[1]?.split('/')[0];
+      if (driveId) {
+        return `https://drive.google.com/uc?export=view&id=${driveId}`;
+      }
+    }
+
+    return url;
+  };
+
+  const obtenerImagenesDesdeBackend = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const empresas = await getEmpresasCards({ limit: limite });
+
+      if (!empresas.length) {
+        setImagenesDistribuidas([]);
+        return;
+      }
+
+      const datos = empresas.map((empresa) => ({
+        id: empresa.id,
+        nombre: empresa.nombre,
+        imagen: normalizarImagen(empresa.imagen),
+      }));
+
+      const imagenesBarajadas = shuffleArray(datos);
+      const distribuidas = distribuirEquitativamente(imagenesBarajadas, filas);
+      setImagenesDistribuidas(distribuidas);
+    } catch (err) {
+      console.error('Error al obtener imágenes desde backend:', err);
+      setError('No se pudo cargar el carrusel de empresas. Intenta nuevamente más tarde.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     obtenerImagenesDesdeBackend();
-  }, []);
+  }, [filas, limite]);
 
-  // Responsive height calculation
   const responsiveHeight = `clamp(200px, ${altura}px, 600px)`;
+
+  const handleEmpresaClick = async (empresaId) => {
+    setShowModal(true);
+    setModalLoading(true);
+    setModalError(null);
+    setSelectedEmpresa(null);
+
+    try {
+      const detalle = await getEmpresaPublicById(empresaId);
+      setSelectedEmpresa(detalle);
+    } catch (err) {
+      console.error('Error al cargar detalle de empresa:', err);
+      setModalError('No se pudo cargar la información de la empresa. Intenta nuevamente.');
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setModalLoading(false);
+    setModalError(null);
+    setSelectedEmpresa(null);
+  };
+
+  if (loading) {
+    return (
+      <div
+        className="w-full flex items-center justify-center bg-surface-elevated rounded-lg shadow-lg border border-stroke"
+        style={{ height: responsiveHeight }}
+      >
+        <span className="text-text-muted font-miles">Cargando carrusel de empresas...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div
+        className="w-full flex items-center justify-center bg-surface-elevated rounded-lg shadow-lg border border-stroke"
+        style={{ height: responsiveHeight }}
+      >
+        <span className="text-red-600 font-miles text-center px-4">{error}</span>
+      </div>
+    );
+  }
+
+  if (!imagenesDistribuidas.some((fila) => fila.length > 0)) {
+    return (
+      <div
+        className="w-full flex items-center justify-center bg-surface-elevated rounded-lg shadow-lg border border-stroke"
+        style={{ height: responsiveHeight }}
+      >
+        <span className="text-text-muted font-miles text-center px-4">No hay empresas para mostrar en este momento.</span>
+      </div>
+    );
+  }
 
   return (
     <div
-      ref={contenedorRef}
       className="w-full overflow-hidden relative bg-surface-elevated rounded-lg shadow-lg border border-stroke"
       style={{ height: responsiveHeight, position: 'relative' }}
     >
@@ -85,29 +158,41 @@ const CarruselImagenes = ({ altura, filas, backendUrl }) => {
           {fila.concat(fila).map((empresa, idx) => (
             <div
               key={`${i}-${idx}`}
-              className="flex justify-center items-center overflow-hidden p-1 md:p-2"
+              className="flex justify-center items-center overflow-hidden p-2 md:p-4"
               style={{
                 height: '100%',
-                width: `${100 / fila.length}%`,
+                flex: '0 0 auto',
+                aspectRatio: '16 / 9',
+                maxHeight: '100%',
+              }}
+              onClick={() => handleEmpresaClick(empresa.id)}
+              role="button"
+              tabIndex={0}
+              onKeyPress={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  handleEmpresaClick(empresa.id);
+                }
               }}
             >
-              {empresa.imagen ? (
-                <img
-                  src={empresa.imagen || '/path/to/default-image.jpg'}
-                  alt={`Logo empresa ${empresa.id_empresa}`}
-                  loading="lazy"
-                  className="object-contain transition-transform duration-300 hover:scale-105 max-h-full max-w-full"
-                  style={{
-                    objectFit: 'contain',
-                    display: 'block',
-                    margin: '0 auto',
-                  }}
-                />
-              ) : (
-                <div className="w-full h-full bg-surface flex items-center justify-center border border-stroke rounded-lg">
-                  <span className="font-miles text-text-muted text-xs md:text-sm">No Image</span>
+              <div className="relative w-full h-full rounded-lg border border-stroke shadow-md overflow-hidden bg-white flex items-center justify-center">
+                {empresa.imagen ? (
+                  <img
+                    src={empresa.imagen}
+                    alt={`Imagen de ${empresa.nombre}`}
+                    loading="lazy"
+                    className="object-contain w-full h-full"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-surface flex items-center justify-center border border-stroke rounded-lg">
+                    <span className="font-miles text-text-muted text-xs md:text-sm">Sin imagen</span>
+                  </div>
+                )}
+
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-sm md:text-base font-miles font-semibold text-center px-4">
+                  {empresa.nombre}
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </div>
@@ -123,6 +208,52 @@ const CarruselImagenes = ({ altura, filas, backendUrl }) => {
           100% { transform: translateX(0); }
         }
       `}</style>
+
+      <AnimatePresence>
+        {showModal && (
+          <motion.div
+            className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <div className="relative w-full max-w-3xl h-[90vh] bg-surface-elevated rounded-lg overflow-hidden">
+              {modalLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-20">
+                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
+                </div>
+              )}
+
+              {modalError && !modalLoading && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
+                  <p className="text-text-main font-miles">{modalError}</p>
+                  <button
+                    type="button"
+                    onClick={handleCloseModal}
+                    className="px-6 py-2 bg-primary text-surface-elevated rounded-md font-bodoni font-semibold hover:bg-primary/90"
+                  >
+                    Cerrar
+                  </button>
+                </div>
+              )}
+
+              {!modalError && selectedEmpresa && !modalLoading && (
+                <EmpresaModal empresa={selectedEmpresa} onClose={handleCloseModal} />
+              )}
+
+              {/* Botón de cierre adicional para accesibilidad */}
+              <button
+                type="button"
+                onClick={handleCloseModal}
+                className="absolute top-4 right-4 z-30 text-white/80 hover:text-white text-2xl font-bold"
+                aria-label="Cerrar"
+              >
+                ×
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

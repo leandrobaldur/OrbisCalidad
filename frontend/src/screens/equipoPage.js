@@ -112,7 +112,6 @@ const Reveal = ({ children, delay = 0 }) => {
 
 const EquipoPage = () => {
   const [activeSection, setActiveSection] = useState('delegacion');
-  const [isHeaderShrunk, setIsHeaderShrunk] = useState(false);
   const [asideBottom, setAsideBottom] = useState('auto');
   const sectionRefs = useRef({});
   const asideRef = useRef(null);
@@ -139,7 +138,6 @@ const EquipoPage = () => {
       
       if (!aside || !uneteSection) return;
       
-      const asideRect = aside.getBoundingClientRect();
       const uneteRect = uneteSection.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
       
@@ -153,8 +151,6 @@ const EquipoPage = () => {
     };
 
     const handleScroll = () => {
-      setIsHeaderShrunk(window.scrollY > 100);
-      
       if (!tickingRef.current) {
         requestAnimationFrame(() => {
           setScrollY(window.scrollY);

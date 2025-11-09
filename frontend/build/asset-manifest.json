@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/static/css/main.86f6ce4b.css",
-    "main.js": "/static/js/main.f6425734.js",
-    "static/media/logo.png": "/static/media/logo.591585b9be4bfe4e8cce.png",
+    "main.css": "/static/css/main.45bd6045.css",
+    "main.js": "/static/js/main.81711c5b.js",
     "static/media/RNSMiles-Light.otf": "/static/media/RNSMiles-Light.2a8678823157d87f1f8d.otf",
+    "static/media/logo.png": "/static/media/logo.bed809af0eb16f9dff5e.png",
     "static/media/bolivia.svg": "/static/media/bolivia.4b9e26c312c62200d84b90afae653a6c.svg",
     "static/media/BodoniStd.otf": "/static/media/BodoniStd.50932b090dac5bf48789.otf",
     "index.html": "/index.html",
-    "main.86f6ce4b.css.map": "/static/css/main.86f6ce4b.css.map",
-    "main.f6425734.js.map": "/static/js/main.f6425734.js.map"
+    "main.45bd6045.css.map": "/static/css/main.45bd6045.css.map",
+    "main.81711c5b.js.map": "/static/js/main.81711c5b.js.map"
   },
   "entrypoints": [
-    "static/css/main.86f6ce4b.css",
-    "static/js/main.f6425734.js"
+    "static/css/main.45bd6045.css",
+    "static/js/main.81711c5b.js"
   ]
 }
