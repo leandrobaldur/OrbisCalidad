@@ -16,24 +16,7 @@ const EmpresaBuscador = ({ busqueda, onBusquedaChange, vistaGrid, onVistaToggle 
 
     return (
         // Contenedor que agrupa el botón de vista y el buscador
-        <div className="mb-4 flex-shrink-0">
-            
-            {/* BOTÓN DE CAMBIO DE VISTA (ENCIMA DEL BUSCADOR) */}
-            <div className="flex justify-end mb-2">
-                <button
-                    onClick={onVistaToggle}
-                    className="p-2 rounded-full text-gray-600 hover:bg-gray-200 transition-colors"
-                    title={vistaGrid ? "Cambiar a vista de lista" : "Cambiar a vista de cuadrícula"}
-                >
-                    
-                    {vistaGrid ? (
-                        <ListIcon className="h-6 w-6" />
-                    ) : (
-                        <GridIcon className="h-6 w-6" />
-                    )}
-                </button>
-            </div>
-            
+        <div className="mb-4 flex items-center gap-2 flex-shrink-0">
             {/* CAMPO DE BÚSQUEDA */}
             <input
                 type="text"
@@ -42,6 +25,20 @@ const EmpresaBuscador = ({ busqueda, onBusquedaChange, vistaGrid, onVistaToggle 
                 onChange={onBusquedaChange}
                 className="w-full px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
+            
+            {/* BOTÓN DE CAMBIO DE VISTA */}
+            <button
+                onClick={onVistaToggle}
+                className="p-2 rounded-full text-gray-600 hover:bg-gray-200 transition-colors"
+                title={vistaGrid ? "Cambiar a vista de lista" : "Cambiar a vista de cuadrícula"}
+            >
+                
+                {vistaGrid ? (
+                    <ListIcon className="h-6 w-6" />
+                ) : (
+                    <GridIcon className="h-6 w-6" />
+                )}
+            </button>
         </div>
     );
 };

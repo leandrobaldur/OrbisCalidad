@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 
 const ModalTimeline = ({ hitos = [] }) => {
@@ -64,10 +64,117 @@ const ModalTimeline = ({ hitos = [] }) => {
 };
 
 // --- Componente principal del Modal ---
-const EmpresaModal = ({ empresa, onClose }) => {
-    if (!empresa) return null;
+const toCommaList = (items = []) => (Array.isArray(items) && items.length ? items.join(', ') : '');
 
-    const empresaHitos = empresa.hitos || [];
+const EMPTY_EMPRESA = Object.freeze({
+    nombre: '',
+    rubro: '',
+    slogan: '',
+    descripcion: '',
+    actividad: '',
+    direccionWeb: '',
+    imagen: '',
+    departamento: '',
+    tamanio: '',
+    servicios: [],
+    items: [],
+    tiposSocietarios: [],
+    municipios: [],
+    fundadores: [],
+    sedes: [],
+    hitos: [],
+});
+
+const EmpresaModal = ({ empresa, onClose, canEdit = false, onSave, saving = false }) => {
+    const currentEmpresa = empresa ?? EMPTY_EMPRESA;
+
+    const {
+        nombre = '',
+        rubro = '',
+        slogan = '',
+        descripcion = '',
+        actividad = '',
+        direccionWeb = '',
+        imagen = '',
+        departamento = '',
+        tamanio = '',
+        servicios: serviciosList = [],
+        items: itemsList = [],
+        tiposSocietarios: tiposSocietariosList = [],
+        municipios: municipiosList = [],
+        fundadores: fundadoresList = [],
+        sedes = [],
+        hitos: empresaHitos = [],
+    } = currentEmpresa;
+
+    const initialFormState = useMemo(() => ({
+        slogan: slogan || '',
+        descripcion: descripcion || '',
+        actividad: actividad || '',
+        direccionWeb: direccionWeb || '',
+        servicios: toCommaList(serviciosList),
+        items: toCommaList(itemsList),
+        tiposSocietarios: toCommaList(tiposSocietariosList),
+        fundadores: toCommaList(fundadoresList),
+        municipios: toCommaList(municipiosList),
+    }), [slogan, descripcion, actividad, direccionWeb, serviciosList, itemsList, tiposSocietariosList, fundadoresList, municipiosList]);
+
+    const [editMode, setEditMode] = useState(false);
+    const [formData, setFormData] = useState(initialFormState);
+    const [feedback, setFeedback] = useState(null);
+    const [feedbackType, setFeedbackType] = useState('success');
+
+    useEffect(() => {
+        setEditMode(false);
+        setFormData(initialFormState);
+        setFeedback(null);
+    }, [initialFormState]);
+
+    const handleFieldChange = (field, value) => {
+        setFormData((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const parseList = (value = '') =>
+        value
+            .split(',')
+            .map((item) => item.trim())
+            .filter(Boolean);
+
+    const handleSave = async () => {
+        if (!onSave) return;
+
+        setFeedback(null);
+
+        const payload = {
+            vision: formData.slogan?.trim() || null,
+            mensaje: formData.descripcion?.trim() || null,
+            actividad: formData.actividad?.trim() || null,
+            direccionWeb: formData.direccionWeb?.trim() || null,
+            servicios: parseList(formData.servicios),
+            items: parseList(formData.items),
+            tiposSocietarios: parseList(formData.tiposSocietarios),
+            fundadores: parseList(formData.fundadores),
+            municipios: parseList(formData.municipios),
+        };
+
+        try {
+            await onSave(payload);
+            setFeedbackType('success');
+            setFeedback('Cambios guardados correctamente.');
+            setEditMode(false);
+        } catch (error) {
+            const backendMessage = error?.response?.data?.message;
+            const message = Array.isArray(backendMessage)
+                ? backendMessage.join(', ')
+                : backendMessage || error.message || 'No fue posible guardar los cambios.';
+            setFeedbackType('error');
+            setFeedback(message);
+        }
+    };
+
+    if (!empresa) {
+        return null;
+    }
 
     return (
         <motion.div
@@ -86,32 +193,228 @@ const EmpresaModal = ({ empresa, onClose }) => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
+
+            {canEdit && (
+                <div className="absolute top-4 left-4 flex gap-3">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setEditMode((prev) => !prev);
+                            setFeedback(null);
+                        }}
+                        className="px-4 py-2 bg-primary text-white rounded-md text-sm font-semibold hover:bg-primary/90 transition"
+                        disabled={saving}
+                    >
+                        {editMode ? 'Cancelar edición' : 'Editar'}
+                    </button>
+                    {editMode && (
+                        <button
+                            type="button"
+                            onClick={handleSave}
+                            className="px-4 py-2 bg-emerald-600 text-white rounded-md text-sm font-semibold hover:bg-emerald-700 transition disabled:opacity-60"
+                            disabled={saving}
+                        >
+                            {saving ? 'Guardando...' : 'Guardar cambios'}
+                        </button>
+                    )}
+                </div>
+            )}
             
             {/* Contenido del Modal (Scrollable) */}
             <div className="w-full max-w-lg mx-auto flex flex-col items-center">
                 {/* Cabecera */}
                 <div className="text-center mb-6 pt-4">
-                    <h2 className="text-3xl font-bold text-gray-900">{empresa.nombre}</h2>
-                    <p className="text-lg text-gray-600">{empresa.rubro}</p>
-                    <p className="text-sm text-gray-500 italic">"{empresa.slogan}"</p>
+                    <h2 className="text-3xl font-bold text-gray-900">{nombre}</h2>
+                    <p className="text-lg text-gray-600">{rubro}</p>
+                    <p className="text-sm text-gray-500 italic">"{slogan}"</p>
                 </div>
                 
                 {/* Imagen/Logo */}
                 <div className="w-full flex-shrink-0 mb-4 rounded-lg overflow-hidden border border-gray-200">
                     <img
-                        src={empresa.imagen}
-                        alt={`Logo de ${empresa.nombre}`}
+                        src={imagen}
+                        alt={`Logo de ${nombre}`}
                         className="w-full h-48 object-contain bg-gray-50"
                     />
                 </div>
                 
                 {/* Descripción y Detalles */}
-                <div className="w-full text-gray-700 text-center mb-6">
-                    <p className="text-base mb-4 italic px-4">{empresa.descripcion}</p>
-                    <p className="text-sm border-t pt-2">
-                        <span className="font-semibold">Departamento principal:</span> {empresa.departamento}
-                    </p>
+                <div className="w-full text-gray-700 mb-6">
+                    {editMode ? (
+                        <form className="w-full flex flex-col gap-4 text-left">
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-800 mb-1">Descripción</label>
+                                <textarea
+                                    className="w-full border border-gray-300 rounded-md p-3 text-sm"
+                                    rows={4}
+                                    value={formData.descripcion}
+                                    onChange={(e) => handleFieldChange('descripcion', e.target.value)}
+                                    disabled={saving}
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-800 mb-1">Slogan</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border border-gray-300 rounded-md p-2 text-sm"
+                                        value={formData.slogan}
+                                        onChange={(e) => handleFieldChange('slogan', e.target.value)}
+                                        disabled={saving}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-800 mb-1">Sitio web</label>
+                                    <input
+                                        type="url"
+                                        className="w-full border border-gray-300 rounded-md p-2 text-sm"
+                                        value={formData.direccionWeb}
+                                        onChange={(e) => handleFieldChange('direccionWeb', e.target.value)}
+                                        placeholder="https://empresa.com"
+                                        disabled={saving}
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-800 mb-1">Actividad</label>
+                                <textarea
+                                    className="w-full border border-gray-300 rounded-md p-3 text-sm"
+                                    rows={3}
+                                    value={formData.actividad}
+                                    onChange={(e) => handleFieldChange('actividad', e.target.value)}
+                                    disabled={saving}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-800 mb-1">Servicios (separados por coma)</label>
+                                <textarea
+                                    className="w-full border border-gray-300 rounded-md p-3 text-sm"
+                                    rows={2}
+                                    value={formData.servicios}
+                                    onChange={(e) => handleFieldChange('servicios', e.target.value)}
+                                    disabled={saving}
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-800 mb-1">Productos / Items (coma)</label>
+                                    <textarea
+                                        className="w-full border border-gray-300 rounded-md p-3 text-sm"
+                                        rows={2}
+                                        value={formData.items}
+                                        onChange={(e) => handleFieldChange('items', e.target.value)}
+                                        disabled={saving}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-800 mb-1">Tipos societarios (coma)</label>
+                                    <textarea
+                                        className="w-full border border-gray-300 rounded-md p-3 text-sm"
+                                        rows={2}
+                                        value={formData.tiposSocietarios}
+                                        onChange={(e) => handleFieldChange('tiposSocietarios', e.target.value)}
+                                        disabled={saving}
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-800 mb-1">Fundadores (coma)</label>
+                                    <textarea
+                                        className="w-full border border-gray-300 rounded-md p-3 text-sm"
+                                        rows={2}
+                                        value={formData.fundadores}
+                                        onChange={(e) => handleFieldChange('fundadores', e.target.value)}
+                                        disabled={saving}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-800 mb-1">Municipios (coma)</label>
+                                    <textarea
+                                        className="w-full border border-gray-300 rounded-md p-3 text-sm"
+                                        rows={2}
+                                        value={formData.municipios}
+                                        onChange={(e) => handleFieldChange('municipios', e.target.value)}
+                                        disabled={saving}
+                                    />
+                                </div>
+                            </div>
+                        </form>
+                    ) : (
+                        <div className="text-center">
+                            <p className="text-base mb-4 italic px-4">{descripcion}</p>
+                            <p className="text-sm border-t pt-2">
+                                <span className="font-semibold">Departamento principal:</span> {departamento}
+                            </p>
+                            {tamanio && (
+                                <p className="text-sm">
+                                    <span className="font-semibold">Tamaño de empresa:</span> {tamanio}
+                                </p>
+                            )}
+                            {actividad && (
+                                <p className="text-sm">
+                                    <span className="font-semibold">Actividad:</span> {actividad}
+                                </p>
+                            )}
+                            {direccionWeb && (
+                                <p className="text-sm">
+                                    <span className="font-semibold">Sitio web:</span>{' '}
+                                    <a href={direccionWeb} target="_blank" rel="noopener noreferrer" className="text-primary underline">
+                                        {direccionWeb}
+                                    </a>
+                                </p>
+                            )}
+                            {serviciosList.length > 0 && (
+                                <p className="text-sm">
+                                    <span className="font-semibold">Servicios:</span> {serviciosList.join(', ')}
+                                </p>
+                            )}
+                            {itemsList.length > 0 && (
+                                <p className="text-sm">
+                                    <span className="font-semibold">Productos / Items:</span> {itemsList.join(', ')}
+                                </p>
+                            )}
+                            {tiposSocietariosList.length > 0 && (
+                                <p className="text-sm">
+                                    <span className="font-semibold">Tipos societarios:</span> {tiposSocietariosList.join(', ')}
+                                </p>
+                            )}
+                            {municipiosList.length > 0 && (
+                                <p className="text-sm">
+                                    <span className="font-semibold">Municipios en los que opera:</span> {municipiosList.join(', ')}
+                                </p>
+                            )}
+                        </div>
+                    )}
                 </div>
+
+                {feedback && (
+                    <div
+                        className={`w-full mb-4 text-sm font-semibold px-4 py-2 rounded-md text-center ${feedbackType === 'success' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}`}
+                    >
+                        {feedback}
+                    </div>
+                )}
+
+                {sedes.length > 0 && (
+                    <div className="w-full mb-6">
+                        <h3 className="text-lg font-semibold text-gray-800 border-t pt-4 mt-2">Sedes registradas</h3>
+                        <ul className="mt-2 space-y-1 text-sm text-gray-600">
+                            {sedes.map((sede) => (
+                                <li key={sede.id || `${sede.departamento}-${sede.esCentral}`}> 
+                                    {sede.departamento || 'Departamento no especificado'} {sede.esCentral ? '(Central)' : ''}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+
+                {fundadoresList.length > 0 && (
+                    <div className="w-full mb-6">
+                        <h3 className="text-lg font-semibold text-gray-800 border-t pt-4 mt-2">Fundadores</h3>
+                        <p className="text-sm text-gray-600">{fundadoresList.join(', ')}</p>
+                    </div>
+                )}
 
                 {/* LÍNEA DE TIEMPO DE HITOS */}
                 <ModalTimeline hitos={empresaHitos} />

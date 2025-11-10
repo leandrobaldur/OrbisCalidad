@@ -28,8 +28,8 @@ const EmpresasPanel = ({ loggedInUser }) => {
   const CLOUDINARY_BASE_URL = 'https://res.cloudinary.com/diswqpy8v/image/upload';
 
   // Roles para edición
-  const esAdmin = loggedInUser?.id_rol === 1;
-  const esColaborador = loggedInUser?.id_rol === 2;
+  const esAdmin = loggedInUser?.idRol === 1;
+  const esColaborador = loggedInUser?.idRol === 2;
   const puedeEditar = esAdmin || esColaborador;
   const recargarEmpresas = async () => {
     try {
@@ -933,7 +933,7 @@ const DetalleEmpresaModal = ({ empresa, onClose }) => {
                   alt="Imagen lateral" 
                   className="w-full h-auto rounded-lg border-2 border-primary shadow-lg"
                 />
-                {loggedInUser?.id_rol === 1 && (
+                {loggedInUser?.idRol === 1 && (
                   <>
                     <button
                       onClick={() => setShowRegistroModal(true)}

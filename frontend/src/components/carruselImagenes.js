@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { getEmpresasCards, getEmpresaPublicById } from '../services/empresaService';
+import { getEmpresasCards, getEmpresaPublicById, getEmpresaPrivateById } from '../services/empresaService';
 import EmpresaModal from './empresaModal';
 
 const shuffleArray = (array) => {
@@ -14,7 +14,7 @@ const shuffleArray = (array) => {
 
 const DISTRIBUTION_FALLBACK = 1;
 
-const CarruselImagenes = ({ altura = 400, filas = 3, limite = 60 }) => {
+const CarruselImagenes = ({ altura = 400, filas = 3, limite = 60, loggedInUser }) => {
   const [imagenesDistribuidas, setImagenesDistribuidas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,6 +22,11 @@ const CarruselImagenes = ({ altura = 400, filas = 3, limite = 60 }) => {
   const [modalLoading, setModalLoading] = useState(false);
   const [modalError, setModalError] = useState(null);
   const [selectedEmpresa, setSelectedEmpresa] = useState(null);
+
+  const canViewPrivate = useMemo(() => {
+    if (!loggedInUser?.idRol) return false;
+    return [1, 2, 3].includes(loggedInUser.idRol);
+  }, [loggedInUser?.idRol]);
 
   const distribuirEquitativamente = (imagenes, filasDistribucion) => {
     const filasSeguras = Math.max(filasDistribucion, DISTRIBUTION_FALLBACK);
@@ -53,7 +58,16 @@ const CarruselImagenes = ({ altura = 400, filas = 3, limite = 60 }) => {
     setError(null);
 
     try {
-      const empresas = await getEmpresasCards({ limit: limite });
+      let empresas = [];
+      try {
+        empresas = await getEmpresasCards({ limit: limite }, canViewPrivate ? 'private' : 'public');
+      } catch (primaryError) {
+        if (canViewPrivate && primaryError?.response?.status === 401) {
+          empresas = await getEmpresasCards({ limit: limite }, 'public');
+        } else {
+          throw primaryError;
+        }
+      }
 
       if (!empresas.length) {
         setImagenesDistribuidas([]);
@@ -79,7 +93,8 @@ const CarruselImagenes = ({ altura = 400, filas = 3, limite = 60 }) => {
 
   useEffect(() => {
     obtenerImagenesDesdeBackend();
-  }, [filas, limite]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filas, limite, canViewPrivate]);
 
   const responsiveHeight = `clamp(200px, ${altura}px, 600px)`;
 
@@ -90,7 +105,22 @@ const CarruselImagenes = ({ altura = 400, filas = 3, limite = 60 }) => {
     setSelectedEmpresa(null);
 
     try {
-      const detalle = await getEmpresaPublicById(empresaId);
+      let detalle = null;
+
+      if (canViewPrivate) {
+        try {
+          detalle = await getEmpresaPrivateById(empresaId);
+        } catch (privateError) {
+          if (privateError?.response?.status !== 401) {
+            throw privateError;
+          }
+        }
+      }
+
+      if (!detalle) {
+        detalle = await getEmpresaPublicById(empresaId);
+      }
+
       setSelectedEmpresa(detalle);
     } catch (err) {
       console.error('Error al cargar detalle de empresa:', err);
@@ -240,16 +270,6 @@ const CarruselImagenes = ({ altura = 400, filas = 3, limite = 60 }) => {
               {!modalError && selectedEmpresa && !modalLoading && (
                 <EmpresaModal empresa={selectedEmpresa} onClose={handleCloseModal} />
               )}
-
-              {/* Botón de cierre adicional para accesibilidad */}
-              <button
-                type="button"
-                onClick={handleCloseModal}
-                className="absolute top-4 right-4 z-30 text-white/80 hover:text-white text-2xl font-bold"
-                aria-label="Cerrar"
-              >
-                ×
-              </button>
             </div>
           </motion.div>
         )}

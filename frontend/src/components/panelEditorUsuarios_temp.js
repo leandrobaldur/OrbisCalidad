@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getUsuarios, createUsuario, deleteUsuario } from '../services/usuarioService';
 
 // Variantes de animación para el contenedor principal
 const containerVariants = {
@@ -67,11 +68,22 @@ const SuccessConfirmationAlert = ({ message, onClose, fontMonoClass }) => {
 };
 
 
+const ROL_OPTIONS = [
+  { value: 2, label: 'Admin' },
+  { value: 3, label: 'Investigador' },
+  { value: 4, label: 'Temporal' },
+  { value: 5, label: 'Visitante' },
+];
+
 const PanelEditorUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
+  const [loadingUsuarios, setLoadingUsuarios] = useState(false);
+  const [errorUsuarios, setErrorUsuarios] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [nuevoUsuario, setNuevoUsuario] = useState("");
   const [nuevaContrasenia, setNuevaContrasenia] = useState("");
+  const [nuevoCorreo, setNuevoCorreo] = useState("");
+  const [nuevoRol, setNuevoRol] = useState(3);
   const [mensaje, setMensaje] = useState(null); // Para mensajes de error o validación dentro del modal de registro
 
   // Estados para la alerta de éxito de registro
@@ -89,30 +101,48 @@ const PanelEditorUsuarios = () => {
 
 
   const ROL_NOMBRE = {
-    1: "Administrador",
-    2: "Colaborador"
+    1: "Superadmin",
+    2: "Admin",
+    3: "Investigador",
+    4: "Temporal",
+    5: "Visitante",
   };
 
-  const cargarUsuarios = async () => {
+  const buildErrorMessage = (error) => {
+    const backendMessage = error?.response?.data?.message;
+    if (Array.isArray(backendMessage)) {
+      return backendMessage.join(', ');
+    }
+    return backendMessage || error?.message || 'No se pudo completar la operación.';
+  };
+
+  const cargarUsuarios = useCallback(async () => {
+    setLoadingUsuarios(true);
+    setErrorUsuarios(null);
     try {
-      const response = await fetch('http://localhost:3000/usuarios');
-      if (!response.ok) throw new Error("Error al obtener usuarios");
-      const data = await response.json();
+      const data = await getUsuarios();
       setUsuarios(data);
     } catch (error) {
-      console.error("Error al cargar usuarios:", error);
-      // Puedes setear un mensaje de error global si lo deseas
+      console.error('Error al cargar usuarios:', error);
+      setErrorUsuarios(buildErrorMessage(error));
+    } finally {
+      setLoadingUsuarios(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     cargarUsuarios();
-  }, [mostrarModal, mostrarAlertaExito, mostrarAlertaEliminarExito]); // Dependencia actualizada para recargar
+  }, [cargarUsuarios]);
+
+  useEffect(() => {
+    if (!mostrarModal && !mostrarAlertaExito && !mostrarAlertaEliminarExito) return;
+    cargarUsuarios();
+  }, [mostrarModal, mostrarAlertaExito, mostrarAlertaEliminarExito, cargarUsuarios]);
 
   const inputStyle = "w-full p-2 mb-4 rounded-md border border-[#D4B86A] text-[#333333]";
 
   const handleRegistrarUsuario = async () => {
-    if (!nuevoUsuario.trim() || !nuevaContrasenia.trim()) {
+    if (!nuevoUsuario.trim() || !nuevaContrasenia.trim() || !nuevoCorreo.trim()) {
       setMensaje("Completa todos los campos.");
       return;
     }
@@ -120,41 +150,24 @@ const PanelEditorUsuarios = () => {
     setMensaje(null); // Limpiar mensaje de error previo
 
     try {
-      const response = await fetch('http://localhost:3000/usuarios/registro', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          usuario: nuevoUsuario.trim(),
-          contrasenia: nuevaContrasenia.trim(),
-          id_usuario: 1 // Asegúrate que tu backend espera 'id_usuario' aquí para el registro
-        }),
+      await createUsuario({
+        usuario: nuevoUsuario.trim(),
+        contrasenia: nuevaContrasenia.trim(),
+        correo: nuevoCorreo.trim(),
+        idRol: nuevoRol,
       });
 
-      const data = await response.json();
-
-if (!response.ok) {
-  // Si el error es solo por "Error al registrar el log", ignóralo y continúa
-  if (data.message && data.message.includes("Error al registrar el log")) {
-    console.warn("Ignorando error de log en backend, usuario creado.");
-  } else {
-    // Error real, por ejemplo usuario duplicado
-    setMensaje(data.message || "Error al registrar");
-    return;
-  }
-}
-
-      // Registro exitoso: mostrar alerta y cerrar modal
       setMensajeExito("El usuario ha sido creado exitosamente.");
       setMostrarAlertaExito(true);
       setMostrarModal(false);
       setNuevoUsuario("");
       setNuevaContrasenia("");
+      setNuevoCorreo("");
+      setNuevoRol(3);
       cargarUsuarios();
-
-    
     } catch (error) {
-      console.error("Error:", error);
-      setMensaje("Error al conectar con el servidor. Intente de nuevo.");
+      console.error("Error registrando usuario:", error);
+      setMensaje(buildErrorMessage(error));
     }
   };
 
@@ -164,6 +177,8 @@ if (!response.ok) {
     setMostrarModal(false);     // Cierra el modal de registro
     setNuevoUsuario("");         // Limpia el campo de usuario
     setNuevaContrasenia("");     // Limpia el campo de contraseña
+    setNuevoCorreo("");
+    setNuevoRol(3);
     setMensaje(null);            // Asegura que no haya mensajes de error en el modal de registro
     cargarUsuarios();            // Recarga la lista de usuarios para mostrar el nuevo
   };
@@ -201,6 +216,12 @@ if (!response.ok) {
           </motion.span>
         </motion.div>
 
+        {errorUsuarios && (
+          <div className="px-10 pt-4 text-sm text-red-700">
+            {errorUsuarios}
+          </div>
+        )}
+
         <motion.div className="px-10 pb-0 flex justify-end mt-5 gap-4" variants={itemVariants}>
             <motion.button
               className={`w-14 h-14 rounded-[50px] flex justify-center items-center text-white text-2xl font-normal transition
@@ -221,7 +242,12 @@ if (!response.ok) {
 
           <motion.button
             className="bg-[#052018] w-14 h-14 rounded-[50px] flex justify-center items-center text-white text-2xl font-normal hover:bg-white transition"
-            onClick={() => setMostrarModal(true)}
+            onClick={() => {
+              setMostrarModal(true);
+              setMensaje(null);
+              setNuevoCorreo('');
+              setNuevoRol(3);
+            }}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             variants={itemVariants}
@@ -232,50 +258,65 @@ if (!response.ok) {
 
         <motion.div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 py-6" variants={containerVariants}>
           <AnimatePresence>
-            {usuarios.map((usuario) => (
+            {loadingUsuarios ? (
               <motion.div
-                key={usuario.id_usuario || usuario.usuario}
-                className={`bg-[#F6F0E0] rounded-xl p-4 text-black shadow-md flex flex-col justify-center items-start cursor-pointer
-                  ${modoEliminar && usuarioSeleccionado?.id_usuario === usuario.id_usuario ? 'border-4 border-red-600' : ''}
-                `}
+                className="col-span-full text-center text-[#333333]"
                 variants={itemVariants}
-                initial="hidden"
-                animate="visible"
-                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-                onClick={() => {
-                  if (modoEliminar) {
-                    if (usuarioSeleccionado?.id_usuario === usuario.id_usuario) {
-                      setUsuarioSeleccionado(null);
-                      setMostrarModalEliminar(false);
-                    } else {
-                      setUsuarioSeleccionado(usuario);
-                      setMostrarModalEliminar(true);
-                    }
-                  }
-                }}
               >
-                <motion.span className="text-[#333333] font-semibold text-lg" variants={itemVariants}>
-                  Usuario
-                </motion.span>
-                <motion.input
-                  type="text"
-                  value={usuario.usuario}
-                  disabled
-                  className="w-full mt-2 mb-3 p-2 rounded-md bg-[#F4E9CD] text-[#333333]"
-                  variants={itemVariants}
-                />
-                <motion.span className="text-[#333333] font-semibold text-lg" variants={itemVariants}>
-                  Rol
-                </motion.span>
-                <motion.input
-                  type="text"
-                  value={ROL_NOMBRE[usuario.id_rol] || "Desconocido"}
-                  disabled
-                  className="w-full mt-2 p-2 rounded-md bg-[#F4E9CD] text-[#333333]"
-                  variants={itemVariants}
-                />
+                Cargando usuarios...
               </motion.div>
-            ))}
+            ) : (
+              usuarios.map((usuario) => {
+                const userId = usuario.id_usuario ?? usuario.idUsuario ?? usuario.id;
+                const roleId = usuario.idRol ?? usuario.rol ?? usuario.roleId ?? null;
+                const username = usuario.usuario ?? usuario.nombreUsuario ?? 'Sin usuario';
+
+                return (
+                  <motion.div
+                    key={userId || username}
+                    className={`bg-[#F6F0E0] rounded-xl p-4 text-black shadow-md flex flex-col justify-center items-start cursor-pointer
+                      ${modoEliminar && usuarioSeleccionado?.userId === userId ? 'border-4 border-red-600' : ''}
+                    `}
+                    variants={itemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                    onClick={() => {
+                      if (modoEliminar) {
+                        if (usuarioSeleccionado?.userId === userId) {
+                          setUsuarioSeleccionado(null);
+                          setMostrarModalEliminar(false);
+                        } else {
+                          setUsuarioSeleccionado({ ...usuario, userId, username, roleId });
+                          setMostrarModalEliminar(true);
+                        }
+                      }
+                    }}
+                  >
+                    <motion.span className="text-[#333333] font-semibold text-lg" variants={itemVariants}>
+                      Usuario
+                    </motion.span>
+                    <motion.input
+                      type="text"
+                      value={username}
+                      disabled
+                      className="w-full mt-2 mb-3 p-2 rounded-md bg-[#F4E9CD] text-[#333333]"
+                      variants={itemVariants}
+                    />
+                    <motion.span className="text-[#333333] font-semibold text-lg" variants={itemVariants}>
+                      Rol
+                    </motion.span>
+                    <motion.input
+                      type="text"
+                      value={ROL_NOMBRE[roleId] || "Desconocido"}
+                      disabled
+                      className="w-full mt-2 p-2 rounded-md bg-[#F4E9CD] text-[#333333]"
+                      variants={itemVariants}
+                    />
+                  </motion.div>
+                );
+              })
+            )}
           </AnimatePresence>
         </motion.div>
       </motion.div>
@@ -329,6 +370,27 @@ if (!response.ok) {
                 onChange={(e) => setNuevaContrasenia(e.target.value)}
                 variants={itemVariants}
               />
+              <motion.input
+                type="email"
+                placeholder="Correo electrónico"
+                className={inputStyle}
+                value={nuevoCorreo}
+                onChange={(e) => setNuevoCorreo(e.target.value)}
+                variants={itemVariants}
+              />
+              <motion.select
+                className={`${inputStyle} bg-white`}
+                value={nuevoRol}
+                onChange={(e) => setNuevoRol(Number(e.target.value))}
+                variants={itemVariants}
+              >
+                <option value="" disabled>Selecciona un rol</option>
+                {ROL_OPTIONS.map((rol) => (
+                  <option key={rol.value} value={rol.value}>
+                    {rol.label}
+                  </option>
+                ))}
+              </motion.select>
 
               <div className="flex justify-between gap-4">
                 <motion.button
@@ -336,6 +398,8 @@ if (!response.ok) {
                     setMostrarModal(false);
                     setNuevoUsuario("");
                     setNuevaContrasenia("");
+                    setNuevoCorreo("");
+                    setNuevoRol(3);
                     setMensaje(null);
                   }}
                   className="flex-1 bg-[#D4B86A] text-white py-2 rounded-md hover:bg-[#1D4C7F] transition-colors duration-200"
@@ -386,7 +450,7 @@ if (!response.ok) {
               onClick={e => e.stopPropagation()} // Para que no cierre al click dentro del modal
             >
               <h2 className="text-xl font-bold text-[#333333] mb-4 text-center">
-                Eliminar usuario "{usuarioSeleccionado.usuario}"
+                Eliminar usuario "{usuarioSeleccionado.username || usuarioSeleccionado.usuario}"
               </h2>
 
               <p className="mb-6 text-center text-[#333333]">
@@ -408,22 +472,14 @@ if (!response.ok) {
                 <motion.button
                   onClick={async () => {
                     try {
-                      const response = await fetch(`http://localhost:3000/usuarios/${usuarioSeleccionado.id_usuario}`, {
-                        method: 'DELETE',
-                      });
+                      await deleteUsuario(usuarioSeleccionado.userId);
 
-                      if (!response.ok) {
-                        const data = await response.json();
-                        throw new Error(data.message || 'Error al eliminar usuario');
-                      }
-
-                      // NO ACTUALIZAR LA LISTA NI CERRAR EL MODAL AQUÍ INMEDIATAMENTE
-                      setMensajeEliminarExito(`El usuario "${usuarioSeleccionado.usuario}" ha sido eliminado exitosamente.`);
+                      const usernameToShow = usuarioSeleccionado.username || usuarioSeleccionado.usuario || 'Usuario';
+                      setMensajeEliminarExito(`El usuario "${usernameToShow}" ha sido eliminado exitosamente.`);
                       setMostrarAlertaEliminarExito(true);
 
                     } catch (error) {
-                      // Si hay un error en la eliminación, mostrar un alert tradicional o un mensaje en el modal
-                      alert(error.message);
+                      alert(buildErrorMessage(error));
                     }
                   }}
                   className="flex-1 bg-[#520000] text-white py-2 rounded-md hover:bg-[#8B0000] transition-colors duration-200"

@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
-const ROL_ADMIN = 1;
+const ROLES_CON_PANEL = new Set([1, 2]);
 
 const Navbar = ({ loggedInUser, isMobileMenuOpen, toggleMobileMenu }) => {
   const location = useLocation();
@@ -19,7 +19,7 @@ const Navbar = ({ loggedInUser, isMobileMenuOpen, toggleMobileMenu }) => {
   ];
 
   let finalLinks = [...baseLinks];
-  if (loggedInUser && loggedInUser.id_rol === ROL_ADMIN) {
+  if (loggedInUser && ROLES_CON_PANEL.has(loggedInUser.idRol)) {
     finalLinks.push({ label: "ADMIN USUARIOS", path: "/panel-usuarios" });
     finalLinks.push({ label: "DASHBOARDS", path: "/dashboards" });
   }

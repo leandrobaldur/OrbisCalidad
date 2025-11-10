@@ -6,7 +6,7 @@ const ROL_ADMIN = 1;
 const Dashboard = ({ usuario, onLogout }) => {
   const [panelEditorVisible, setPanelEditorVisible] = useState(false);
 
-  const nombreRol = usuario.id_rol === ROL_ADMIN ? 'Administrador' : 'Colaborador';
+  const nombreRol = usuario.idRol === ROL_ADMIN ? 'Administrador' : 'Colaborador';
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f4f7f6' }}>
@@ -37,7 +37,7 @@ const Dashboard = ({ usuario, onLogout }) => {
         <h3>Contenido General</h3>
         <p>Este contenido es visible tanto para administradores como para colaboradores.</p>
 
-        {usuario.id_rol === ROL_ADMIN && (
+  {usuario.idRol === ROL_ADMIN && (
           <div style={{
             marginTop: '2rem',
             padding: '1.5rem',

@@ -2,22 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import InicioSesion from "./inicioSesion";
-import axios from "axios";
 
 function Header({ loggedInUser, onLogout, onLogin, toggleMobileMenu }) {
   const navigate = useNavigate();
   const headerRef = useRef(null);
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
-    const checkLoginStatus = () => {
-      setLoggedIn(localStorage.getItem("loggedIn") === "true");
-    };
-
-    checkLoginStatus();
-    window.addEventListener("storage", checkLoginStatus);
     // Measure header height and apply as CSS variable and root padding
     const applyHeaderSpacing = () => {
       try {
@@ -40,9 +31,7 @@ function Header({ loggedInUser, onLogout, onLogin, toggleMobileMenu }) {
     if (document.fonts && document.fonts.ready) {
       fontsReadyPromise = document.fonts.ready.then(applyHeaderSpacing).catch(()=>{});
     }
-
     return () => {
-      window.removeEventListener('storage', checkLoginStatus);
       window.removeEventListener('resize', applyHeaderSpacing);
       window.removeEventListener('load', applyHeaderSpacing);
       // do not modify CSS variable on cleanup to avoid visual jumps; just remove stored promise reference
@@ -50,47 +39,27 @@ function Header({ loggedInUser, onLogout, onLogin, toggleMobileMenu }) {
     };
   }, []);
 
-  const handleLoginClick = () => setShowLogin(true);
-
-  const handleLoginSuccess = async ({ usuario, contrasena }) => {
-    try {
-      const res = await axios.post("http://localhost:3000/usuarios/login", {
-        usuario,
-        contrasenia: contrasena,
-      });
-
-      if (res.data && res.data.encontrado === 1) {
-        localStorage.setItem("loggedIn", "true");
-        localStorage.setItem("userInfo", JSON.stringify(res.data.usuario));
-        setLoggedIn(true);
-        setShowLogin(false);
-      } else {
-        alert("Credenciales incorrectas");
-      }
-    } catch (error) {
-      console.error("Error en login:", error);
-      alert("Error al iniciar sesión");
+  const handleLoginClick = () => {
+    if (loggedInUser) {
+      return;
     }
+    setShowLogin(true);
   };
 
   const handleCloseLogin = () => setShowLogin(false);
 
-  const handleUserClick = () => setMenuOpen((prev) => !prev);
-
-  const handleLogout = () => {
-    localStorage.removeItem("loggedIn");
-    localStorage.removeItem("userInfo");
-    setLoggedIn(false);
-    setMenuOpen(false);
-    navigate("/");
-  };
-
-  const getRoleName = (id_rol) => {
-    switch (id_rol) {
+  const getRoleName = (idRol) => {
+    switch (idRol) {
       case 1:
-        return "Administrador";
+        return "Superadmin";
       case 2:
-        return "Colaborador";
+        return "Admin";
+      case 3:
+        return "Investigador";
+      case 4:
+        return "Temporal";
+      case 5:
+        return "Visitante";
       default:
         return "Usuario";
     }
@@ -199,11 +168,14 @@ function Header({ loggedInUser, onLogout, onLogin, toggleMobileMenu }) {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-                {loggedInUser.usuario} ({getRoleName(loggedInUser.id_rol)})
+                {loggedInUser.usuario} ({getRoleName(loggedInUser.idRol)})
               </motion.span>
 
               <motion.button
-                onClick={onLogout}
+                onClick={() => {
+                  onLogout?.();
+                  navigate("/");
+                }}
                 className="bg-brand-dark hover:bg-brand-slate text-white px-4 py-2 rounded-md cursor-pointer font-sans text-sm transition-all duration-200 whitespace-nowrap"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -219,8 +191,8 @@ function Header({ loggedInUser, onLogout, onLogin, toggleMobileMenu }) {
       {/* Modal Login */}
       {showLogin && (
         <InicioSesion
-          onLogin={(user) => {
-            onLogin(user);
+          onLogin={(authData) => {
+            onLogin?.(authData);
             setShowLogin(false);
           }}
           onClose={handleCloseLogin}

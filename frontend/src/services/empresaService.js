@@ -41,47 +41,139 @@ export const getEmpresasCards = async (params = {}, variant = 'public') => {
   }));
 };
 
-export const getEmpresaPublicById = async (id) => {
-  if (!id) {
-    throw new Error('El identificador de la empresa es requerido');
-  }
+const normalizeEmpresaDetail = (empresa, variant = 'public') => {
+  const imagenes = Array.isArray(empresa.imagenes)
+    ? empresa.imagenes
+        .map((img) => (typeof img === 'string' ? img : img?.url))
+        .filter(Boolean)
+    : [];
 
-  const response = await API.get(`/api/empresas/public/${id}`);
-  const empresa = response.data?.empresa;
+  const sedes = Array.isArray(empresa.sedes)
+    ? empresa.sedes.map((sede) => ({
+        id: sede.id,
+        esCentral: Boolean(sede.esCentral),
+        departamentoId: sede.departamento?.id ?? null,
+        departamento: sede.departamento?.nombre || null,
+      }))
+    : [];
 
-  if (!empresa) {
-    throw new Error('No se encontró información para la empresa solicitada');
-  }
+  const centralDepartment = sedes.find((sede) => sede.esCentral && sede.departamento)?.departamento;
+  const fallbackDepartment = sedes.find((sede) => sede.departamento)?.departamento;
+  const departamentoNombre = centralDepartment
+    || fallbackDepartment
+    || empresa.departamento?.nombre
+    || null;
 
-  const rubros = Array.isArray(empresa.rubrosEmpresa)
+  const rubrosLista = Array.isArray(empresa.rubrosEmpresa)
     ? empresa.rubrosEmpresa
         .map((item) => item?.rubro?.nombre)
         .filter(Boolean)
-        .join(', ')
-    : '';
-
-  const detalleImagen = pickFirstImage(empresa.imagenes);
+    : [];
 
   const hitos = Array.isArray(empresa.hitos)
     ? empresa.hitos.map((hito) => ({
         id: hito.id,
         nombre: hito.nombre,
-        fecha: hito.fecha,
+        fecha: hito.fecha || null,
       }))
     : [];
 
+  const fundadores = Array.isArray(empresa.fundadores)
+    ? empresa.fundadores
+        .map((fundador) => (typeof fundador === 'string' ? fundador : fundador?.nombre))
+        .filter(Boolean)
+    : [];
+
+  const municipios = Array.isArray(empresa.municipios)
+    ? empresa.municipios
+        .map((municipio) => (typeof municipio === 'string' ? municipio : municipio?.nombreMunicipio))
+        .filter(Boolean)
+    : [];
+
+  const servicios = Array.isArray(empresa.servicios)
+    ? empresa.servicios
+        .map((servicio) => (typeof servicio === 'string' ? servicio : servicio?.nombre))
+        .filter(Boolean)
+    : [];
+
+  const items = Array.isArray(empresa.items)
+    ? empresa.items
+        .map((item) => (typeof item === 'string' ? item : item?.nombre))
+        .filter(Boolean)
+    : [];
+
+  const tiposSocietarios = Array.isArray(empresa.tiposSocietariosEmpresa)
+    ? empresa.tiposSocietariosEmpresa
+        .map((item) => item?.tipoSocietario?.nombre)
+        .filter(Boolean)
+    : [];
+
+  const tamanio = empresa.tamanioEmpresa?.nombre || '';
+  const actividad = empresa.actividad || '';
   const descripcion = empresa.mensaje || 'Descripción no disponible.';
+  const direccionWeb = empresa.direccionWeb || empresa.direccion_web || '';
+  const imagen = pickFirstImage(imagenes);
 
   return {
     id: empresa.id,
     nombre: empresa.nombreComercial || 'Nombre no disponible',
     descripcion,
     slogan: empresa.vision || '',
-    rubro: rubros || 'Rubro no especificado',
-    departamento: empresa.departamento?.nombre || 'Departamento no especificado',
-    imagen: detalleImagen,
+    rubro: rubrosLista.join(', ') || 'Rubro no especificado',
+    rubros: rubrosLista,
+    departamento: departamentoNombre || 'Departamento no especificado',
+    sedes,
+    actividad,
+    fundadores,
+    municipios,
+    servicios,
+    items,
+    tiposSocietarios,
+    tamanio,
+    direccionWeb,
+    imagen,
+    imagenes,
     hitos,
+    variant,
   };
+};
+
+const getEmpresaDetailById = async (id, variant = 'public') => {
+  if (!id) {
+    throw new Error('El identificador de la empresa es requerido');
+  }
+
+  const endpoint = variant === 'private'
+    ? `/api/empresas/private/${id}`
+    : `/api/empresas/public/${id}`;
+
+  const response = await API.get(endpoint);
+  const empresa = response.data?.empresa;
+
+  if (!empresa) {
+    throw new Error('No se encontró información para la empresa solicitada');
+  }
+
+  return normalizeEmpresaDetail(empresa, variant);
+};
+
+export const getEmpresaPublicById = async (id) => getEmpresaDetailById(id, 'public');
+
+export const getEmpresaPrivateById = async (id) => getEmpresaDetailById(id, 'private');
+
+export const updateEmpresaPrivate = async (id, cambiosParciales = {}) => {
+  if (!id) {
+    throw new Error('El identificador de la empresa es requerido');
+  }
+
+  const response = await API.put(`/api/empresas/private/${id}`, cambiosParciales);
+  const empresaActualizada = response.data?.empresa || response.data;
+
+  if (!empresaActualizada) {
+    return null;
+  }
+
+  return normalizeEmpresaDetail(empresaActualizada, 'private');
 };
 
 export { pickFirstImage };

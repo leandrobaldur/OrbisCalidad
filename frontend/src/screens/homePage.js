@@ -6,7 +6,7 @@ import ImagenInteractiva from "../components/imagenInteractiva";
 import CarruselImagenes from "../components/carruselImagenes";
 
 
-const HomePage = () => {
+const HomePage = ({ loggedInUser }) => {
   return (
   <div className="w-full min-h-screen bg-background flex flex-col" style={{ paddingTop: 'calc(var(--site-header-height) - 6rem)' }}>
       {/* Video Principal - Responsive height */}
@@ -115,6 +115,7 @@ const HomePage = () => {
         <CarruselImagenes
           altura={600}
           filas={3}
+          loggedInUser={loggedInUser}
         />
       </section>
     </div>

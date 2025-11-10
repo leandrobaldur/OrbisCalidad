@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// --- Importa tu logo aquí ---
+import { login as loginService, registerVisitor } from "../services/authService";
 import logo from '../assets/logo.png';
 
 // --- TAMAÑOS RESPONSIVOS CON PROPORCIONES ÁUREAS (MÁS PEQUEÑOS) ---
@@ -17,13 +17,6 @@ const SIZES = {
   MODAL_WIDTH: "clamp(280px, 70vw, 400px)", // Reducido de 90vw a 70vw y max de 500px a 400px
   MODAL_PADDING: "clamp(1.2rem, 3vw, 1.8rem)", // Reducido de 4vw a 3vw
 };
-
-// --- DATOS ESTÁTICOS DE USUARIOS (CON ROL) ---
-const USUARIOS_STATICOS = [
-  { usuario: "admin", contrasenia: "admin123", id_rol: 1 },
-  { usuario: "user", contrasenia: "password456", id_rol: 2 },
-  { usuario: "test", contrasenia: "test789", id_rol: 2 },
-];
 
 // Componente del ícono de ojo (mostrar contraseña)
 const EyeIconShow = ({ color, size = SIZES.ICON_SIZE }) => (
@@ -48,10 +41,12 @@ const EyeIconHide = ({ color, size = SIZES.ICON_SIZE }) => (
 const InicioSesion = ({ onLogin, onClose }) => {
   const [usuario, setUsuario] = useState("");
   const [contrasenia, setContrasenia] = useState("");
+  const [correo, setCorreo] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mensaje, setMensaje] = useState(null);
   const [isVisible, setIsVisible] = useState(true);
+  const [modoRegistro, setModoRegistro] = useState(false);
 
   // Variantes de animación para inputs
   const inputVariants = {
@@ -102,62 +97,48 @@ const InicioSesion = ({ onLogin, onClose }) => {
   };
 
   // Función para manejar el envío del formulario
+  useEffect(() => {
+    setMensaje(null);
+  }, [modoRegistro]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMensaje(null); // Limpia mensajes anteriores
 
-    if (!usuario || !contrasenia) {
-      setMensaje("Por favor, rellena todos los campos");
+    if (!usuario || !contrasenia || (modoRegistro && !correo)) {
+      setMensaje("Por favor, rellena todos los campos requeridos");
       return;
     }
 
-    setLoading(true); // Activa el estado de carga
+    setLoading(true);
 
-    //ESTATICOS
-    // --- LÓGICA DE LOGIN CON DATOS ESTÁTICOS ---
-    setTimeout(() => {
-      // Simula una demora de red de 1 a 2 segundos
-      const usuarioEncontrado = USUARIOS_STATICOS.find(
-        (user) => user.usuario === usuario
-      );
-
-      if (usuarioEncontrado && usuarioEncontrado.contrasenia === contrasenia) {
-        setMensaje("¡Sesión iniciada correctamente!");
-        onLogin(usuarioEncontrado); // Usa el objeto de usuario estático
+    try {
+      if (modoRegistro) {
+        await registerVisitor({ usuario, correo, contrasenia, idRol: 5 });
+        setMensaje("Registro exitoso. Ahora puedes iniciar sesión.");
+        setModoRegistro(false);
+        setContrasenia("");
+        setCorreo("");
+      } else {
+        const { user, token, message } = await loginService({ usuario, contrasenia });
+        setMensaje(message || "¡Sesión iniciada correctamente!");
+        if (onLogin) {
+          onLogin({ user, token });
+        }
         setTimeout(() => {
           setIsVisible(false);
-        }, 1500);
-      } else {
-        setMensaje("Credenciales incorrectas");
-      }
-      setLoading(false);
-    }, Math.random() * 1000 + 1000); // Demora aleatoria entre 1 y 2 segundos
-  };
-    /*try {
-      // --- LA LLAMADA FETCH PARA EL LOGIN ESTÁ IMPLEMENTADA AQUÍ MISMO ---
-      const res = await fetch("http://localhost:3000/usuarios/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ usuario, contrasenia }),
-      });
-      const data = await res.json();
-
-      if (res.ok && data.encontrado === 1) {
-        setMensaje("¡Sesión iniciada correctamente!");
-        onLogin(data.usuario); // Llama a la función onLogin pasada por props
-        setTimeout(() => {
-          setIsVisible(false); // Cierra el modal después de un tiempo
-        }, 1500);
-      } else {
-        setMensaje(data.mensaje || "Credenciales incorrectas"); // Muestra mensaje de error
+        }, 1000);
       }
     } catch (error) {
-      console.error("Error al conectar con el servidor:", error);
-      setMensaje("Error de conexión con el servidor");
+      const backendMessage = error?.response?.data?.message;
+      const parseError = Array.isArray(backendMessage)
+        ? backendMessage.join(', ')
+        : backendMessage || error.message || 'Ocurrió un error inesperado';
+      setMensaje(parseError);
     } finally {
-      setLoading(false); // Desactiva el estado de carga
+      setLoading(false);
     }
-  };*/
+  };
 
   // Función para cerrar el modal
   const handleClose = () => {
@@ -171,7 +152,11 @@ const InicioSesion = ({ onLogin, onClose }) => {
 
   // Función para obtener el color del mensaje
   const getMessageColor = () => {
-    return mensaje === "¡Sesión iniciada correctamente!" ? "text-green-600" : "text-red-500";
+    if (!mensaje) return "text-text-muted";
+    const normalized = mensaje.toLowerCase();
+    return normalized.includes("exitoso") || normalized.includes("correcta")
+      ? "text-green-600"
+      : "text-red-500";
   };
 
   return (
@@ -335,6 +320,36 @@ const InicioSesion = ({ onLogin, onClose }) => {
                 </motion.button>
               </div>
 
+              {modoRegistro && (
+                <>
+                  <label
+                    htmlFor="correo"
+                    className="block text-left font-bodoni font-medium text-text-main"
+                    style={{
+                      fontSize: SIZES.LABEL_SIZE,
+                      marginBottom: "clamp(0.5rem, 1vw, 0.8rem)",
+                    }}
+                  >
+                    Correo electrónico
+                  </label>
+                  <motion.input
+                    type="email"
+                    id="correo"
+                    placeholder="correo@ejemplo.com"
+                    value={correo}
+                    onChange={(e) => setCorreo(e.target.value)}
+                    variants={inputVariants}
+                    whileFocus="focus"
+                    className="w-full bg-surface border border-stroke rounded-xl text-text-main font-miles box-border focus:outline-none focus:border-accent transition-colors duration-200"
+                    style={{
+                      padding: "clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 16px)",
+                      fontSize: SIZES.INPUT_SIZE,
+                      marginBottom: "clamp(1rem, 2.5vw, 1.5rem)",
+                    }}
+                  />
+                </>
+              )}
+
               {/* Botón de Enviar */}
               <motion.button
                 type="submit"
@@ -349,9 +364,21 @@ const InicioSesion = ({ onLogin, onClose }) => {
                   marginTop: "clamp(1.2rem, 3vw, 1.8rem)", // Reducido proporcionalmente
                 }}
               >
-                {loading ? "Accediendo..." : "ACCEDER"}
+                {loading ? (modoRegistro ? "Registrando..." : "Accediendo...") : modoRegistro ? "Registrarme" : "ACCEDER"}
               </motion.button>
             </form>
+
+            <div className="mt-4 text-sm text-text-muted font-miles">
+              <button
+                type="button"
+                onClick={() => setModoRegistro((prev) => !prev)}
+                className="text-primary hover:underline bg-transparent border-none cursor-pointer"
+              >
+                {modoRegistro
+                  ? "¿Ya tienes cuenta? Inicia sesión"
+                  : "¿Aún no tienes cuenta? Regístrate como visitante"}
+              </button>
+            </div>
           </motion.div>
         </motion.div>
       )}
