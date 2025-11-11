@@ -27,15 +27,13 @@ function Header({ loggedInUser, onLogout, onLogin, toggleMobileMenu }) {
     window.addEventListener('resize', applyHeaderSpacing);
     window.addEventListener('load', applyHeaderSpacing);
     // fonts might change metrics
-    var fontsReadyPromise = null;
     if (document.fonts && document.fonts.ready) {
-      fontsReadyPromise = document.fonts.ready.then(applyHeaderSpacing).catch(()=>{});
+      document.fonts.ready.then(applyHeaderSpacing).catch(()=>{});
     }
     return () => {
       window.removeEventListener('resize', applyHeaderSpacing);
       window.removeEventListener('load', applyHeaderSpacing);
       // do not modify CSS variable on cleanup to avoid visual jumps; just remove stored promise reference
-      fontsReadyPromise = null;
     };
   }, []);
 
@@ -63,45 +61,6 @@ function Header({ loggedInUser, onLogout, onLogin, toggleMobileMenu }) {
       default:
         return "Usuario";
     }
-  };
-
-  const styles = {
-    header: {
-      width: "100%",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      padding: "1rem 2.5rem",
-      backgroundColor: "white",
-      position: "relative",
-      zIndex: 50,
-    },
-    icon: {
-      color: "black",
-      cursor: "pointer",
-    },
-    logo: {
-      height: "64px",
-      objectFit: "contain",
-    },
-    dropdown: {
-      position: "absolute",
-      top: "80px",
-      right: "40px",
-      backgroundColor: "white",
-      border: "1px solid #e2e2e2",
-      borderRadius: "8px",
-      boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-      zIndex: 99,
-    },
-    dropdownItem: {
-      padding: "10px 16px",
-      width: "200px",
-      textAlign: "left",
-      cursor: "pointer",
-      backgroundColor: "white",
-      borderBottom: "1px solid #eee",
-    },
   };
 
   return (
@@ -140,30 +99,19 @@ function Header({ loggedInUser, onLogout, onLogin, toggleMobileMenu }) {
           title="Inicio"
         >
           <img
-            src="/media/header/logo.png"
+            src="/media/header/logo2.png"
             alt="Logo Orbis Empresarial"
-            className="h-16 sm:h-20 md:h-24 lg:h-24 object-contain block"
+            className="h-20 sm:h-24 md:h-28 lg:h-28 object-contain block"
             draggable={false}
           />
         </div>
 
         {/* Derecha: Icono Login y datos de usuario */}
         <div className="flex-1 flex justify-end items-center gap-4">
-          <motion.img
-            src={window.innerWidth <= 640 ? "/media/header/login-beige-mobile.svg" : "/media/header/login-beige.svg"}
-            alt="Iniciar sesión"
-            className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 cursor-pointer object-contain select-none"
-            onClick={handleLoginClick}
-            draggable={false}
-            title="Iniciar sesión"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-          />
-
           {loggedInUser && (
             <>
               <motion.span
-                className="font-sans text-sm text-brand-slate select-none"
+                className="font-sans text-sm text-detail select-none"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -184,6 +132,19 @@ function Header({ loggedInUser, onLogout, onLogin, toggleMobileMenu }) {
                 Cerrar Sesión
               </motion.button>
             </>
+          )}
+
+          {!loggedInUser && (
+            <motion.img
+              src={window.innerWidth <= 640 ? "/media/header/login-beige-mobile.svg" : "/media/header/login-beige.svg"}
+              alt="Iniciar sesión"
+              className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 cursor-pointer object-contain select-none"
+              onClick={handleLoginClick}
+              draggable={false}
+              title="Iniciar sesión"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            />
           )}
         </div>
       </header>

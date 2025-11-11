@@ -4,7 +4,6 @@ const ContenedorLateral = ({
   subtitulo,
   imagen,
   ancho,
-  alto,
   ovaloRedondez,
   cuadroRedondez,
   dias,
@@ -16,7 +15,7 @@ const ContenedorLateral = ({
       const y = d.getFullYear();
       const m = String(d.getMonth() + 1).padStart(2, "0");
       const day = String(d.getDate()).padStart(2, "0");
-      return `${y}-${m}-${day}`;
+      return `${y}-${m}-${d}`;
     };
     const d1 = new Date(base);
     const d2 = new Date(base); d2.setDate(base.getDate() + 1);
@@ -27,7 +26,7 @@ const ContenedorLateral = ({
       { label: "Día 2", date: toISODate(d2), imageUrl: "/media/homePage/day2.jpeg" },
       { label: "Día 3", date: toISODate(d3), imageUrl: "/media/homePage/day3.jpeg" },
     ];
-  }, [imagen]);
+  }, []);
 
   const diasData = dias && Array.isArray(dias) && dias.length === 3 ? dias : defaultDias;
 
@@ -59,7 +58,6 @@ const ContenedorLateral = ({
         borderWidth: "1px",
         borderStyle: "solid",
         borderRadius: cuadroRedondez,
-        marginTop: "clamp(0rem, 3vh, 2rem)",
         overflow: "hidden",
       }}
     >
@@ -92,11 +90,11 @@ const ContenedorLateral = ({
               <button
                 key={d.label}
                     onClick={() => { setActiveIdx(idx); setViewMode('dias'); }}
-                className={`group flex-1 flex flex-col items-center justify-center rounded-full transition-colors duration-200 focus:outline-none py-2 md:py-2.5`}
+                className={`group flex-1 flex flex-col items-center justify-center rounded-full transition-all duration-300 focus:outline-none py-2 md:py-2.5 hover:scale-105 hover:shadow-lg cursor-pointer relative`}
                 style={
                   isActive
-                    ? { backgroundColor: 'rgba(7,45,66,0.08)', color: '#072D42' }
-                    : { backgroundColor: '#FFFFFF', color: '#111827' }
+                    ? { backgroundColor: '#FFFFFF', color: '#072D42', border: '2px solid rgba(7,45,66,0.4)', boxShadow: '0 4px 12px rgba(7,45,66,0.2)' }
+                    : { backgroundColor: '#FFFFFF', color: '#111827', border: '2px solid #E5E7EB', boxShadow: '0 2px 6px rgba(0,0,0,0.08)' }
                 }
                 aria-pressed={isActive}
               >

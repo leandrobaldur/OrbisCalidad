@@ -246,8 +246,11 @@ const CarruselImagenes = ({ altura = 400, filas = 3, limite = 60, loggedInUser }
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            onClick={handleCloseModal} // Add this line
           >
-            <div className="relative w-full max-w-3xl h-[90vh] bg-surface-elevated rounded-lg overflow-hidden">
+            <div className="relative w-full max-w-3xl h-[90vh] bg-surface-elevated rounded-lg overflow-hidden"
+                 onClick={(e) => e.stopPropagation()} // Add this line
+            >
               {modalLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-20">
                   <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>

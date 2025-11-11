@@ -39,42 +39,104 @@ const HomePage = ({ loggedInUser }) => {
       <div className="h-8 md:h-12 lg:h-16"></div>
 
       {/* Sección Principal de Contenido - Layout áureo perfectamente alineado */}
-      <section className="w-full px-4 md:px-8 lg:px-16 xl:px-32">
+      <section className="w-full px-4 md:px-8 lg:px-16 xl:px-32 min-h-min">
         <div className="max-w-[1440px] mx-auto">
           <div className="flex flex-col lg:flex-row items-start" style={{ gap: 'clamp(2rem, 6.18vw, 4rem)' }}>
-            {/* Panel Interactivo Izquierdo - Proporción áurea 30.9% (agrandado) */}
-            <div className="w-full lg:w-[40%] flex justify-center lg:justify-start" style={{ marginTop: 'clamp(2rem, 6.18vh, 4rem)' }}>
-              <div className="w-full max-w-[400px] lg:max-w-none">
-                <ImagenInteractiva
-                  ancho="100%"
-                  imagenDefault="/media/homePage/defaultImage.png"
-                  items={[
-                    {
-                      icono: "/media/homePage/lightIcon.png",
-                      subtitulo: "INNOVACIÓN",
-                      imagen: "/media/homePage/c1.webp",
-                      texto: "Más de cuatro décadas impulsando el cambio constante, reinventándonos para anticipar el futuro y ofrecer soluciones que transforman industrias y vidas.",
-                    },
-                    {
-                      icono: "/media/homePage/recicleIcon.png",
-                      subtitulo: "SOSTENIBILIDAD",
-                      imagen: "/media/homePage/c2.webp",
-                      texto: "Creciendo junto a nuestro entorno, adaptándonos y protegiendo recursos para garantizar un legado duradero y un impacto positivo en las generaciones futuras.",
-                    },
-                    {
-                      icono: "/media/homePage/secureIcon.png",
-                      subtitulo: "CONFIANZA",
-                      imagen: "/media/homePage/c3.jpg",
-                      texto: "Construimos relaciones sólidas y duraderas, basadas en la transparencia y el compromiso, que han sido el pilar para acompañar a nuestros clientes por más de cuatro décadas.",
-                    },
-                    {
-                      icono: "/media/homePage/awardIcon.png",
-                      subtitulo: "EXCELENCIA",
-                      imagen: "/media/homePage/c4.jpg",
-                      texto: "Más de 40 años superando expectativas y estableciendo estándares de calidad, dedicados a la perfección en cada producto y servicio que ofrecemos.",
-                    },
-                  ]}
-                />
+            {/* Panel Izquierdo - Dos Paneles Apilados Más Llamativos */}
+            <div className="w-full lg:w-[45%] flex flex-col justify-center lg:justify-start mt-8 lg:mt-12" style={{ gap: 'clamp(1rem, 2.5vw, 2rem)' }}>
+              {/* Panel Superior - Promocional Investigación */}
+              <div className="w-full max-w-[450px] lg:max-w-none">
+                <div className="relative flex flex-col z-10 ml-auto bg-white shadow-sm"
+                  style={{
+                    width: "100%",
+                    borderColor: "#E5E7EB",
+                    borderWidth: "1px",
+                    borderStyle: "solid",
+                    borderRadius: "16px",
+                    overflow: "hidden",
+                  }}
+                >
+                  {/* Header sin icono */}
+                  <div
+                    className="px-6 md:px-8 lg:px-10 py-4 md:py-5 relative"
+                    style={{ borderBottom: "1px solid #E5E7EB", backgroundColor: "#FFFFFF" }}
+                  >
+                    <h2 className="font-playfair font-semibold text-primary text-2xl md:text-3xl text-center tracking-tight">
+                      Centro de Investigación
+                    </h2>
+                  </div>
+
+                  {/* Contenido expandido */}
+                  <div className="px-6 md:px-8 lg:px-10 py-6 flex items-center justify-center">
+                    <div className="text-center max-w-lg">
+                      <p className="font-miles text-base md:text-lg text-gray-700 leading-relaxed mb-4">
+                        Esta plataforma también está dedicada a la investigación académica, facilitando el análisis profundo de datos empresariales y contribuyendo al desarrollo del conocimiento en el sector privado boliviano.
+                      </p>
+                      <div className="flex justify-center gap-4 text-sm text-primary font-medium">
+                        <span className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                          </svg>
+                          Análisis de Datos
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                          </svg>
+                          Conocimiento Empresarial
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Panel Inferior - Revista Más Llamativa */}
+              <div className="w-full max-w-[450px] lg:max-w-none">
+                <div className="relative p-6">
+                  <div
+                    className="relative bg-white shadow-sm rounded-2xl"
+                    style={{
+                      borderColor: "#E5E7EB",
+                      borderWidth: "1px",
+                      borderStyle: "solid",
+                      borderRadius: "16px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {/* Título arriba de la imagen */}
+                    <div className="p-6 text-center">
+                      <h3 className="font-playfair font-semibold text-primary text-2xl md:text-3xl mb-4 tracking-tight">
+                        Revista Académica
+                      </h3>
+                    </div>
+
+                    {/* Imagen de la revista - Estilo Minimalista Vintage */}
+                    <div className="relative w-full flex justify-center px-6 pb-6">
+                      <div className="relative overflow-hidden rounded-lg border-2 border-gray-300 bg-white p-2 shadow-sm">
+                        <img
+                          src="/media/revista/revista.png"
+                          alt="Revista"
+                          className="max-w-full h-auto object-contain rounded"
+                          style={{ filter: 'sepia(0.1) contrast(1.05) brightness(1.02)', maxHeight: '450px' }}
+                        />
+                        {/* Badge "Próximamente" sobre la imagen */}
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+                          <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-white/80 text-primary shadow-md border border-gray-200">
+                            Próximamente
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Contenido de texto abajo */}
+                    <div className="px-6 pb-6 text-center">
+                      <p className="font-miles text-base md:text-lg text-gray-700 leading-relaxed max-w-md mx-auto">
+                        Fruto de la investigación con empresas y sus datos, esta revista destaca nuestro compromiso como centro de investigación, ofreciendo insights profundos sobre el desarrollo empresarial en Bolivia.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 

@@ -29,7 +29,7 @@ const EmpresaBuscador = ({ busqueda, onBusquedaChange, vistaGrid, onVistaToggle 
             {/* BOTÓN DE CAMBIO DE VISTA */}
             <button
                 onClick={onVistaToggle}
-                className="p-2 rounded-full text-gray-600 hover:bg-gray-200 transition-colors"
+                className="p-2 rounded-full bg-primary text-surface hover:bg-primary/90 transition-colors"
                 title={vistaGrid ? "Cambiar a vista de lista" : "Cambiar a vista de cuadrícula"}
             >
                 

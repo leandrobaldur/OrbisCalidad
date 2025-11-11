@@ -11,8 +11,8 @@ const Navbar = ({ loggedInUser, isMobileMenuOpen, toggleMobileMenu }) => {
     { label: "NOSOTROS", path: "/historia" },
     { label: "EQUIPO", path: "/equipo" },
     { label: "INICIO", path: "/" },
-    { label: "REVISTA", path: "/revistaPage" },
-    
+    // { label: "REVISTA", path: "/revistaPage" },  // Commented out temporarily
+
      // Nueva entrada agregada
     { label: "EMPRESAS", path: "/empresas" },
     { label: "CONTACTO", path: "/contacto" },

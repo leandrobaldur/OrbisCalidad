@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import Navbar from './navbar.jsx';
 import Header from './header';
-import RevistaPage from '../screens/revistaPage.jsx';
+// import RevistaPage from '../screens/revistaPage.jsx';  // Commented out temporarily
 import HomePage from '../screens/homePage';
 import EmpresasPage from '../screens/empresasPage';
 import ContactoPage from '../screens/contactoPage';
@@ -18,7 +18,7 @@ import { setAuthToken } from '../services/api';
 
 function RedirectDashboard() {
   useEffect(() => {
-    window.open('https://dashboard.serverbb.site/', '_blank');
+    window.open('https://snarf3.github.io/Dashboard-bicentenario/', '_blank');
   }, []);
 
   return (
@@ -85,11 +85,11 @@ function App() {
           toggleMobileMenu={toggleMobileMenu}
         />
 
-        <main className="flex-grow pt-[156px]">
+        <main className="flex-grow pt-[156px] flex flex-col">
           <Routes>
             <Route path="/" element={<HomePage loggedInUser={loggedInUser} />} />
             <Route path="/empresas" element={<EmpresasPage loggedInUser={loggedInUser} />} />
-            <Route path="/revistaPage" element={<RevistaPage />} />
+            {/* <Route path="/revistaPage" element={<RevistaPage />} /> */}  // Commented out temporarily
             <Route path="/contacto" element={<ContactoPage />} />
             <Route path="/historia" element={<HistoriaPage />} />
             <Route path="/equipo" element={<EquipoPage />} /> {/* Nueva ruta agregada */}

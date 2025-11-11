@@ -12,8 +12,8 @@ const ImagenInteractiva = ({ items, imagenDefault, ancho = "100%" }) => {
 
   return (
     <div
-      className="flex flex-col shadow-lg rounded-lg overflow-hidden bg-surface-elevated border border-stroke"
-      style={{ width: ancho, aspectRatio: '1.618 / 1', marginLeft: 0 }}
+      className="flex flex-col shadow-lg rounded-lg overflow-hidden bg-surface-elevated border border-stroke h-full"
+      style={{ width: ancho, marginLeft: 0 }}
     >
       {/* --- Barra de iconos - Responsive padding --- */}
   <div className="w-full flex items-center justify-between py-2 md:py-3 lg:py-4 gap-2 md:gap-4 lg:gap-6 bg-white border-t-2 md:border-t-4 lg:border-t-6 border-b-2 md:border-b-4 lg:border-b-6 border-primary px-2 md:px-4 lg:px-6">

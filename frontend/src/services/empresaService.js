@@ -1,10 +1,16 @@
 import API from './api';
 
-const PLACEHOLDER_IMAGE = 'https://via.placeholder.com/300.png?text=Sin+Imagen';
+const PLACEHOLDER_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=';
 
 const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
 
 const isValidImage = (url = '') => {
+  if (!url) return false;
+
+  if (url.startsWith('data:image')) {
+    return true;
+  }
+
   const lowerUrl = url.toLowerCase();
   return IMAGE_EXTENSIONS.some((ext) => lowerUrl.includes(ext));
 };
@@ -34,11 +40,27 @@ export const getEmpresasCards = async (params = {}, variant = 'public') => {
   const response = await API.get(endpoint, { params });
   const raw = response.data?.data ?? response.data?.empresas?.data ?? [];
 
-  return raw.map((empresa) => ({
-    id: empresa.id,
-    nombre: empresa.nombreComercial || 'Nombre no disponible',
-    imagen: pickFirstImage(empresa.imagenes),
-  }));
+  return raw.map((empresa) => {
+    const imagen = pickFirstImage(empresa.imagenes);
+
+    const hitos = Array.isArray(empresa.hitos)
+      ? empresa.hitos.map((hito) => ({
+          id: hito.id,
+          nombre: hito.nombre,
+          fecha: hito.fecha,
+        }))
+      : [];
+
+    const departamentoCentral = empresa.sedeCentral?.nombre || empresa.departamento?.nombre || null;
+
+    return {
+      id: empresa.id,
+      nombre: empresa.nombreComercial || 'Nombre no disponible',
+      imagen,
+      hitos,
+      departamento: departamentoCentral,
+    };
+  });
 };
 
 const normalizeEmpresaDetail = (empresa, variant = 'public') => {

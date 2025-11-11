@@ -28,11 +28,11 @@ const MapaBolivia = ({ onDepartamentoClick, empresas }) => {
   }, [departamentoSeleccionado]);
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="w-full h-full flex items-center justify-center pt-40">
       {/* Mapa SVG Interactivo */}
       <div className="w-full h-full flex items-center justify-center">
         <BoliviaSVG
-          className="bolivia-map w-full h-full cursor-pointer object-contain max-w-full" // <-- Aquí está el cambio clave
+          className="bolivia-map w-[190%] h-[190%] cursor-pointer" // <-- Aquí está el cambio clave
           onClick={manejarClick}
         />
       </div>

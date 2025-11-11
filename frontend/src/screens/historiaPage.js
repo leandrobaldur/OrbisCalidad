@@ -175,7 +175,6 @@ const statsData = [
 ];
 
 const allSections = [...mainSections, howItStartedSection];
-const SCROLL_OFFSET = 9.375;
 
 // Estilos de fuentes
 const fontStyles = `

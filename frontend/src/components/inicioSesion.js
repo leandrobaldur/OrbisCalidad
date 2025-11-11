@@ -304,12 +304,13 @@ const InicioSesion = ({ onLogin, onClose }) => {
                 <motion.button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute top-1/2 transform -translate-y-1/2 border-none cursor-pointer p-1 flex items-center justify-center text-text-muted transition-colors duration-200"
-                  style={{ 
+                  className="absolute top-1/2 border-none cursor-pointer p-1 flex items-center justify-center text-text-muted transition-colors duration-200"
+                  style={{
                     right: "clamp(8px, 1.5vw, 12px)",
-                    backgroundColor: 'transparent'
+                    backgroundColor: 'transparent',
+                    transform: 'translateY(-50%)'
                   }}
-                  whileHover={{ opacity: 0.7, scale: 1.1 }}
+                  whileHover={{ opacity: 0.7 }}
                   title={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                 >
                   {showPassword ? (

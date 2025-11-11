@@ -12,7 +12,7 @@ const ModalTimeline = ({ hitos = [] }) => {
             {/* Contenedor de la línea y los puntos */}
             <div className="relative w-full h-12">
                 {/* Línea Azul de Base */}
-                <div className="absolute top-1/2 left-0 right-0 h-1 bg-blue-500 rounded-full transform -translate-y-1/2"></div>
+                    <div className="absolute top-1/2 left-0 right-0 h-1 bg-[#0f2c4a] rounded-full transform -translate-y-1/2"></div>
 
                 {/* Círculos de Hitos */}
                 {hitos.map((hito, index) => {
@@ -33,10 +33,10 @@ const ModalTimeline = ({ hitos = [] }) => {
                             // Utilizamos el div principal como el punto, replicando el estilo de la tarjeta.
                         >
                             <div
-                                className="w-3 h-3 bg-white border-2 border-blue-500 rounded-full shadow cursor-pointer hover:scale-150 transition-transform duration-200 relative group"
+                                className="w-3 h-3 bg-white border-2 border-text-muted rounded-full shadow cursor-pointer hover:scale-150 transition-transform duration-200 relative group"
                             >
                                 {/* Etiqueta del hito (Se muestra arriba del círculo al hacer hover) */}
-                                <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-blue-600 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none z-30">
+                                <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-primary rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none z-30">
                                     {hito.nombre} ({hito.fecha})
                                 </div>
                             </div>
@@ -87,6 +87,12 @@ const EMPTY_EMPRESA = Object.freeze({
 
 const EmpresaModal = ({ empresa, onClose, canEdit = false, onSave, saving = false }) => {
     const currentEmpresa = empresa ?? EMPTY_EMPRESA;
+
+    useEffect(() => {
+        if (empresa) {
+            console.log('[EmpresaModal] render empresa', empresa.id);
+        }
+    }, [empresa]);
 
     const {
         nombre = '',
@@ -187,9 +193,9 @@ const EmpresaModal = ({ empresa, onClose, canEdit = false, onSave, saving = fals
             {/* Botón de Cerrar */}
             <button
                 onClick={onClose}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition-colors z-20"
+                className="absolute top-4 right-4 bg-primary text-detail hover:bg-primary/90 transition-colors z-20 p-2 rounded-full"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>

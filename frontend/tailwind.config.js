@@ -8,7 +8,8 @@ module.exports = {
         'background': '#FEFCFB',      // Casi blanco (fondo principal)
         'surface': '#F5F3F0',         // Beige muy sutil (superficies)
         'surface-elevated': '#FFFFFF', // Blanco puro (elementos elevados)
-        'primary': '#072D42',         // Azul marino oscuro (elementos principales)
+        'primary': '#0f2c4a',         // Azul marino oscuro (elementos principales)
+        'vibrant-blue': '#2563eb',    // Azul más vibrante
         'accent': '#F29E38',          // Naranja vibrante (acentos únicos)
         'text-main': '#464E59',       // Gris azulado oscuro (texto principal)
         'text-muted': '#9298A6',      // Gris azulado medio (texto secundario)

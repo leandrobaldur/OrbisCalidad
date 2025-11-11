@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import EmpresaCard from './empresaCard'; 
+import LoadingSpinner from './LoadingSpinner'; // Import the new component
 
 const EmpresaLista = ({ empresas, loading, error, vistaGrid, onCardClick }) => {
     const gridContainerClass = vistaGrid 
@@ -10,7 +11,7 @@ const EmpresaLista = ({ empresas, loading, error, vistaGrid, onCardClick }) => {
         : "grid gap-4"; // Vista Lista 
 
     if (loading) {
-        return <div className="text-center p-8">Cargando empresas...</div>;
+        return <LoadingSpinner text="Cargando empresas..." />;
     }
 
     if (error) {
@@ -22,7 +23,7 @@ const EmpresaLista = ({ empresas, loading, error, vistaGrid, onCardClick }) => {
     }
 
     return (
-        <div className="flex-grow overflow-y-auto pr-2 z-0"> 
+        <div className="flex-grow overflow-y-auto pr-2 z-0" style={{ padding: '10px' }}>
             <div className={gridContainerClass}>
                 <AnimatePresence>
                     {empresas.length > 0 ? (
