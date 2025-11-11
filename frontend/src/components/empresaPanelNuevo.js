@@ -4,13 +4,13 @@ import { AnimatePresence, motion } from 'framer-motion';
 import MapaBolivia from './mapaBolivia';
 import EmpresaBuscador from './empresaBuscador';
 import EmpresaLista from './empresaLista';
-import EmpresaModal from './empresaModal'; // Importamos el modal refactorizado
+import EmpresaModal from './empresaModal';
 import { getEmpresasCards, getEmpresaPublicById, getEmpresaPrivateById, updateEmpresaPrivate } from '../services/empresaService';
+import { cacheManager } from './utils/cacheUtils';
 
 let privateDetailsGloballyDisabled = false;
 
 const debugLog = (...args) => {
-  // Utiliza console.log para depurar paso a paso la carga de empresas
   console.log('[EmpresasPanel]', ...args);
 };
 
@@ -23,11 +23,17 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedEmpresa, setSelectedEmpresa] = useState(null);
-  const [vistaGrid, setVistaGrid] = useState(false); // false = Vertical/Lista, true = Cuadrícula/Grid
+  const [vistaGrid, setVistaGrid] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
   const [modalError, setModalError] = useState(null);
   const [modalSaving, setModalSaving] = useState(false);
-  const panelHeight = 82; // Altura fija del 82% del viewport
+  const panelHeight = 82;
+
+  // Claves para el cache
+  const CACHE_KEYS = {
+    EMPRESAS_CARDS: 'empresas-cards-data',
+    EMPRESA_DETAIL: (id) => `empresa-detail-${id}`
+  };
 
   const canViewPrivate = useMemo(() => {
     if (!loggedInUser?.idRol) return false;
@@ -62,52 +68,78 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
     return false;
   }, []);
 
-  useEffect(() => {
-    const loadEmpresas = async () => {
-      debugLog('Iniciando carga de empresas', { canViewPrivate });
-      setLoading(true);
-      setError(null);
+  // Función para cargar empresas con cache
+  const loadEmpresas = useCallback(async () => {
+    debugLog('Iniciando carga de empresas', { canViewPrivate });
+    setLoading(true);
+    setError(null);
 
-      try {
-        let cards = [];
-        try {
-          cards = await getEmpresasCards({ limit: 100 }, canViewPrivate ? 'private' : 'public');
-          debugLog('Tarjetas cargadas', { cantidad: cards.length, variant: canViewPrivate ? 'private' : 'public' });
-        } catch (primaryError) {
-          debugLog('Error al obtener tarjetas en primera llamada', primaryError);
-          if (canViewPrivate && primaryError?.response?.status === 401) {
-            cards = await getEmpresasCards({ limit: 100 }, 'public');
-            debugLog('Recuperado tarjetas públicas tras 401', { cantidad: cards.length });
-          } else {
-            throw primaryError;
-          }
-        }
-
-        const baseEmpresas = cards.map((card) => ({
-          id: card.id,
-          nombre: card.nombre,
-          rubro: card.rubro || '',
-          slogan: card.slogan || '',
-          descripcion: card.descripcion || 'Descripción no disponible.',
-          departamento: card.departamento || '',
-          imagen: card.imagen,
-          hitos: Array.isArray(card.hitos) ? card.hitos : [],
-        }));
-
-        setFullEmpresas(baseEmpresas);
-        debugLog('Tarjetas base normalizadas', { cantidad: baseEmpresas.length });
-      } catch (err) {
-        console.error('Error al cargar empresas:', err);
-        debugLog('Error general en la carga de empresas', err);
-        setError('No se pudieron cargar las empresas. Intenta nuevamente más tarde.');
-      } finally {
+    try {
+      // Verificar cache primero
+      const cachedEmpresas = cacheManager.get(CACHE_KEYS.EMPRESAS_CARDS);
+      if (cachedEmpresas) {
+        debugLog('Usando empresas desde cache', { 
+          cantidad: cachedEmpresas.length,
+          primeraEmpresa: cachedEmpresas[0]?.nombre,
+          tieneImagen: !!cachedEmpresas[0]?.imagen
+        });
+        setFullEmpresas(cachedEmpresas);
         setLoading(false);
-        debugLog('Carga de empresas finalizada');
+        return;
       }
-    };
 
-    loadEmpresas();
+      let cards = [];
+      try {
+        cards = await getEmpresasCards({ limit: 100 }, canViewPrivate ? 'private' : 'public');
+        debugLog('Tarjetas cargadas desde API', { 
+          cantidad: cards.length, 
+          variant: canViewPrivate ? 'private' : 'public',
+          primeraEmpresa: cards[0]?.nombre,
+          tieneImagen: !!cards[0]?.imagen
+        });
+      } catch (primaryError) {
+        debugLog('Error al obtener tarjetas en primera llamada', primaryError);
+        if (canViewPrivate && primaryError?.response?.status === 401) {
+          cards = await getEmpresasCards({ limit: 100 }, 'public');
+          debugLog('Recuperado tarjetas públicas tras 401', { cantidad: cards.length });
+        } else {
+          throw primaryError;
+        }
+      }
+
+      const baseEmpresas = cards.map((card) => ({
+        id: card.id,
+        nombre: card.nombre,
+        rubro: card.rubro || '',
+        slogan: card.slogan || '',
+        descripcion: card.descripcion || 'Descripción no disponible.',
+        departamento: card.departamento || '',
+        imagen: card.imagen, // Las URLs de imágenes SÍ se guardan en cache
+        logo: card.logo, // Otras imágenes también
+        hitos: Array.isArray(card.hitos) ? card.hitos : [],
+      }));
+
+      // Guardar en cache (CON imágenes/URLs)
+      cacheManager.set(CACHE_KEYS.EMPRESAS_CARDS, baseEmpresas);
+      debugLog('Empresas guardadas en cache CON imágenes', { 
+        cantidad: baseEmpresas.length,
+        primeraImagen: baseEmpresas[0]?.imagen 
+      });
+
+      setFullEmpresas(baseEmpresas);
+    } catch (err) {
+      console.error('Error al cargar empresas:', err);
+      debugLog('Error general en la carga de empresas', err);
+      setError('No se pudieron cargar las empresas. Intenta nuevamente más tarde.');
+    } finally {
+      setLoading(false);
+      debugLog('Carga de empresas finalizada');
+    }
   }, [canViewPrivate]);
+
+  useEffect(() => {
+    loadEmpresas();
+  }, [loadEmpresas]);
 
   const handleDepartamentoClick = (departamento) => {
     if (departamentoActivo === departamento) {
@@ -137,50 +169,83 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
     setEmpresas(lista);
   }, [fullEmpresas, busqueda, departamentoActivo]);
 
+  // Función para cargar detalle de empresa con cache
+  const loadEmpresaDetail = useCallback(async (empresaId) => {
+    const cacheKey = CACHE_KEYS.EMPRESA_DETAIL(empresaId);
+    
+    // Verificar cache primero
+    const cachedDetail = cacheManager.get(cacheKey);
+    if (cachedDetail) {
+      debugLog('Usando detalle desde cache', { 
+        id: empresaId,
+        tieneImagen: !!cachedDetail.imagen 
+      });
+      return cachedDetail;
+    }
+
+    let detalle = null;
+
+    if (shouldUsePrivateDetails) {
+      try {
+        detalle = await getEmpresaPrivateById(empresaId);
+        debugLog('Detalle privado obtenido desde API', { 
+          id: empresaId,
+          tieneImagen: !!detalle.imagen 
+        });
+      } catch (err) {
+        debugLog('Error al obtener detalle privado', { id: empresaId, error: err });
+        if (shouldFallbackToPublic(err)) {
+          disablePrivateDetails();
+          debugLog('Falling back a detalle público', { id: empresaId });
+        } else {
+          throw err;
+        }
+      }
+    }
+
+    if (!detalle) {
+      detalle = await getEmpresaPublicById(empresaId);
+      debugLog('Detalle público obtenido desde API', { 
+        id: empresaId,
+        tieneImagen: !!detalle.imagen 
+      });
+    }
+
+    // Guardar en cache (CON imágenes)
+    cacheManager.set(cacheKey, detalle);
+    debugLog('Detalle guardado en cache CON imagen', { 
+      id: empresaId,
+      imagen: detalle.imagen 
+    });
+
+    return detalle;
+  }, [shouldUsePrivateDetails, disablePrivateDetails]);
+
   const handleCardClick = async (empresa) => {
-    debugLog('Click en tarjeta', { id: empresa.id, shouldUsePrivateDetails });
+    debugLog('Click en tarjeta', { 
+      id: empresa.id, 
+      shouldUsePrivateDetails,
+      imagenActual: empresa.imagen 
+    });
     setShowModal(true);
     setModalLoading(true);
     setModalError(null);
     setSelectedEmpresa(null);
 
     try {
-      let detalle = null;
-
-      if (shouldUsePrivateDetails) {
-        try {
-          detalle = await getEmpresaPrivateById(empresa.id);
-          debugLog('Detalle privado obtenido para modal', { id: empresa.id });
-        } catch (err) {
-          debugLog('Error al obtener detalle privado para modal', { id: empresa.id, error: err });
-          if (shouldFallbackToPublic(err)) {
-            disablePrivateDetails();
-            debugLog('Falling back a detalle público en modal', { id: empresa.id });
-          } else {
-            throw err;
-          }
-        }
-      }
-
-      if (!detalle) {
-        detalle = await getEmpresaPublicById(empresa.id);
-        debugLog('Detalle público obtenido para modal', { id: empresa.id });
-      }
+      const detalle = await loadEmpresaDetail(empresa.id);
       setSelectedEmpresa(detalle);
-      debugLog('Empresa seleccionada actualizada', { id: detalle.id });
 
-      // Refresca la lista con la información más reciente
+      // Actualizar lista principal con información más reciente
       setFullEmpresas((prev) =>
         prev.map((item) => (item.id === detalle.id ? { ...item, ...detalle } : item))
       );
-      debugLog('Lista principal actualizada con detalle del modal', { id: detalle.id });
     } catch (err) {
       console.error('Error al obtener detalle de la empresa:', err);
       debugLog('Error general al abrir modal de empresa', err);
       setModalError('No se pudo cargar la información de la empresa. Intenta nuevamente más tarde.');
     } finally {
       setModalLoading(false);
-      debugLog('Modal completó carga de detalle');
     }
   };
 
@@ -195,10 +260,17 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
       const actualizada = await updateEmpresaPrivate(empresaId, cambios);
       if (actualizada) {
         setSelectedEmpresa(actualizada);
+        
+        // Actualizar cache y lista
+        cacheManager.set(CACHE_KEYS.EMPRESA_DETAIL(empresaId), actualizada);
         setFullEmpresas((prev) =>
           prev.map((item) => (item.id === actualizada.id ? { ...item, ...actualizada } : item))
         );
-        debugLog('Empresa actualizada correctamente', { id: actualizada.id });
+        
+        debugLog('Empresa actualizada correctamente', { 
+          id: actualizada.id,
+          nuevaImagen: actualizada.imagen 
+        });
       }
     } catch (err) {
       console.error('Error al actualizar la empresa:', err);
@@ -210,7 +282,6 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
       setModalError(mensaje);
     } finally {
       setModalSaving(false);
-      debugLog('Actualización de empresa finalizada');
     }
   };
 
@@ -233,11 +304,13 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
   return (
     <>
     <div className="p-2 flex flex-col md:flex-row gap-4 overflow-hidden" style={{ height: `${panelHeight}vh` }}>
-      {/* Columna Izquierda: Mapa (Layout y altura reducida) */}
+      {/* Columna Izquierda: Mapa */}
       <div className="w-full md:flex-1 bg-gray-100 rounded-lg p-4 shadow-md flex flex-col h-full">
-        <h2 className="text-2xl font-bold mb-4 flex-shrink-0">Empresas por Departamento</h2>
+        <div className="flex justify-between items-center mb-4 flex-shrink-0">
+          <h2 className="text-2xl font-bold">Empresas por Departamento</h2>
+          {/* EL BOTÓN DE ACTUALIZAR FUE ELIMINADO */}
+        </div>
 
-        {/* CONTENEDOR DEL MAPA */}
         <div className="w-full h-[68%] flex-shrink-0">
           <MapaBolivia
             onDepartamentoClick={handleDepartamentoClick}
@@ -245,7 +318,6 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
           />
         </div>
 
-        {/* ESPACIO DE RELLENO */}
         <div className="flex-grow">
           {/* Información adicional o vacío */}
         </div>
@@ -253,7 +325,6 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
 
       {/* Columna Derecha: Buscador y Empresas */}
       <div className="relative w-full md:flex-1 flex flex-col h-full">
-        {/* BUSCADOR */}
         <EmpresaBuscador
           busqueda={busqueda}
           onBusquedaChange={handleBusquedaChange}
@@ -261,7 +332,6 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
           onVistaToggle={toggleVista}
         />
 
-        {/* LISTA DE EMPRESAS */}
         <EmpresaLista
           empresas={empresas}
           loading={loading}
@@ -269,7 +339,6 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
           vistaGrid={vistaGrid}
           onCardClick={handleCardClick}
         />
-
       </div>
     </div>
 
@@ -281,7 +350,7 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={handleCloseModal} // Add this line
+            onClick={handleCloseModal}
           >
             <motion.div
               className="relative w-full max-w-4xl h-[90vh] bg-white rounded-lg overflow-hidden shadow-xl"
@@ -289,7 +358,7 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.25 }}
-              onClick={(e) => e.stopPropagation()} // Add this line
+              onClick={(e) => e.stopPropagation()}
             >
               {modalLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-20">
@@ -319,7 +388,6 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
                   saving={modalSaving}
                 />
               )}
-
             </motion.div>
           </motion.div>
         )}

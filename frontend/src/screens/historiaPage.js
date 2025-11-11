@@ -304,35 +304,7 @@ const AboutUsPage = () => {
       </div>
 
       {/* SECCIÓN DE ESTADÍSTICAS - CON ANIMACIÓN DE CONTEO */}
-      <div className="relative z-10 -mt-12 px-4 mb-12">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-[#072D42]/5 p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {statsData.map((stat, index) => {
-                const IconComponent = stat.icon;
-                return (
-                  <div 
-                    key={index}
-                    className="text-center group hover:scale-105 transition-transform duration-300"
-                  >
-                    <IconComponent className="w-8 h-8 text-[#072D42] mx-auto mb-2" />
-                    
-                    {/* NÚMERO ANIMADO */}
-                    <div className="font-playfair text-3xl font-light text-[#072D42] mb-1">
-                      <AnimatedCounter target={stat.target} duration={2000} suffix="+" />
-                    </div>
-                    
-                    {/* LABEL */}
-                    <div className="text-sm font-light text-[#072D42]/70 font-montserrat tracking-wide">
-                      {stat.label}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
+      
 
       <main className="px-4 sm:px-6 lg:px-8 py-0">
         {/* CONTENIDO PRINCIPAL - CENTRADO Y CON ANCHO MÁXIMO */}

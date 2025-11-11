@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getUsuarios, createUsuario, deleteUsuario } from '../services/usuarioService';
+import { cacheManager } from './utils/cacheUtils';
 
 // Variantes de animación para el contenedor principal
 const containerVariants = {
@@ -67,7 +68,6 @@ const SuccessConfirmationAlert = ({ message, onClose, fontMonoClass }) => {
   );
 };
 
-
 const ROL_OPTIONS = [
   { value: 2, label: 'Admin' },
   { value: 3, label: 'Investigador' },
@@ -84,7 +84,7 @@ const PanelEditorUsuarios = () => {
   const [nuevaContrasenia, setNuevaContrasenia] = useState("");
   const [nuevoCorreo, setNuevoCorreo] = useState("");
   const [nuevoRol, setNuevoRol] = useState(3);
-  const [mensaje, setMensaje] = useState(null); // Para mensajes de error o validación dentro del modal de registro
+  const [mensaje, setMensaje] = useState(null);
 
   // Estados para la alerta de éxito de registro
   const [mostrarAlertaExito, setMostrarAlertaExito] = useState(false);
@@ -95,10 +95,9 @@ const PanelEditorUsuarios = () => {
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
   const [mostrarModalEliminar, setMostrarModalEliminar] = useState(false);
 
-  // Estados para la alerta de éxito de eliminación (NUEVOS)
+  // Estados para la alerta de éxito de eliminación
   const [mostrarAlertaEliminarExito, setMostrarAlertaEliminarExito] = useState(false);
   const [mensajeEliminarExito, setMensajeEliminarExito] = useState("");
-
 
   const ROL_NOMBRE = {
     1: "Superadmin",
@@ -108,6 +107,8 @@ const PanelEditorUsuarios = () => {
     5: "Visitante",
   };
 
+  const CACHE_KEY = 'usuarios-data';
+
   const buildErrorMessage = (error) => {
     const backendMessage = error?.response?.data?.message;
     if (Array.isArray(backendMessage)) {
@@ -116,12 +117,23 @@ const PanelEditorUsuarios = () => {
     return backendMessage || error?.message || 'No se pudo completar la operación.';
   };
 
-  const cargarUsuarios = useCallback(async () => {
+  const cargarUsuarios = useCallback(async (forceRefresh = false) => {
+    // Verificar cache primero (a menos que forceRefresh sea true)
+    if (!forceRefresh) {
+      const cachedUsuarios = cacheManager.get(CACHE_KEY);
+      if (cachedUsuarios) {
+        setUsuarios(cachedUsuarios);
+        return;
+      }
+    }
+
     setLoadingUsuarios(true);
     setErrorUsuarios(null);
     try {
       const data = await getUsuarios();
       setUsuarios(data);
+      // Guardar en cache SIN tiempo de expiración
+      cacheManager.set(CACHE_KEY, data);
     } catch (error) {
       console.error('Error al cargar usuarios:', error);
       setErrorUsuarios(buildErrorMessage(error));
@@ -130,14 +142,21 @@ const PanelEditorUsuarios = () => {
     }
   }, []);
 
+  // Función para forzar recarga e invalidar cache
+  const recargarUsuarios = useCallback(() => {
+    cacheManager.remove(CACHE_KEY);
+    cargarUsuarios(true);
+  }, [cargarUsuarios]);
+
   useEffect(() => {
     cargarUsuarios();
   }, [cargarUsuarios]);
 
+  // Este useEffect ya no es necesario porque el cache maneja la persistencia
+  // Pero lo dejamos por si hay otras lógicas que dependan de estos estados
   useEffect(() => {
     if (!mostrarModal && !mostrarAlertaExito && !mostrarAlertaEliminarExito) return;
-    cargarUsuarios();
-  }, [mostrarModal, mostrarAlertaExito, mostrarAlertaEliminarExito, cargarUsuarios]);
+  }, [mostrarModal, mostrarAlertaExito, mostrarAlertaEliminarExito]);
 
   const inputStyle = "w-full p-2 mb-4 rounded-md border border-[#D4B86A] text-[#333333]";
 
@@ -147,7 +166,7 @@ const PanelEditorUsuarios = () => {
       return;
     }
 
-    setMensaje(null); // Limpiar mensaje de error previo
+    setMensaje(null);
 
     try {
       await createUsuario({
@@ -164,7 +183,9 @@ const PanelEditorUsuarios = () => {
       setNuevaContrasenia("");
       setNuevoCorreo("");
       setNuevoRol(3);
-      cargarUsuarios();
+      
+      // Invalidar cache y recargar
+      recargarUsuarios();
     } catch (error) {
       console.error("Error registrando usuario:", error);
       setMensaje(buildErrorMessage(error));
@@ -173,25 +194,40 @@ const PanelEditorUsuarios = () => {
 
   // Función que se ejecuta al hacer clic en "Aceptar" en la alerta de éxito de registro
   const handleSuccessAlertClose = () => {
-    setMostrarAlertaExito(false); // Cierra la alerta de éxito
-    setMostrarModal(false);     // Cierra el modal de registro
-    setNuevoUsuario("");         // Limpia el campo de usuario
-    setNuevaContrasenia("");     // Limpia el campo de contraseña
+    setMostrarAlertaExito(false);
+    setMostrarModal(false);
+    setNuevoUsuario("");
+    setNuevaContrasenia("");
     setNuevoCorreo("");
     setNuevoRol(3);
-    setMensaje(null);            // Asegura que no haya mensajes de error en el modal de registro
-    cargarUsuarios();            // Recarga la lista de usuarios para mostrar el nuevo
+    setMensaje(null);
+    // No es necesario recargar aquí porque ya se hizo en handleRegistrarUsuario
   };
 
-  // Función que se ejecuta al hacer clic en "Aceptar" en la alerta de éxito de eliminación (NUEVA)
+  // Función que se ejecuta al hacer clic en "Aceptar" en la alerta de éxito de eliminación
   const handleDeleteSuccessAlertClose = () => {
-    setMostrarAlertaEliminarExito(false); // Cierra la alerta de éxito de eliminación
-    setMostrarModalEliminar(false);    // Cierra el modal de confirmación de eliminación
-    setUsuarioSeleccionado(null);      // Limpia el usuario seleccionado
-    setModoEliminar(false);            // Sale del modo de eliminación
-    cargarUsuarios();                  // Recarga la lista de usuarios
+    setMostrarAlertaEliminarExito(false);
+    setMostrarModalEliminar(false);
+    setUsuarioSeleccionado(null);
+    setModoEliminar(false);
+    // No es necesario recargar aquí porque ya se hizo en la eliminación
   };
 
+  // Función para eliminar usuario
+  const handleEliminarUsuario = async () => {
+    try {
+      await deleteUsuario(usuarioSeleccionado.userId);
+
+      const usernameToShow = usuarioSeleccionado.username || usuarioSeleccionado.usuario || 'Usuario';
+      setMensajeEliminarExito(`El usuario "${usernameToShow}" ha sido eliminado exitosamente.`);
+      setMostrarAlertaEliminarExito(true);
+
+      // Invalidar cache y recargar
+      recargarUsuarios();
+    } catch (error) {
+      alert(buildErrorMessage(error));
+    }
+  };
 
   return (
     <motion.div
@@ -238,7 +274,6 @@ const PanelEditorUsuarios = () => {
             >
               -
             </motion.button>
-
 
           <motion.button
             className="bg-[#052018] w-14 h-14 rounded-[50px] flex justify-center items-center text-white text-2xl font-normal hover:bg-white transition"
@@ -433,7 +468,7 @@ const PanelEditorUsuarios = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            onClick={() => { // Permite cerrar el modal haciendo clic fuera
+            onClick={() => {
               setMostrarModalEliminar(false);
               setUsuarioSeleccionado(null);
             }}
@@ -447,7 +482,7 @@ const PanelEditorUsuarios = () => {
                 visible: { opacity: 1, scale: 1, transition: { duration: 0.25 } },
               }}
               className="bg-[#F6F0E0] p-6 rounded-xl shadow-xl w-[90vw] max-w-md relative"
-              onClick={e => e.stopPropagation()} // Para que no cierre al click dentro del modal
+              onClick={e => e.stopPropagation()}
             >
               <h2 className="text-xl font-bold text-[#333333] mb-4 text-center">
                 Eliminar usuario "{usuarioSeleccionado.username || usuarioSeleccionado.usuario}"
@@ -470,18 +505,7 @@ const PanelEditorUsuarios = () => {
                   Cancelar
                 </motion.button>
                 <motion.button
-                  onClick={async () => {
-                    try {
-                      await deleteUsuario(usuarioSeleccionado.userId);
-
-                      const usernameToShow = usuarioSeleccionado.username || usuarioSeleccionado.usuario || 'Usuario';
-                      setMensajeEliminarExito(`El usuario "${usernameToShow}" ha sido eliminado exitosamente.`);
-                      setMostrarAlertaEliminarExito(true);
-
-                    } catch (error) {
-                      alert(buildErrorMessage(error));
-                    }
-                  }}
+                  onClick={handleEliminarUsuario}
                   className="flex-1 bg-[#520000] text-white py-2 rounded-md hover:bg-[#8B0000] transition-colors duration-200"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -505,7 +529,7 @@ const PanelEditorUsuarios = () => {
         )}
       </AnimatePresence>
 
-      {/* ALERTA DE CONFIRMACIÓN DE ÉXITO DE ELIMINACIÓN (NUEVA) */}
+      {/* ALERTA DE CONFIRMACIÓN DE ÉXITO DE ELIMINACIÓN */}
       <AnimatePresence>
         {mostrarAlertaEliminarExito && (
           <SuccessConfirmationAlert
