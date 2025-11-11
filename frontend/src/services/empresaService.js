@@ -32,6 +32,55 @@ const pickFirstImage = (images = []) => {
   return finalUrl || PLACEHOLDER_IMAGE;
 };
 
+const normalizeRubro = (candidate) => {
+  if (!candidate) {
+    return '';
+  }
+
+  if (typeof candidate === 'string') {
+    return candidate.trim();
+  }
+
+  if (Array.isArray(candidate)) {
+    return candidate
+      .map((item) => normalizeRubro(item))
+      .filter(Boolean)
+      .join(', ');
+  }
+
+  if (typeof candidate === 'object') {
+    return (
+      candidate.nombre ||
+      candidate.nombreRubro ||
+      candidate.descripcion ||
+      candidate.rubro ||
+      ''
+    ).toString().trim();
+  }
+
+  return '';
+};
+
+const extractRubroNombre = (empresa = {}) => {
+  const direct = normalizeRubro(
+    empresa.rubroNombre ||
+      empresa.rubroPrincipalNombre ||
+      empresa.rubro ||
+      empresa.rubroPrincipal
+  );
+
+  if (direct) {
+    return direct;
+  }
+
+  const fromArray = normalizeRubro(empresa.rubros);
+  if (fromArray) {
+    return fromArray;
+  }
+
+  return '';
+};
+
 export const getEmpresasCards = async (params = {}, variant = 'public') => {
   const endpoint = variant === 'private'
     ? '/api/empresas/cards/private'
@@ -52,6 +101,7 @@ export const getEmpresasCards = async (params = {}, variant = 'public') => {
       : [];
 
     const departamentoCentral = empresa.sedeCentral?.nombre || empresa.departamento?.nombre || null;
+    const rubro = extractRubroNombre(empresa);
 
     return {
       id: empresa.id,
@@ -59,6 +109,7 @@ export const getEmpresasCards = async (params = {}, variant = 'public') => {
       imagen,
       hitos,
       departamento: departamentoCentral,
+      rubro,
     };
   });
 };
