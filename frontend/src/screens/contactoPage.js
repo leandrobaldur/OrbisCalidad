@@ -66,15 +66,6 @@ const ContactoPage = () => {
       asideLabel: 'UCB La Paz'
     },
     {
-      src: '/media/contactoPage/SIS - H.png',
-      alt: 'Carrera de Ingeniería de Sistemas',
-      text: 'Carrera de Ingeniería\nde Sistemas',
-      link: 'https://lpz.ucb.edu.bo/pregrado/ingenieria-de-sistemas/',
-      hoverImg: '/media/contactoPage/SIS-QR.png',
-      icon: GraduationCap,
-      asideLabel: 'Ing. Sistemas'
-    },
-    {
       src: '/media/contactoPage/IIE - H.png',
       alt: 'Carrera de Ingeniería Innovación Empresarial',
       text: 'Carrera de Ingeniería\nInnovación empresarial',
@@ -157,7 +148,7 @@ const ContactoPage = () => {
               </motion.p>
 
               {/* Grid de tarjetas elegante */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 justify-center">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 lg:gap-12 justify-center">
                 {items.map(({ src, alt, text, link, hoverImg, icon: Icon }, idx) => (
                   <motion.a
                     href={link}
