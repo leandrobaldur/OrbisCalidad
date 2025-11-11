@@ -15,7 +15,7 @@ const ContenedorLateral = ({
       const y = d.getFullYear();
       const m = String(d.getMonth() + 1).padStart(2, "0");
       const day = String(d.getDate()).padStart(2, "0");
-      return `${y}-${m}-${d}`;
+      return `${y}-${m}-${day}`;
     };
     const d1 = new Date(base);
     const d2 = new Date(base); d2.setDate(base.getDate() + 1);

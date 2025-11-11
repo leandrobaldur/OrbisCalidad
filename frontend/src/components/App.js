@@ -89,7 +89,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage loggedInUser={loggedInUser} />} />
             <Route path="/empresas" element={<EmpresasPage loggedInUser={loggedInUser} />} />
-            {/* <Route path="/revistaPage" element={<RevistaPage />} /> */}  // Commented out temporarily
+            {/* <Route path="/revistaPage" element={<RevistaPage />} /> */}
             <Route path="/contacto" element={<ContactoPage />} />
             <Route path="/historia" element={<HistoriaPage />} />
             <Route path="/equipo" element={<EquipoPage />} /> {/* Nueva ruta agregada */}

@@ -2,7 +2,7 @@ import React from "react";
 import VideoPanel from "../components/videoPanel";
 import BarraHorizontal from "../components/barraHorizontal";
 import ContenedorLateral from "../components/contenedorLateral";
-import ImagenInteractiva from "../components/imagenInteractiva";
+// import ImagenInteractiva from "../components/imagenInteractiva";
 import CarruselImagenes from "../components/carruselImagenes";
 
 
