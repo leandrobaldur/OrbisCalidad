@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getUsuarios, createUsuario, deleteUsuario } from '../services/usuarioService';
-import { cacheManager } from './utils/cacheUtils';
+import { getUsuarios, createUsuario, deleteUsuario, updateUsuario  } from '../services/usuarioService';
 
 // Variantes de animación para el contenedor principal
 const containerVariants = {
@@ -68,12 +67,27 @@ const SuccessConfirmationAlert = ({ message, onClose, fontMonoClass }) => {
   );
 };
 
+
 const ROL_OPTIONS = [
   { value: 2, label: 'Admin' },
   { value: 3, label: 'Investigador' },
   { value: 4, label: 'Temporal' },
   { value: 5, label: 'Visitante' },
 ];
+
+// Paleta de colores nueva
+const COLORS = {
+  background: '#FEFCFB',        // Casi blanco (fondo principal)
+  surface: '#F5F3F0',           // Beige muy sutil (superficies)
+  surfaceElevated: '#FFFFFF',   // Blanco puro (elementos elevados)
+  primary: '#072D42',           // Azul marino oscuro (elementos principales)
+  accent: '#F29E38',            // Naranja vibrante (acentos únicos)
+  textMain: '#464E59',          // Gris azulado oscuro (texto principal)
+  textMuted: '#9298A6',         // Gris azulado medio (texto secundario)
+  stroke: '#BFAEA4',            // Beige medio (bordes y detalles)
+  detail: '#D9CBBF',            // Detalles suaves
+};
+
 
 const PanelEditorUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -84,7 +98,7 @@ const PanelEditorUsuarios = () => {
   const [nuevaContrasenia, setNuevaContrasenia] = useState("");
   const [nuevoCorreo, setNuevoCorreo] = useState("");
   const [nuevoRol, setNuevoRol] = useState(3);
-  const [mensaje, setMensaje] = useState(null);
+  const [mensaje, setMensaje] = useState(null); // Para mensajes de error o validación dentro del modal de registro
 
   // Estados para la alerta de éxito de registro
   const [mostrarAlertaExito, setMostrarAlertaExito] = useState(false);
@@ -95,9 +109,18 @@ const PanelEditorUsuarios = () => {
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
   const [mostrarModalEliminar, setMostrarModalEliminar] = useState(false);
 
-  // Estados para la alerta de éxito de eliminación
+  // Estados para la alerta de éxito de eliminación (NUEVOS)
   const [mostrarAlertaEliminarExito, setMostrarAlertaEliminarExito] = useState(false);
   const [mensajeEliminarExito, setMensajeEliminarExito] = useState("");
+
+  // Estados para la edición
+  const [modoEditar, setModoEditar] = useState(false);
+  const [usuarioEditar, setUsuarioEditar] = useState(null);
+  const [mostrarModalEditar, setMostrarModalEditar] = useState(false);
+  const [mensajeEditar, setMensajeEditar] = useState(null);
+  const [nuevoNombreEditar, setNuevoNombreEditar] = useState('');
+  const [nuevoCorreoEditar, setNuevoCorreoEditar] = useState('');
+  const [nuevoRolEditar, setNuevoRolEditar] = useState(3);
 
   const ROL_NOMBRE = {
     1: "Superadmin",
@@ -107,8 +130,6 @@ const PanelEditorUsuarios = () => {
     5: "Visitante",
   };
 
-  const CACHE_KEY = 'usuarios-data';
-
   const buildErrorMessage = (error) => {
     const backendMessage = error?.response?.data?.message;
     if (Array.isArray(backendMessage)) {
@@ -117,23 +138,12 @@ const PanelEditorUsuarios = () => {
     return backendMessage || error?.message || 'No se pudo completar la operación.';
   };
 
-  const cargarUsuarios = useCallback(async (forceRefresh = false) => {
-    // Verificar cache primero (a menos que forceRefresh sea true)
-    if (!forceRefresh) {
-      const cachedUsuarios = cacheManager.get(CACHE_KEY);
-      if (cachedUsuarios) {
-        setUsuarios(cachedUsuarios);
-        return;
-      }
-    }
-
+  const cargarUsuarios = useCallback(async () => {
     setLoadingUsuarios(true);
     setErrorUsuarios(null);
     try {
       const data = await getUsuarios();
       setUsuarios(data);
-      // Guardar en cache SIN tiempo de expiración
-      cacheManager.set(CACHE_KEY, data);
     } catch (error) {
       console.error('Error al cargar usuarios:', error);
       setErrorUsuarios(buildErrorMessage(error));
@@ -142,21 +152,14 @@ const PanelEditorUsuarios = () => {
     }
   }, []);
 
-  // Función para forzar recarga e invalidar cache
-  const recargarUsuarios = useCallback(() => {
-    cacheManager.remove(CACHE_KEY);
-    cargarUsuarios(true);
-  }, [cargarUsuarios]);
-
   useEffect(() => {
     cargarUsuarios();
   }, [cargarUsuarios]);
 
-  // Este useEffect ya no es necesario porque el cache maneja la persistencia
-  // Pero lo dejamos por si hay otras lógicas que dependan de estos estados
   useEffect(() => {
     if (!mostrarModal && !mostrarAlertaExito && !mostrarAlertaEliminarExito) return;
-  }, [mostrarModal, mostrarAlertaExito, mostrarAlertaEliminarExito]);
+    cargarUsuarios();
+  }, [mostrarModal, mostrarAlertaExito, mostrarAlertaEliminarExito, cargarUsuarios]);
 
   const inputStyle = "w-full p-2 mb-4 rounded-md border border-[#D4B86A] text-[#333333]";
 
@@ -166,7 +169,7 @@ const PanelEditorUsuarios = () => {
       return;
     }
 
-    setMensaje(null);
+    setMensaje(null); // Limpiar mensaje de error previo
 
     try {
       await createUsuario({
@@ -183,74 +186,93 @@ const PanelEditorUsuarios = () => {
       setNuevaContrasenia("");
       setNuevoCorreo("");
       setNuevoRol(3);
-      
-      // Invalidar cache y recargar
-      recargarUsuarios();
+      cargarUsuarios();
     } catch (error) {
       console.error("Error registrando usuario:", error);
       setMensaje(buildErrorMessage(error));
     }
   };
 
-  // Función que se ejecuta al hacer clic en "Aceptar" en la alerta de éxito de registro
-  const handleSuccessAlertClose = () => {
-    setMostrarAlertaExito(false);
-    setMostrarModal(false);
-    setNuevoUsuario("");
-    setNuevaContrasenia("");
-    setNuevoCorreo("");
-    setNuevoRol(3);
-    setMensaje(null);
-    // No es necesario recargar aquí porque ya se hizo en handleRegistrarUsuario
+  const abrirModalEditar = (usuario) => {
+    setUsuarioEditar(usuario);
+    setNuevoNombreEditar(usuario.usuario || usuario.nombreUsuario || '');
+    setNuevoCorreoEditar(usuario.correo || '');
+    setNuevoRolEditar(usuario.idRol || 3);
+    setMensajeEditar(null);
+    setMostrarModalEditar(true);
+    setModoEditar(true);
   };
 
-  // Función que se ejecuta al hacer clic en "Aceptar" en la alerta de éxito de eliminación
-  const handleDeleteSuccessAlertClose = () => {
-    setMostrarAlertaEliminarExito(false);
-    setMostrarModalEliminar(false);
-    setUsuarioSeleccionado(null);
-    setModoEliminar(false);
-    // No es necesario recargar aquí porque ya se hizo en la eliminación
-  };
+  const handleEditarUsuario = async () => {
+    if (!nuevoNombreEditar.trim() || !nuevoCorreoEditar.trim()) {
+      setMensajeEditar('Completa todos los campos.');
+      return;
+    }
 
-  // Función para eliminar usuario
-  const handleEliminarUsuario = async () => {
     try {
-      await deleteUsuario(usuarioSeleccionado.userId);
+      await updateUsuario(usuarioEditar.userId, {
+        usuario: nuevoNombreEditar.trim(),
+        correo: nuevoCorreoEditar.trim(),
+        idRol: nuevoRolEditar,
+      });
 
-      const usernameToShow = usuarioSeleccionado.username || usuarioSeleccionado.usuario || 'Usuario';
-      setMensajeEliminarExito(`El usuario "${usernameToShow}" ha sido eliminado exitosamente.`);
-      setMostrarAlertaEliminarExito(true);
-
-      // Invalidar cache y recargar
-      recargarUsuarios();
+      setMostrarModalEditar(false);
+      setUsuarioEditar(null);
+      setModoEditar(false);
+      cargarUsuarios();
     } catch (error) {
-      alert(buildErrorMessage(error));
+      console.error('Error editando usuario:', error);
+      setMensajeEditar(buildErrorMessage(error));
     }
   };
 
+  // Función que se ejecuta al hacer clic en "Aceptar" en la alerta de éxito de registro
+  const handleSuccessAlertClose = () => {
+    setMostrarAlertaExito(false); // Cierra la alerta de éxito
+    setMostrarModal(false);     // Cierra el modal de registro
+    setNuevoUsuario("");         // Limpia el campo de usuario
+    setNuevaContrasenia("");     // Limpia el campo de contraseña
+    setNuevoCorreo("");
+    setNuevoRol(3);
+    setMensaje(null);            // Asegura que no haya mensajes de error en el modal de registro
+    cargarUsuarios();            // Recarga la lista de usuarios para mostrar el nuevo
+  };
+
+  // Función que se ejecuta al hacer clic en "Aceptar" en la alerta de éxito de eliminación (NUEVA)
+  const handleDeleteSuccessAlertClose = () => {
+    setMostrarAlertaEliminarExito(false); // Cierra la alerta de éxito de eliminación
+    setMostrarModalEliminar(false);    // Cierra el modal de confirmación de eliminación
+    setUsuarioSeleccionado(null);      // Limpia el usuario seleccionado
+    setModoEliminar(false);            // Sale del modo de eliminación
+    cargarUsuarios();                  // Recarga la lista de usuarios
+  };
+
+
   return (
     <motion.div
-      className="min-h-screen w-full bg-[#F6F0E0] p-8 flex flex-col items-center"
+      className="min-h-screen w-full p-8 flex flex-col items-center"
+      style={{ backgroundColor: COLORS.background }}
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
+
         <motion.div
-          className="bg-[#F1E3C1] rounded-lg shadow-lg overflow-hidden"
-          style={{ width: '85%' }}
+          className="rounded-lg shadow-lg overflow-hidden"
+          style={{ width: '85%', backgroundColor: COLORS.surface }}
           variants={itemVariants}
         >
 
-        <motion.div
-          className="bg-[#052018] flex flex-col md:flex-row justify-between items-center gap-4"
-          style={{ width: '100%', height: '9vh', padding: '1rem 2.5rem' }}
+       <motion.div
+          className="flex flex-col md:flex-row justify-between items-center gap-4"
+          style={{ width: '100%', height: '9vh', padding: '1rem 2.5rem', backgroundColor: COLORS.primary }}
           variants={itemVariants}
         >
-          <motion.span className="text-[#F6F0E0] text-lg" variants={itemVariants} >
+          <motion.span className="text-[#FEFCFB] text-lg" variants={itemVariants}>
             USUARIOS
           </motion.span>
         </motion.div>
+
 
         {errorUsuarios && (
           <div className="px-10 pt-4 text-sm text-red-700">
@@ -261,8 +283,8 @@ const PanelEditorUsuarios = () => {
         <motion.div className="px-10 pb-0 flex justify-end mt-5 gap-4" variants={itemVariants}>
             <motion.button
               className={`w-14 h-14 rounded-[50px] flex justify-center items-center text-white text-2xl font-normal transition
-                ${modoEliminar ? 'bg-[#8B0000]' : 'bg-[#520000]'}
-                hover:bg-[#8B0000]`}
+                ${modoEliminar ? COLORS.accent : COLORS.primary}
+                hover:bg-[#F29E38]`}
               onClick={() => {
                 setModoEliminar(!modoEliminar);
                 setUsuarioSeleccionado(null);
@@ -275,8 +297,9 @@ const PanelEditorUsuarios = () => {
               -
             </motion.button>
 
+
           <motion.button
-            className="bg-[#052018] w-14 h-14 rounded-[50px] flex justify-center items-center text-white text-2xl font-normal hover:bg-white transition"
+            className="bg-[#072D42] w-14 h-14 rounded-[50px] flex justify-center items-center text-white text-2xl font-normal hover:bg-[#F29E38] transition"
             onClick={() => {
               setMostrarModal(true);
               setMensaje(null);
@@ -289,6 +312,8 @@ const PanelEditorUsuarios = () => {
           >
             +
           </motion.button>
+
+        
         </motion.div>
 
         <motion.div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 py-6" variants={containerVariants}>
@@ -310,8 +335,7 @@ const PanelEditorUsuarios = () => {
                   <motion.div
                     key={userId || username}
                     className={`bg-[#F6F0E0] rounded-xl p-4 text-black shadow-md flex flex-col justify-center items-start cursor-pointer
-                      ${modoEliminar && usuarioSeleccionado?.userId === userId ? 'border-4 border-red-600' : ''}
-                    `}
+                      ${modoEliminar && usuarioSeleccionado?.userId === userId ? 'border-4 border-red-600' : ''}`}
                     variants={itemVariants}
                     initial="hidden"
                     animate="visible"
@@ -348,6 +372,16 @@ const PanelEditorUsuarios = () => {
                       className="w-full mt-2 p-2 rounded-md bg-[#F4E9CD] text-[#333333]"
                       variants={itemVariants}
                     />
+
+                    {/* BOTÓN DE EDITAR */}
+                    {!modoEliminar && (
+                      <motion.button
+                        className="mt-2 bg-[#072D42] text-white py-1 px-3 rounded-md hover:bg-[#1A7B5F] transition-colors duration-200"
+                        onClick={() => abrirModalEditar({ ...usuario, userId, username, roleId })}
+                      >
+                        Editar
+                      </motion.button>
+                    )}
                   </motion.div>
                 );
               })
@@ -468,7 +502,7 @@ const PanelEditorUsuarios = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            onClick={() => {
+            onClick={() => { // Permite cerrar el modal haciendo clic fuera
               setMostrarModalEliminar(false);
               setUsuarioSeleccionado(null);
             }}
@@ -482,7 +516,7 @@ const PanelEditorUsuarios = () => {
                 visible: { opacity: 1, scale: 1, transition: { duration: 0.25 } },
               }}
               className="bg-[#F6F0E0] p-6 rounded-xl shadow-xl w-[90vw] max-w-md relative"
-              onClick={e => e.stopPropagation()}
+              onClick={e => e.stopPropagation()} // Para que no cierre al click dentro del modal
             >
               <h2 className="text-xl font-bold text-[#333333] mb-4 text-center">
                 Eliminar usuario "{usuarioSeleccionado.username || usuarioSeleccionado.usuario}"
@@ -505,13 +539,93 @@ const PanelEditorUsuarios = () => {
                   Cancelar
                 </motion.button>
                 <motion.button
-                  onClick={handleEliminarUsuario}
+                  onClick={async () => {
+                    try {
+                      await deleteUsuario(usuarioSeleccionado.userId);
+
+                      const usernameToShow = usuarioSeleccionado.username || usuarioSeleccionado.usuario || 'Usuario';
+                      setMensajeEliminarExito(`El usuario "${usernameToShow}" ha sido eliminado exitosamente.`);
+                      setMostrarAlertaEliminarExito(true);
+
+                    } catch (error) {
+                      alert(buildErrorMessage(error));
+                    }
+                  }}
                   className="flex-1 bg-[#520000] text-white py-2 rounded-md hover:bg-[#8B0000] transition-colors duration-200"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   Eliminar
                 </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* MODAL DE EDICIÓN DE USUARIO */}
+      <AnimatePresence>
+        {mostrarModalEditar && usuarioEditar && (
+          <motion.div
+            className="fixed inset-0 bg-[#333333] bg-opacity-60 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={() => setMostrarModalEditar(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.25 }}
+              className="bg-[#F6F0E0] p-6 rounded-xl shadow-xl w-[90vw] max-w-md relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="text-xl font-bold text-[#333333] mb-4 text-center">Editar usuario</h2>
+
+              {mensajeEditar && (
+                <div className="mb-3 text-sm text-center text-red-600 font-medium">{mensajeEditar}</div>
+              )}
+
+              <input
+                type="text"
+                placeholder="Nombre de usuario"
+                className={inputStyle}
+                value={nuevoNombreEditar}
+                onChange={(e) => setNuevoNombreEditar(e.target.value)}
+              />
+              <input
+                type="email"
+                placeholder="Correo electrónico"
+                className={inputStyle}
+                value={nuevoCorreoEditar}
+                onChange={(e) => setNuevoCorreoEditar(e.target.value)}
+              />
+              <select
+                className={`${inputStyle} bg-white`}
+                value={nuevoRolEditar}
+                onChange={(e) => setNuevoRolEditar(Number(e.target.value))}
+              >
+                {ROL_OPTIONS.map((rol) => (
+                  <option key={rol.value} value={rol.value}>
+                    {rol.label}
+                  </option>
+                ))}
+              </select>
+
+              <div className="flex justify-between gap-4">
+                <button
+                  onClick={() => setMostrarModalEditar(false)}
+                  className="flex-1 bg-[#D4B86A] text-white py-2 rounded-md hover:bg-[#1D4C7F] transition-colors duration-200"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleEditarUsuario}
+                  className="flex-1 bg-[#052018] text-white py-2 rounded-md hover:bg-[#1A7B5F] transition-colors duration-200"
+                >
+                  Guardar
+                </button>
               </div>
             </motion.div>
           </motion.div>
@@ -529,7 +643,7 @@ const PanelEditorUsuarios = () => {
         )}
       </AnimatePresence>
 
-      {/* ALERTA DE CONFIRMACIÓN DE ÉXITO DE ELIMINACIÓN */}
+      {/* ALERTA DE CONFIRMACIÓN DE ÉXITO DE ELIMINACIÓN (NUEVA) */}
       <AnimatePresence>
         {mostrarAlertaEliminarExito && (
           <SuccessConfirmationAlert
@@ -539,6 +653,7 @@ const PanelEditorUsuarios = () => {
           />
         )}
       </AnimatePresence>
+      
 
     </motion.div>
   );
