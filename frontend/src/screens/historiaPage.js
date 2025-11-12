@@ -304,6 +304,17 @@ const AboutUsPage = () => {
       </div>
 
       {/* SECCIÓN DE ESTADÍSTICAS - CON ANIMACIÓN DE CONTEO */}
+      <section className="max-w-6xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+          {statsData.map((stat, index) => (
+            <div key={index} className="flex flex-col items-center p-6 bg-white rounded-lg shadow-md">
+              <stat.icon className="w-12 h-12 text-[#072D42] mb-4" />
+              <AnimatedCounter target={stat.target} />
+              <p className="font-montserrat text-lg font-medium text-[#072D42]/80">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
       
 
       <main className="px-4 sm:px-6 lg:px-8 py-0">

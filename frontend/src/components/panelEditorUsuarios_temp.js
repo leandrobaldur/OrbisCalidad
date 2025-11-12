@@ -114,7 +114,6 @@ const PanelEditorUsuarios = () => {
   const [mensajeEliminarExito, setMensajeEliminarExito] = useState("");
 
   // Estados para la edición
-  const [modoEditar, setModoEditar] = useState(false);
   const [usuarioEditar, setUsuarioEditar] = useState(null);
   const [mostrarModalEditar, setMostrarModalEditar] = useState(false);
   const [mensajeEditar, setMensajeEditar] = useState(null);
@@ -200,7 +199,6 @@ const PanelEditorUsuarios = () => {
     setNuevoRolEditar(usuario.idRol || 3);
     setMensajeEditar(null);
     setMostrarModalEditar(true);
-    setModoEditar(true);
   };
 
   const handleEditarUsuario = async () => {
@@ -218,7 +216,6 @@ const PanelEditorUsuarios = () => {
 
       setMostrarModalEditar(false);
       setUsuarioEditar(null);
-      setModoEditar(false);
       cargarUsuarios();
     } catch (error) {
       console.error('Error editando usuario:', error);

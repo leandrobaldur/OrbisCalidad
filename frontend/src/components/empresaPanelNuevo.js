@@ -135,7 +135,7 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
       setLoading(false);
       debugLog('Carga de empresas finalizada');
     }
-  }, [canViewPrivate]);
+  }, [canViewPrivate, CACHE_KEYS.EMPRESAS_CARDS]);
 
   useEffect(() => {
     loadEmpresas();
@@ -219,7 +219,7 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
     });
 
     return detalle;
-  }, [shouldUsePrivateDetails, disablePrivateDetails]);
+  }, [shouldUsePrivateDetails, disablePrivateDetails, CACHE_KEYS, shouldFallbackToPublic]);
 
   const handleCardClick = async (empresa) => {
     debugLog('Click en tarjeta', { 
