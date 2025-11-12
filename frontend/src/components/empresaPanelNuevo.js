@@ -30,10 +30,10 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
   const panelHeight = 82;
 
   // Claves para el cache
-  const CACHE_KEYS = {
+  const CACHE_KEYS = useMemo(() => ({
     EMPRESAS_CARDS: 'empresas-cards-data',
     EMPRESA_DETAIL: (id) => `empresa-detail-${id}`
-  };
+  }), []);
 
   const canViewPrivate = useMemo(() => {
     if (!loggedInUser?.idRol) return false;
