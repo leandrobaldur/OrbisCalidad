@@ -8,23 +8,22 @@ const ContenedorLateral = ({
   cuadroRedondez,
   dias,
 }) => {
-  // Construye días por defecto: hoy, mañana y pasado
+  // Construye días por defecto: 11, 12 y 13 de Noviembre de 2025
   const defaultDias = useMemo(() => {
-    const base = new Date();
     const toISODate = (d) => {
       const y = d.getFullYear();
       const m = String(d.getMonth() + 1).padStart(2, "0");
       const day = String(d.getDate()).padStart(2, "0");
       return `${y}-${m}-${day}`;
     };
-    const d1 = new Date(base);
-    const d2 = new Date(base); d2.setDate(base.getDate() + 1);
-    const d3 = new Date(base); d3.setDate(base.getDate() + 2);
-    // Usar imágenes específicas para cada día (day1..day3)
+    // Martes 11, Miércoles 12 y Jueves 13 de Noviembre de 2025
+    const d1 = new Date(2025, 10, 11); // Noviembre es el mes 10 (0-indexed)
+    const d2 = new Date(2025, 10, 12);
+    const d3 = new Date(2025, 10, 13);
     return [
-      { label: "Día 1", date: toISODate(d1), imageUrl: "/media/homePage/day1.jpeg" },
-      { label: "Día 2", date: toISODate(d2), imageUrl: "/media/homePage/day2.jpeg" },
-      { label: "Día 3", date: toISODate(d3), imageUrl: "/media/homePage/day3.jpeg" },
+      { label: "Martes 11", date: toISODate(d1), imageUrl: "/media/homePage/day1.jpeg" },
+      { label: "Miércoles 12", date: toISODate(d2), imageUrl: "/media/homePage/day2.jpeg" },
+      { label: "Jueves 13", date: toISODate(d3), imageUrl: "/media/homePage/day3.jpeg" },
     ];
   }, []);
 

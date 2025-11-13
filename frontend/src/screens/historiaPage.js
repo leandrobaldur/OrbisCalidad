@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Eye, History, ArrowRightToLine, Mountain, BookOpen, Building, FileText, Calendar } from "lucide-react";
+import { Eye, History, ArrowRightToLine, Mountain, BookOpen } from "lucide-react";
 
 // Constantes de datos con iconos
 const mainSections = [
@@ -104,75 +104,7 @@ const howItStartedSection = {
   ),
 };
 
-// Componente para el contador animado
-const AnimatedCounter = ({ target, duration = 2000, suffix = "+" }) => {
-  const [count, setCount] = useState(0);
-  const [hasStarted, setHasStarted] = useState(false);
-  const ref = useRef(null);
 
-  useEffect(() => {
-    const currentRef = ref.current;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasStarted) {
-          setHasStarted(true);
-          
-          let start = 0;
-          const increment = target / (duration / 16); // 60fps
-          
-          const timer = setInterval(() => {
-            start += increment;
-            if (start >= target) {
-              setCount(target);
-              clearInterval(timer);
-            } else {
-              setCount(Math.floor(start));
-            }
-          }, 16);
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
-    };
-  }, [target, duration, hasStarted]);
-
-  return (
-    <span ref={ref} className="font-playfair text-3xl font-light text-[#072D42] mb-1">
-      {count}{suffix}
-    </span>
-  );
-};
-
-// Solo 3 stats principales con valores objetivos para la animación
-const statsData = [
-  { 
-    number: "40+", 
-    target: 40,
-    label: "Años de historia abarcados", 
-    icon: Calendar
-  },
-  { 
-    number: "50+", 
-    target: 50,
-    label: "Empresas Documentadas", 
-    icon: Building
-  },
-  { 
-    number: "100+", 
-    target: 100,
-    label: "Archivos informativos", 
-    icon: FileText
-  }
-];
 
 const allSections = [...mainSections, howItStartedSection];
 
@@ -303,18 +235,6 @@ const AboutUsPage = () => {
         </header>
       </div>
 
-      {/* SECCIÓN DE ESTADÍSTICAS - CON ANIMACIÓN DE CONTEO */}
-      <section className="max-w-6xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-          {statsData.map((stat, index) => (
-            <div key={index} className="flex flex-col items-center p-6 bg-white rounded-lg shadow-md">
-              <stat.icon className="w-12 h-12 text-[#072D42] mb-4" />
-              <AnimatedCounter target={stat.target} />
-              <p className="font-montserrat text-lg font-medium text-[#072D42]/80">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
       
 
       <main className="px-4 sm:px-6 lg:px-8 py-0">
