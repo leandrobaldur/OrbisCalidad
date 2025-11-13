@@ -281,7 +281,7 @@ const EquipoPage = () => {
         skills: ['Innovación', 'Tecnología'],
         email: '',
         linkedin: 'https://www.linkedin.com/in/valentino-sebastian-luna-quispe-52930434a/',
-        photo: 'Valentino.png'
+        photo: 'valentino.png'
       },
       {
         id: 2,
@@ -290,7 +290,7 @@ const EquipoPage = () => {
         skills: ['Innovación', 'Tecnología'],
         email: 'yesenia.miranda.v27@gmail.com',
         linkedin: 'https://www.linkedin.com/in/yesenia-miranda-4bb95a391/',
-        photo: 'Yesenia.png'
+        photo: 'yesenia.png'
       },
       {
         id: 3,
@@ -346,7 +346,7 @@ const EquipoPage = () => {
         skills: ['Innovación', 'Tecnología'],
         email: 'marco.octavio.luna@gmail.com',
         linkedin: 'https://www.linkedin.com/in/marco-octavio-luna-vargas-77563a205/',
-        photo: 'Marco.png'
+        photo: 'marco.png'
       },
       {
         id: 2,
@@ -364,7 +364,7 @@ const EquipoPage = () => {
         skills: ['Innovación', 'Tecnología'],
         email: '',
         linkedin: 'https://www.linkedin.com/in/sergio-arias-mayta-414744235?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app',
-        photo: 'Sergio.png'
+        photo: 'sergio.png'
       }
     ],
     frontend: [
@@ -375,7 +375,7 @@ const EquipoPage = () => {
         skills: ['Innovación', 'Tecnología'],
         email: 'leo.ibarralopez@gmail.com',
         linkedin: 'https://www.linkedin.com/in/leonardo-ibarra-l%C3%B3pez-2659902b8/',
-        photo: 'Leonardo.png'
+        photo: 'leonardo.png'
       },
       {
         id: 2,
@@ -384,7 +384,7 @@ const EquipoPage = () => {
         skills: ['Innovación', 'Tecnología'],
         email: 'ramiro.quenta@ucb.edu.bo',
         linkedin: 'https://www.linkedin.com/in/ramiro-ariel-quenta-ramos-ba3aa7279/',
-        photo: 'Ramiro.png'
+        photo: 'ramiro.png'
       },
       {
         id: 3,
@@ -393,7 +393,7 @@ const EquipoPage = () => {
         skills: ['Innovación', 'Tecnología'],
         email: '',
         linkedin: 'https://www.linkedin.com/in/jean-marco-fernandez-silva-432a1a398/',
-        photo: 'Jean.png'
+        photo: 'jean.png'
       },
       {
         id: 4,
@@ -413,7 +413,7 @@ const EquipoPage = () => {
         skills: ['Innovación', 'Tecnología'],
         email: 'laurita.llea@gmail.com',
         linkedin: '',
-        photo: 'Laura.png'
+        photo: 'laura.png'
       }
     ],
     dashboard: [
@@ -424,7 +424,7 @@ const EquipoPage = () => {
         skills: ['Innovación', 'Tecnología'],
         email: 'ramirezmarvinlarry@gmail.com',
         linkedin: 'https://www.linkedin.com/in/marvin-mollo-ramirez-245209304/',
-        photo: 'Marvin.png'
+        photo: 'marvin.png'
       }
     ]
   };
