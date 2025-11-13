@@ -85,6 +85,28 @@ const fontStyles = `
   .responsive-join-text {
     font-size: clamp(0.875rem, 1.5vw, 1.125rem);
   }
+
+  .team-scroll-container {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(7, 45, 66, 0.4) transparent;
+  }
+
+  .team-scroll-container::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .team-scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .team-scroll-container::-webkit-scrollbar-thumb {
+    background-color: rgba(7, 45, 66, 0.4);
+    border-radius: 9999px;
+  }
+
+  .team-scroll-container:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(7, 45, 66, 0.6);
+  }
 `;
 
 // Componente Reveal
@@ -599,8 +621,8 @@ const EquipoPage = () => {
             </nav>
           </aside>
 
-          {/* CONTENIDO PRINCIPAL AL 60% */}
-          <section className="w-full lg:w-[80%] flex flex-col px-0">
+          {/* CONTENEDOR PRINCIPAL CON ALTURA LIMITADA Y SCROLL EN ESCRITORIO */}
+          <section className="w-full lg:w-[80%] flex flex-col px-0 lg:max-h-[70vh] lg:overflow-y-auto lg:pr-3 team-scroll-container">
             {sections.map((section, index) => (
               <div key={section.id} className={section.bgColor}>
                 {/* SEPARADORES RESPONSIVOS */}
