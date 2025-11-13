@@ -14,11 +14,16 @@ const debugLog = (...args) => {
   console.log('[EmpresasPanel]', ...args);
 };
 
+const normalizarTexto = (valor) =>
+  typeof valor === 'string'
+    ? valor.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    : '';
+
 const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
   const [fullEmpresas, setFullEmpresas] = useState([]);
   const [empresas, setEmpresas] = useState([]);
   const [busqueda, setBusqueda] = useState('');
-  const [departamentoActivo, setDepartamentoActivo] = useState(null);
+  const [departamentosActivos, setDepartamentosActivos] = useState(() => []);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -141,33 +146,49 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
     loadEmpresas();
   }, [loadEmpresas]);
 
-  const handleDepartamentoClick = (departamento) => {
-    if (departamentoActivo === departamento) {
-      setDepartamentoActivo(null);
-      setBusqueda('');
-    } else {
-      setDepartamentoActivo(departamento);
-      setBusqueda('');
+  const handleDepartamentoToggle = useCallback((departamento) => {
+    if (!departamento || typeof departamento !== 'string') {
+      return;
     }
-  };
+
+    setDepartamentosActivos((prev) => {
+      const normalized = departamento.trim();
+      if (!normalized) {
+        return prev;
+      }
+
+      const alreadySelected = prev.includes(normalized);
+      return alreadySelected
+        ? prev.filter((dep) => dep !== normalized)
+        : [...prev, normalized];
+    });
+  }, []);
 
   useEffect(() => {
     let lista = [...fullEmpresas];
-    const term = busqueda.trim().toLowerCase();
+    const terminoNormalizado = normalizarTexto(busqueda);
+    const departamentosNormalizados = departamentosActivos
+      .map(normalizarTexto)
+      .filter(Boolean);
 
-    if (term) {
-      lista = lista.filter((e) =>
-        (e.nombre || '').toLowerCase().includes(term) ||
-        (e.rubro || '').toLowerCase().includes(term) ||
-        (e.departamento || '').toLowerCase().includes(term)
-      );
+    if (departamentosNormalizados.length > 0) {
+      lista = lista.filter((empresaActual) => {
+        const departamentoEmpresa = normalizarTexto(empresaActual.departamento);
+        return departamentosNormalizados.includes(departamentoEmpresa);
+      });
     }
-    else if (departamentoActivo) {
-      lista = lista.filter(e => e.departamento === departamentoActivo);
+
+    if (terminoNormalizado) {
+      const coincideConTermino = (valor) => normalizarTexto(valor).includes(terminoNormalizado);
+      lista = lista.filter((empresaActual) =>
+        coincideConTermino(empresaActual.nombre) ||
+        coincideConTermino(empresaActual.rubro) ||
+        coincideConTermino(empresaActual.departamento)
+      );
     }
 
     setEmpresas(lista);
-  }, [fullEmpresas, busqueda, departamentoActivo]);
+  }, [fullEmpresas, busqueda, departamentosActivos]);
 
   // Función para cargar detalle de empresa con cache
   const loadEmpresaDetail = useCallback(async (empresaId) => {
@@ -313,11 +334,10 @@ const EmpresasPanel = ({ loggedInUser, canEdit = false }) => {
 
         <div className="w-full h-[68%] flex-shrink-0">
           <MapaBolivia
-            onDepartamentoClick={handleDepartamentoClick}
-            empresas={fullEmpresas}
+            onDepartamentoToggle={handleDepartamentoToggle}
+            selectedDepartamentos={departamentosActivos}
           />
         </div>
-
         <div className="flex-grow">
           {/* Información adicional o vacío */}
         </div>

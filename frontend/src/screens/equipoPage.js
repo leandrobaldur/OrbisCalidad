@@ -248,7 +248,7 @@ const EquipoPage = () => {
         skills: ['Innovación', 'Tecnología'],
         email: '',
         linkedin: '',
-        photo: 'Jessica.png'
+        photo: ''
       }
     ],
     delegacion: [
@@ -277,7 +277,7 @@ const EquipoPage = () => {
         skills: ['Innovación', 'Tecnología'],
         email: '',
         linkedin: '',
-        photo: 'Alessandro.png'
+        photo: ''
       },
       {
         id: 4,
@@ -286,7 +286,7 @@ const EquipoPage = () => {
         skills: ['Innovación', 'Tecnología'],
         email: '',
         linkedin: '',
-        photo: 'fabiola.png'
+        photo: ''
       },
       {
         id: 5,
@@ -295,7 +295,7 @@ const EquipoPage = () => {
         skills: ['Innovación', 'Tecnología'],
         email: '',
         linkedin: '',
-        photo: 'Ramil.png'
+        photo: ''
       },
       {
         id: 6,
@@ -313,7 +313,7 @@ const EquipoPage = () => {
         skills: ['Innovación', 'Tecnología'],
         email: '',
         linkedin: '',
-        photo: 'Mauricio.png'
+        photo: ''
       }
     ],
     backend: [
@@ -333,7 +333,7 @@ const EquipoPage = () => {
         skills: ['Innovación', 'Tecnología'],
         email: 'huaychojaime@gmail.com',
         linkedin: 'https://www.linkedin.com/in/jaime-huaycho-5a3723364/',
-        photo: 'Jaime.png'
+        photo: ''
       },
       {
         id: 3,
@@ -380,7 +380,7 @@ const EquipoPage = () => {
         skills: ['Innovación', 'Tecnología'],
         email: '',
         linkedin: '',
-        photo: 'Leandro.png'
+        photo: ''
       }
     ],
     diseno: [
@@ -649,8 +649,12 @@ const EquipoPage = () => {
                                 <div className="flex items-start gap-3 md:gap-4 mb-3 md:mb-4">
                                   {/* FOTO DE PERFIL */}
                                   <div className="flex-shrink-0">
-                                    <div className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full overflow-hidden group-hover:scale-110 transition-all duration-500 border-2 border-white group-hover:border-[#072D42] shadow-md">
-                                      <img src={`/media/equipoPage/${member.photo}`} alt={member.name} className="w-full h-full object-cover" />
+                                    <div className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full bg-gradient-to-br from-[#072D42] to-[#0A3A5A] group-hover:from-white group-hover:to-gray-100 flex items-center justify-center group-hover:scale-110 transition-all duration-500 border-2 border-white group-hover:border-[#072D42] shadow-md">
+                                      {member.photo ? (
+                                        <img src={`/media/equipoPage/${member.photo}`} alt={member.name} className="w-full h-full object-cover rounded-full" />
+                                      ) : (
+                                        <User className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-white group-hover:text-[#072D42] transition-colors duration-500" />
+                                      )}
                                     </div>
                                   </div>
                                   
