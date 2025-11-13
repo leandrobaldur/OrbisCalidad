@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import logo from '../assets/logo.png'; // Import the logo
 
 const DashboardPage = () => {
-  const dashboardUrl = 'https://snarf3.github.io/Dashboard-bicentenario/';
+  const dashboardUrl = 'https://snarf3.github.io/orbis-dashboard/';
 
   useEffect(() => {
     const timer = setTimeout(() => {
