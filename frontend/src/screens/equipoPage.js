@@ -111,11 +111,10 @@ const Reveal = ({ children, delay = 0 }) => {
 };
 
 const EquipoPage = () => {
-  const [activeSection, setActiveSection] = useState('delegacion');
+  const [activeSection, setActiveSection] = useState('direccion');
   const [asideBottom, setAsideBottom] = useState('auto');
   const sectionRefs = useRef({});
   const asideRef = useRef(null);
-  const uneteRef = useRef(null);
   const [scrollY, setScrollY] = useState(0);
   const tickingRef = useRef(false);
 
@@ -133,21 +132,7 @@ const EquipoPage = () => {
   // Scroll handler para parallax, sticky navigation y cálculo del aside
   useEffect(() => {
     const calculateAsideBottom = () => {
-      const aside = asideRef.current;
-      const uneteSection = uneteRef.current;
-      
-      if (!aside || !uneteSection) return;
-      
-      const uneteRect = uneteSection.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      
-      // Cuando la sección "Únete" está cerca del aside (2rem de margen)
-      if (uneteRect.top < viewportHeight - 2 * 16) {
-        const distanceFromBottom = viewportHeight - uneteRect.top + 2 * 16;
-        setAsideBottom(`${distanceFromBottom / 16}rem`);
-      } else {
-        setAsideBottom('2rem'); // Margen normal de 2rem
-      }
+      setAsideBottom('2rem'); // Margen normal de 2rem
     };
 
     const handleScroll = () => {
@@ -160,7 +145,7 @@ const EquipoPage = () => {
         tickingRef.current = true;
       }
 
-      const sections = ['delegacion', 'backend', 'frontend', 'diseno', 'basedatos', 'dashboard', 'unete'];
+      const sections = ['direccion', 'diseno', 'frontend', 'backend', 'dashboard', 'delegacion'];
       const scrollPosition = window.scrollY + 12.5 * 16; // 200px en rem (12.5rem)
 
       for (const sectionId of sections) {
@@ -205,194 +190,219 @@ const EquipoPage = () => {
 
   // Secciones con iconos y colores de fondo alternados
   const sections = [
-    { 
-      id: 'delegacion', 
-      label: 'LIDERAZGO', 
-      icon: Crown,
-      bgColor: 'bg-white' // Fondo blanco
-    },
-    { 
-      id: 'backend', 
-      label: 'BACKEND', 
-      icon: Cpu,
+    {
+      id: 'direccion',
+      label: 'DIRECCIÓN DE PRODUCTO',
+      icon: TrendingUp,
       bgColor: 'bg-gray-50' // Fondo gris claro
     },
-    { 
-      id: 'frontend', 
-      label: 'FRONTEND', 
-      icon: Component,
-      bgColor: 'bg-white' // Fondo blanco
-    },
-    { 
-      id: 'diseno', 
-      label: 'DISEÑO', 
+    {
+      id: 'diseno',
+      label: 'DISEÑO',
       icon: Palette,
-      bgColor: 'bg-gray-50' // Fondo gris claro
-    },
-    { 
-      id: 'basedatos', 
-      label: 'BASE DE DATOS', 
-      icon: Database,
       bgColor: 'bg-white' // Fondo blanco
     },
-    { 
-      id: 'dashboard', 
-      label: 'ANALITYCS', 
+    {
+      id: 'frontend',
+      label: 'FRONTEND',
+      icon: Component,
+      bgColor: 'bg-gray-50' // Fondo gris claro
+    },
+    {
+      id: 'backend',
+      label: 'BACKEND',
+      icon: Cpu,
+      bgColor: 'bg-white' // Fondo blanco
+    },
+    {
+      id: 'dashboard',
+      label: 'ANALYTICS',
       icon: LineChart,
       bgColor: 'bg-gray-50' // Fondo gris claro
+    },
+    {
+      id: 'delegacion',
+      label: 'LOGÍSTICA',
+      icon: Crown,
+      bgColor: 'bg-white' // Fondo blanco
     }
   ];
 
   // Logos de los cuerpos
   const bodyLogos = [
-    { id: 'delegacion', name: 'Liderazgo', icon: Crown, section: 'delegacion' },
-    { id: 'backend', name: 'Backend', icon: Cpu, section: 'backend' },
-    { id: 'frontend', name: 'Frontend', icon: Component, section: 'frontend' },
+    { id: 'direccion', name: 'Dirección de Producto', icon: TrendingUp, section: 'direccion' },
     { id: 'diseno', name: 'Diseño', icon: Palette, section: 'diseno' },
-    { id: 'basedatos', name: 'Base de Datos', icon: Database, section: 'basedatos' },
-    { id: 'dashboard', name: 'Analytics', icon: LineChart, section: 'dashboard' }
+    { id: 'frontend', name: 'Frontend', icon: Component, section: 'frontend' },
+    { id: 'backend', name: 'Backend', icon: Cpu, section: 'backend' },
+    { id: 'dashboard', name: 'Analytics', icon: LineChart, section: 'dashboard' },
+    { id: 'delegacion', name: 'Logística', icon: Crown, section: 'delegacion' }
   ];
 
-  // Datos de ejemplo del equipo con email y LinkedIn
+  // Datos del equipo con email y LinkedIn
   const teamMembers = {
+    direccion: [
+      {
+        id: 1,
+        name: 'Jessica Doris Lanza Butron',
+        position: 'Directora de Producto',
+        skills: ['Innovación', 'Tecnología'],
+        email: '',
+        linkedin: '',
+        photo: 'Jessica.png'
+      }
+    ],
     delegacion: [
-      { 
-        id: 1, 
-        name: 'Ana Rodríguez', 
-        position: 'Project Manager', 
-        skills: ['Liderazgo', 'Estrategia', 'Gestión'],
-        email: 'ana.rodriguez@orbis.com',
-        linkedin: 'https://linkedin.com/in/ana-rodriguez'
+      {
+        id: 1,
+        name: 'Valentino Sebastian Luna Quispe',
+        position: 'Especialista en Contacto Empresarial',
+        skills: ['Innovación', 'Tecnología'],
+        email: '',
+        linkedin: 'https://www.linkedin.com/in/valentino-sebastian-luna-quispe-52930434a/',
+        photo: 'Valentino.png'
       },
-      { 
-        id: 2, 
-        name: 'Carlos Méndez', 
-        position: 'Líder de Equipo', 
-        skills: ['Coordinación', 'Planificación', 'Mentoría'],
-        email: 'carlos.mendez@orbis.com',
-        linkedin: 'https://linkedin.com/in/carlos-mendez'
+      {
+        id: 2,
+        name: 'Yesenia Miranda',
+        position: 'Especialista en Contacto Empresarial',
+        skills: ['Innovación', 'Tecnología'],
+        email: 'yesenia.miranda.v27@gmail.com',
+        linkedin: 'https://www.linkedin.com/in/yesenia-miranda-4bb95a391/',
+        photo: 'Yesenia.png'
       },
-      { 
-        id: 3, 
-        name: 'María Fernández', 
-        position: 'Coordinadora', 
-        skills: ['Organización', 'Comunicación', 'Logística'],
-        email: 'maria.fernandez@orbis.com',
-        linkedin: 'https://linkedin.com/in/maria-fernandez'
+      {
+        id: 3,
+        name: 'Alessandro Andrade',
+        position: 'Especialista en Contacto Empresarial',
+        skills: ['Innovación', 'Tecnología'],
+        email: '',
+        linkedin: '',
+        photo: 'Alessandro.png'
       },
-      { 
-        id: 3, 
-        name: 'María Fernández', 
-        position: 'Coordinadora', 
-        skills: ['Organización', 'Comunicación', 'Logística'],
-        email: 'maria.fernandez@orbis.com',
-        linkedin: 'https://linkedin.com/in/maria-fernandez'
+      {
+        id: 4,
+        name: 'fabiola',
+        position: 'Especialista en Contacto Empresarial',
+        skills: ['Innovación', 'Tecnología'],
+        email: '',
+        linkedin: '',
+        photo: 'fabiola.png'
+      },
+      {
+        id: 5,
+        name: 'Ramil',
+        position: 'Especialista en Contacto Empresarial',
+        skills: ['Innovación', 'Tecnología'],
+        email: '',
+        linkedin: '',
+        photo: 'Ramil.png'
+      },
+      {
+        id: 6,
+        name: 'Joy\'s Paredes Poma',
+        position: 'Especialista en Contacto Empresarial',
+        skills: ['Innovación', 'Tecnología'],
+        email: 'Joys.paredes@ucb.edu.bo',
+        linkedin: 'https://www.linkedin.com/in/joy-s-paredes-5230b734b/',
+        photo: 'joys.png'
+      },
+      {
+        id: 7,
+        name: 'Mauricio Piza',
+        position: 'Especialista en Contacto Empresarial',
+        skills: ['Innovación', 'Tecnología'],
+        email: '',
+        linkedin: '',
+        photo: 'Mauricio.png'
       }
     ],
     backend: [
-      { 
-        id: 1, 
-        name: 'Javier López', 
-        position: 'Senior Backend Dev', 
-        skills: ['Node.js', 'Python', 'APIs'],
-        email: 'javier.lopez@orbis.com',
-        linkedin: 'https://linkedin.com/in/javier-lopez'
+      {
+        id: 1,
+        name: 'Marco Octavio Luna Vargas',
+        position: 'Desarrollador Backend',
+        skills: ['Innovación', 'Tecnología'],
+        email: 'marco.octavio.luna@gmail.com',
+        linkedin: 'https://www.linkedin.com/in/marco-octavio-luna-vargas-77563a205/',
+        photo: 'Marco.png'
       },
-      { 
-        id: 2, 
-        name: 'Laura Martínez', 
-        position: 'API Specialist', 
-        skills: ['REST', 'GraphQL', 'Microservicios'],
-        email: 'laura.martinez@orbis.com',
-        linkedin: 'https://linkedin.com/in/laura-martinez'
+      {
+        id: 2,
+        name: 'Jaime Ignacio Huaycho Clavel',
+        position: 'Desarrollador Backend',
+        skills: ['Innovación', 'Tecnología'],
+        email: 'huaychojaime@gmail.com',
+        linkedin: 'https://www.linkedin.com/in/jaime-huaycho-5a3723364/',
+        photo: 'Jaime.png'
+      },
+      {
+        id: 3,
+        name: 'Sergio Alejandro Arias Mayta',
+        position: 'Desarrollador Backend',
+        skills: ['Innovación', 'Tecnología'],
+        email: '',
+        linkedin: 'https://www.linkedin.com/in/sergio-arias-mayta-414744235?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app',
+        photo: 'Sergio.png'
       }
     ],
     frontend: [
-      { 
-        id: 1, 
-        name: 'Sofía García', 
-        position: 'Frontend Lead', 
-        skills: ['React', 'TypeScript', 'UX'],
-        email: 'sofia.garcia@orbis.com',
-        linkedin: 'https://linkedin.com/in/sofia-garcia'
+      {
+        id: 1,
+        name: 'Leonardo Ibarra Lopez',
+        position: 'Desarrollador Frontend',
+        skills: ['Innovación', 'Tecnología'],
+        email: 'leo.ibarralopez@gmail.com',
+        linkedin: 'https://www.linkedin.com/in/leonardo-ibarra-l%C3%B3pez-2659902b8/',
+        photo: 'Leonardo.png'
       },
-      { 
-        id: 2, 
-        name: 'Miguel Ángel Torres', 
-        position: 'UI/UX Developer', 
-        skills: ['Figma', 'Prototipado', 'Design Systems'],
-        email: 'miguel.torres@orbis.com',
-        linkedin: 'https://linkedin.com/in/miguel-torres'
+      {
+        id: 2,
+        name: 'Ramiro Ariel Quenta Ramos',
+        position: 'Desarrollador Frontend',
+        skills: ['Innovación', 'Tecnología'],
+        email: 'ramiro.quenta@ucb.edu.bo',
+        linkedin: 'https://www.linkedin.com/in/ramiro-ariel-quenta-ramos-ba3aa7279/',
+        photo: 'Ramiro.png'
       },
-      { 
-        id: 3, 
-        name: 'Elena Vargas', 
-        position: 'React Specialist', 
-        skills: ['Hooks', 'Context', 'Performance'],
-        email: 'elena.vargas@orbis.com',
-        linkedin: 'https://linkedin.com/in/elena-vargas'
+      {
+        id: 3,
+        name: 'Jean Marco Fernandez Silva',
+        position: 'Desarrollador Frontend',
+        skills: ['Innovación', 'Tecnología'],
+        email: '',
+        linkedin: 'https://www.linkedin.com/in/jean-marco-fernandez-silva-432a1a398/',
+        photo: 'Jean.png'
+      },
+      {
+        id: 4,
+        name: 'Leandro Colque Baldur',
+        position: 'Desarrollador Frontend',
+        skills: ['Innovación', 'Tecnología'],
+        email: '',
+        linkedin: '',
+        photo: 'Leandro.png'
       }
     ],
     diseno: [
-      { 
-        id: 1, 
-        name: 'Claudia Rojas', 
-        position: 'Diseñadora Gráfica', 
-        skills: ['Illustrator', 'Branding', 'Tipografía'],
-        email: 'claudia.rojas@orbis.com',
-        linkedin: 'https://linkedin.com/in/claudia-rojas'
-      },
-      { 
-        id: 2, 
-        name: 'Ricardo Fuentes', 
-        position: 'UX Researcher', 
-        skills: ['User Testing', 'Wireframes', 'Prototipos'],
-        email: 'ricardo.fuentes@orbis.com',
-        linkedin: 'https://linkedin.com/in/ricardo-fuentes'
-      }
-    ],
-    basedatos: [
-      { 
-        id: 1, 
-        name: 'Roberto Silva', 
-        position: 'Database Architect', 
-        skills: ['SQL', 'MongoDB', 'Optimización'],
-        email: 'roberto.silva@orbis.com',
-        linkedin: 'https://linkedin.com/in/roberto-silva'
-      },
-      { 
-        id: 2, 
-        name: 'Carolina Ríos', 
-        position: 'Data Analyst', 
-        skills: ['ETL', 'Power BI', 'Estadística'],
-        email: 'carolina.rios@orbis.com',
-        linkedin: 'https://linkedin.com/in/carolina-rios'
-      },
-      { 
-        id: 3, 
-        name: 'Andrés Castillo', 
-        position: 'DB Administrator', 
-        skills: ['Seguridad', 'Backups', 'Monitorización'],
-        email: 'andres.castillo@orbis.com',
-        linkedin: 'https://linkedin.com/in/andres-castillo'
+      {
+        id: 1,
+        name: 'Laura Ludmila Eckerstorfer Aguilar',
+        position: 'Directora de Arte',
+        skills: ['Innovación', 'Tecnología'],
+        email: 'laurita.llea@gmail.com',
+        linkedin: '',
+        photo: 'Laura.png'
       }
     ],
     dashboard: [
-      { 
-        id: 1, 
-        name: 'Patricia Navarro', 
-        position: 'Dashboard Designer', 
-        skills: ['DataViz', 'Tableau', 'Storytelling'],
-        email: 'patricia.navarro@orbis.com',
-        linkedin: 'https://linkedin.com/in/patricia-navarro'
-      },
-      { 
-        id: 2, 
-        name: 'Fernando Jiménez', 
-        position: 'Data Visualization', 
-        skills: ['D3.js', 'Chart.js', 'Animaciones'],
-        email: 'fernando.jimenez@orbis.com',
-        linkedin: 'https://linkedin.com/in/fernando-jimenez'
+      {
+        id: 1,
+        name: 'Marvin Mollo Ramirez',
+        position: 'Especialista en Dashboard',
+        skills: ['Innovación', 'Tecnología'],
+        email: 'ramirezmarvinlarry@gmail.com',
+        linkedin: 'https://www.linkedin.com/in/marvin-mollo-ramirez-245209304/',
+        photo: 'Marvin.png'
       }
     ]
   };
@@ -496,8 +506,8 @@ const EquipoPage = () => {
               
               {/* BOTÓN DE SCROLL PARA MÓVIL */}
               <div className="block md:hidden mt-2">
-                <button 
-                  onClick={(e) => scrollTo(e, 'delegacion')}
+                <button
+                  onClick={(e) => scrollTo(e, 'direccion')}
                   className="bg-white/20 hover:bg-white/30 text-white px-5 py-2.5 rounded-lg font-montserrat font-medium tracking-wide transition-all duration-300 transform hover:scale-105 text-sm border border-white/30"
                 >
                   Conocer Equipo
@@ -637,10 +647,10 @@ const EquipoPage = () => {
                               <div className="relative z-20 p-4 md:p-5">
                                 {/* PRIMERA FILA: PERFIL + NOMBRE Y POSICIÓN */}
                                 <div className="flex items-start gap-3 md:gap-4 mb-3 md:mb-4">
-                                  {/* ICONO DE PERFIL */}
+                                  {/* FOTO DE PERFIL */}
                                   <div className="flex-shrink-0">
-                                    <div className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full bg-gradient-to-br from-[#072D42] to-[#0A3A5A] group-hover:from-white group-hover:to-gray-100 flex items-center justify-center group-hover:scale-110 transition-all duration-500 border-2 border-white group-hover:border-[#072D42] shadow-md">
-                                      <User className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-white group-hover:text-[#072D42] transition-colors duration-500" />
+                                    <div className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full overflow-hidden group-hover:scale-110 transition-all duration-500 border-2 border-white group-hover:border-[#072D42] shadow-md">
+                                      <img src={`/media/equipoPage/${member.photo}`} alt={member.name} className="w-full h-full object-cover" />
                                     </div>
                                   </div>
                                   
@@ -661,27 +671,31 @@ const EquipoPage = () => {
                                   <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2 md:gap-3">
                                       {/* Email con texto */}
-                                      <a 
-                                        href={`mailto:${member.email}`}
-                                        className="text-[#072D42]/70 group-hover:text-white/80 hover:text-[#072D42] group-hover:hover:text-white transition-colors duration-300 flex items-center gap-1"
-                                        title="Enviar email"
-                                      >
-                                        <Mail className="w-3 h-3 flex-shrink-0" />
-                                        <span className="text-xs font-inter truncate max-w-[100px] md:max-w-[120px]">
-                                          {member.email}
-                                        </span>
-                                      </a>
-                                      
+                                      {member.email && (
+                                        <a
+                                          href={`mailto:${member.email}`}
+                                          className="text-[#072D42]/70 group-hover:text-white/80 hover:text-[#072D42] group-hover:hover:text-white transition-colors duration-300 flex items-center gap-1"
+                                          title="Enviar email"
+                                        >
+                                          <Mail className="w-3 h-3 flex-shrink-0" />
+                                          <span className="text-xs font-inter truncate max-w-[100px] md:max-w-[120px]">
+                                            {member.email}
+                                          </span>
+                                        </a>
+                                      )}
+
                                       {/* LinkedIn */}
-                                      <a 
-                                        href={member.linkedin}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-[#072D42]/70 group-hover:text-white/80 hover:text-[#0077B5] group-hover:hover:text-white transition-colors duration-300 flex-shrink-0"
-                                        title="LinkedIn"
-                                      >
-                                        <Linkedin className="w-3 h-3 md:w-4 md:h-4" />
-                                      </a>
+                                      {member.linkedin && (
+                                        <a
+                                          href={member.linkedin}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-[#072D42]/70 group-hover:text-white/80 hover:text-[#0077B5] group-hover:hover:text-white transition-colors duration-300 flex-shrink-0"
+                                          title="LinkedIn"
+                                        >
+                                          <Linkedin className="w-3 h-3 md:w-4 md:h-4" />
+                                        </a>
+                                      )}
                                     </div>
                                   </div>
                                   
@@ -719,42 +733,6 @@ const EquipoPage = () => {
           </section>
         </div>
 
-        {/* SECCIÓN "ÚNETE" - COMPLETAMENTE RESPONSIVE */}
-        <div 
-          id="unete"
-          ref={(el) => {
-            sectionRefs.current.unete = el;
-            uneteRef.current = el;
-          }}
-          className="scroll-mt-24 relative min-h-[25rem] md:min-h-[31.25rem] w-screen -ml-[calc(50vw-50%)] -mr-[calc(50vw-50%)] mt-12 md:mt-16"
-        >
-          <div className="absolute inset-0 w-full h-full">
-            <img 
-              src="/media/historiapage/TEAMB.jpg"
-              alt="Únete a nuestro equipo"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-[#072D42]/90 to-[#0A3A5A]/90"></div>
-          </div>
-          
-          <div className="relative z-10 py-16 md:py-20 lg:py-24">
-            <Reveal>
-              <div className="text-center max-w-3xl mx-auto text-white px-4 sm:px-6">
-                <h2 className="font-playfair responsive-join-title text-white mb-4 md:mb-6 font-normal">
-                  Únete a Nuestro Equipo
-                </h2>
-                <div className="h-px w-16 md:w-20 bg-white/70 mx-auto mb-6 md:mb-8"></div>
-                <p className="font-inter responsive-join-text text-white/90 mb-8 md:mb-10 leading-relaxed max-w-2xl mx-auto">
-                  Buscamos talento apasionado por la innovación 
-                  y la preservación de la memoria empresarial.
-                </p>
-                <button className="bg-white/20 hover:bg-white/30 text-white px-6 py-3 md:px-8 md:py-4 lg:px-10 lg:py-4 rounded-lg font-montserrat font-medium tracking-wide transition-all duration-300 transform hover:scale-105 hover:shadow-xl text-base md:text-lg border border-white/30 hover:border-white/50">
-                  Ver Oportunidades
-                </button>
-              </div>
-            </Reveal>
-          </div>
-        </div>
       </main>
     </div>
   );
