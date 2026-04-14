@@ -5,7 +5,6 @@ import {
   Cpu,
   Component,
   Palette,
-  Database,
   LineChart,
   Mail,
   Linkedin,
