@@ -1,28 +1,44 @@
 pipeline {
     agent any
 
+    // Aquí le decimos a Jenkins que use el Node.js que configuramos en sus herramientas
+    tools {
+        nodejs 'node20' 
+    }
+
     stages {
         stage('1. Checkout Code') {
             steps {
-                echo 'Descargando la última versión del código desde GitHub...'
+                // Jenkins descarga automáticamente el código de GitHub aquí
+                echo 'Código descargado correctamente.'
             }
         }
-        stage('2. Build React (Construir Ejecutable)') {
+        
+        stage('2. Build Frontend (React)') {
             steps {
-                echo 'Instalando dependencias de Node.js...'
-                echo 'Ejecutando: npm install && npm run build'
-                // Aquí Jenkins procesaría tu código real. Dejamos un log limpio para el reporte:
-                echo 'Construcción exitosa del paquete de producción (Build).'
+                echo 'Iniciando compilación de React...'
+                // Ejecuta los comandos reales en Windows usando 'bat'
+                // Cambia 'frontend' por el nombre real de tu carpeta si es diferente
+                bat 'cd frontend && npm install && npm run build'
             }
         }
+
         stage('3. Deploy (Instalar en Destino)') {
             steps {
-                echo 'Instalando el ejecutable web en el ambiente de destino...'
-                // Este comando de Windows crea la carpeta y simula la instalación
+                echo 'Desplegando archivos de producción al ambiente destino...'
+                // Creamos la carpeta destino si no existe e instalamos los archivos reales del build
                 bat 'if not exist C:\\Ambiente_Destino\\Orbis_Production mkdir C:\\Ambiente_Destino\\Orbis_Production'
-                bat 'echo Implementación de Orbis realizada por Jenkins > C:\\Ambiente_Destino\\Orbis_Production\\version.txt'
-                echo 'Instalación completada correctamente.'
+                bat 'xcopy /E /I /Y "frontend\\dist" "C:\\Ambiente_Destino\\Orbis_Production"'
             }
+        }
+    }
+    
+    post {
+        success {
+            echo '¡Integración Continua Exitosa! El sistema ha sido actualizado automáticamente.'
+        }
+        failure {
+            echo 'La compilación falló. Revisa el código subido por posibles errores de sintaxis.'
         }
     }
 }
