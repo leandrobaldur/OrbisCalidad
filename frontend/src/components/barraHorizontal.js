@@ -12,7 +12,7 @@ const BarraHorizontal = ({
     backgroundImage: `url(${imagen})`,
     width: margenHorizontal,
     margin: 0,
-  };
+  };//prueba
 
   return (
     <div 
