@@ -60,7 +60,7 @@ const SuccessConfirmationAlert = ({ message, onClose, fontMonoClass }) => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          Aceptar
+          Aceptar.
         </motion.button>
       </motion.div>
     </motion.div>
