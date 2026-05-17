@@ -6,7 +6,7 @@ const FooterBar = () => {
     <footer className="bg-surface text-center py-6 border-t border-stroke shadow-[0_-2px_8px_rgba(0,0,0,0.05)] mt-12">
       <div className="max-w-7xl mx-auto px-5">
         <p className="font-miles text-base text-text-main mb-3 tracking-wide">
-          Tutorizado por: Jessica Doris Lanza Butron
+          Tutorizado por: Padre Juan Carlos Manzilla
         </p>
         <ul className="flex flex-wrap justify-center gap-6 list-none p-0 m-0">
           <li>
