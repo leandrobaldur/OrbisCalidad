@@ -30,7 +30,7 @@ pipeline {
                 bat 'if not exist C:\\Ambiente_Destino\\Orbis_Production mkdir C:\\Ambiente_Destino\\Orbis_Production'
                 bat 'xcopy /E /I /Y "frontend\\dist" "C:\\Ambiente_Destino\\Orbis_Production"'
             }
-        }//build test 1
+        }//build test 2
     }
     
     post {
