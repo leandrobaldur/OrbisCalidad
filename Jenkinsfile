@@ -28,7 +28,7 @@ pipeline {
                 echo 'Desplegando archivos de producción al ambiente destino...'
                 // Creamos la carpeta destino si no existe e instalamos los archivos reales del build
                 bat 'if not exist C:\\Ambiente_Destino\\Orbis_Production mkdir C:\\Ambiente_Destino\\Orbis_Production'
-                bat 'xcopy /E /I /Y "frontend\\dist" "C:\\Ambiente_Destino\\Orbis_Production"'
+                bat 'xcopy /E /I /Y "frontend\\build" "C:\\Ambiente_Destino\\Orbis_Production"'
             }
         }//build test 3
     }
