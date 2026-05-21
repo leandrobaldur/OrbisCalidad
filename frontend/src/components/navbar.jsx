@@ -21,7 +21,11 @@ const Navbar = ({ loggedInUser, isMobileMenuOpen, toggleMobileMenu }) => {
   let finalLinks = [...baseLinks];
   if (loggedInUser && ROLES_CON_PANEL.has(loggedInUser.idRol)) {
     finalLinks.push({ label: "ADMIN USUARIOS", path: "/panel-usuarios" });
-    finalLinks.push({ label: "DASHBOARDS", path: "/dashboards" });
+    finalLinks.push({ 
+      label: "AÑADE TU EMPRESA", 
+      path: "https://orbis-empresarial.vercel.app/", // <-- Pon aquí tu URL externa
+      isExternal: true // Bandera lógica para identificar que es externa
+    });
   }
 
   const menuVariants = {
