@@ -1,0 +1,19 @@
+# Usamos Node para desarrollo
+FROM node:20-slim
+
+WORKDIR /app
+
+# Copiamos los archivos de empaquetado
+COPY package*.json .
+
+# Instalamos las dependencias
+RUN npm install
+
+# Copiamos el resto del código
+COPY . .
+
+# Exponemos el puerto estándar de Vite
+EXPOSE 5173
+
+# Comando para arrancar el servidor de desarrollo
+CMD ["npm", "start"]

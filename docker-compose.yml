@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./BackEmpresas
+    ports:
+      - "3000:3000"  # Asegúrate de que tu backend escuche en el 5000, o cambia el de la izquierda
+    env_file:
+      - ./BackEmpresas/.env
+    volumes:
+      - ./BackEmpresas:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ./Frontend # <-- Revisa que este sea el nombre exacto de tu carpeta de React
+    ports:
+      - "3100:3000"
+    environment:
+      - VITE_API_URL=http://localhost:3000
+    volumes:
+      - ./Frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
